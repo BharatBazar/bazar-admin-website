@@ -27,6 +27,16 @@
     },
     "rules": {
         "linebreak-style": "off",
+        "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-unused-vars": ["warn"],
+        "react/jsx-curly-brace-presence": [
+            "error",
+            {
+                "props": "ignore",
+                "children": "ignore"
+            }
+        ],
         "prettier/prettier": [
             "error",
             {
