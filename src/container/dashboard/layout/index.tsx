@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import './layout.css';
 import AppSider from './sider/Sider';
-import AppHeader from './header/header';
+import AppHeader from './header/Header';
 import AppContent from './content/Content';
 
 const MainLayout = () => {

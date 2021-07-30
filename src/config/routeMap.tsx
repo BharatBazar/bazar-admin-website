@@ -1,0 +1,40 @@
+import Loadable from 'react-loadable';
+import Loading from '../components/Loading';
+
+const Category = Loadable({
+    loader: () => import('../container/dashboard/catalogue/Category'),
+    loading: Loading,
+});
+
+const SubCategory = Loadable({
+    loader: () => import('../container/dashboard/catalogue/SubCategory'),
+    loading: Loading,
+});
+const SubCategory1 = Loadable({
+    loader: () => import('../container/dashboard/catalogue/SubCategory1'),
+    loading: Loading,
+});
+
+const Error404 = Loadable({
+    loader: () => import('../container/404'),
+    loading: Loading,
+});
+
+export default [
+    {
+        path: '/catalogue/category',
+        component: Category,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/catalogue/subCategory',
+        component: SubCategory,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/catalogue/subCategory1',
+        component: SubCategory1,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    { path: '/error/404', component: Error404 },
+];

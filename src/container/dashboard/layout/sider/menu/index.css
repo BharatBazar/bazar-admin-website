@@ -1,0 +1,5 @@
+.sidebar-menu-container {
+    height: calc(100% - 64px);
+    width: auto;
+    background-color: white;
+}
