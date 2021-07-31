@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { Layout } from 'antd';
 import routeList from '../../../../config/routeMap';
+import { ContentPadding, HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../styles';
 
 const { Content } = Layout;
 
@@ -20,9 +21,10 @@ const AppContent: React.FC<ContentProps> = (props) => {
         <Layout>
             <Content
                 style={{
-                    marginTop: '11vh',
-                    marginLeft: props.collapsed ? '8vw' : '20vw',
-                    padding: 24,
+                    marginTop: HeaderHeight,
+                    padding: ContentPadding,
+
+                    marginLeft: props.collapsed ? SiderCollapsedWidth : SiderWidth,
 
                     position: 'static',
 

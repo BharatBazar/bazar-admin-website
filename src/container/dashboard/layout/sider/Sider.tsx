@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Layout } from 'antd';
-import Menu from './menu';
-import SiderHeader from './header/SiderHeader';
 import { RouteComponentProps } from 'react-router-dom';
+import Menu from './menu';
+
+import SiderHeader from './header/SiderHeader';
+import { SiderCollapsedWidth, SiderWidth } from '../../../../styles';
 
 const { Sider } = Layout;
 
@@ -16,16 +18,16 @@ const AppSider: React.SFC<AppSiderProps> = ({ collapsed, ...rest }) => {
             trigger={null}
             className="smooth-transition"
             collapsible
+            translate={'yes'}
             collapsed={collapsed}
-            collapsedWidth={'8vw'}
-            width={'20vw'}
+            collapsedWidth={SiderCollapsedWidth}
+            width={SiderWidth}
             style={{
                 // overflow: 'auto',
                 height: '100vh',
                 position: 'fixed',
                 left: 0,
                 backgroundColor: '#FFFFFF',
-                width: '20vw',
             }}
         >
             <SiderHeader />

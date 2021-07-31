@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { Layout } from 'antd';
 import './Header.css';
+import { HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../styles';
 
 const { Header } = Layout;
 
@@ -15,8 +16,8 @@ const AppHeader: React.SFC<HeaderProps> = ({ collapsed, handleToggle }) => {
         <Header
             className="siteLayoutBackground smooth-transition"
             style={{
-                height: '100px',
-                marginLeft: collapsed ? '8vw' : '20vw',
+                height: HeaderHeight,
+                marginLeft: collapsed ? SiderCollapsedWidth : SiderWidth,
                 position: 'fixed',
                 paddingLeft: '2%',
                 alignItems: 'center',
