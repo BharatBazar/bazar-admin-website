@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu } from 'antd';
 import Icon from '@ant-design/icons';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -21,7 +21,9 @@ const reorder = (list, startIndex, endIndex) => {
     return result;
 };
 
-class SiderMenu extends Component<any, { menuTreeNode: any; openKey: any[] }> {
+interface SideMenuProps extends RouteComponentProps {}
+
+class SiderMenu extends Component<SideMenuProps, { menuTreeNode: any; openKey: any[] }> {
     state = {
         menuTreeNode: null,
         openKey: [],
@@ -30,13 +32,14 @@ class SiderMenu extends Component<any, { menuTreeNode: any; openKey: any[] }> {
     filterMenuItem = (item) => {
         const { roles } = item;
         const { role } = this.props;
-        if (role === 'admin' || !roles || roles.includes(role)) {
-            return true;
-        }
-        if (item.children) {
-            return !!item.children.find((child) => roles.includes(child.role));
-        }
-        return false;
+        // if (role === 'admin' || !roles || roles.includes(role)) {
+        //     return true;
+        // }
+        // if (item.children) {
+        //     return !!item.children.find((child) => roles.includes(child.role));
+        // }
+        // return false;
+        return true;
     };
 
     // Menu rendering
@@ -45,43 +48,45 @@ class SiderMenu extends Component<any, { menuTreeNode: any; openKey: any[] }> {
         const path = this.props.location.pathname;
         console.log(path, this.filterMenuItem(menuList[0]));
         return menuList.reduce((pre, item) => {
-            // if (this.filterMenuItem(item)) {
-            if (!item.children) {
-                pre.push(
-                    <Menu.Item key={item.path}>
-                        <Link to={item.path}>
-                            {item.icon ? item.icon() : null}
-                            {/* <FontAwesomeIcon name={faUser} />
-                                <Icon component={faUser} /> */}
-                            <span>{item.title}</span>
-                        </Link>
-                    </Menu.Item>,
-                );
-            } else {
-                const cItem = item.children.find((cItem) => path.indexOf(cItem.path) === 0);
-
-                if (cItem) {
-                    this.setState((state) => ({
-                        openKey: [...state.openKey, item.path],
-                    }));
-                }
-
-                pre.push(
-                    <SubMenu
-                        key={item.path}
-                        title={
-                            <span>
+            if (this.filterMenuItem(item)) {
+                if (!item.children) {
+                    pre.push(
+                        <Menu.Item key={item.path}>
+                            <Link to={item.path}>
                                 {item.icon ? item.icon() : null}
-                                {/* <FontAwesomeIcon name={faCoffee} /> */}
+                                {/* <FontAwesomeIcon name={faUser} />
+                                <Icon component={faUser} /> */}
                                 <span>{item.title}</span>
-                            </span>
-                        }
-                    >
-                        {this.getMenuNodes(item.children)}
-                    </SubMenu>,
-                );
+                            </Link>
+                        </Menu.Item>,
+                    );
+                } else {
+                    const cItem = item.children.find((cItem) => path.indexOf(cItem.path) === 0);
+
+                    if (cItem) {
+                        this.setState((state) => ({
+                            openKey: [...state.openKey, item.path],
+                        }));
+                    }
+
+                    console.log('cItem =>', cItem, item.children);
+
+                    pre.push(
+                        <SubMenu
+                            key={item.path}
+                            title={
+                                <span>
+                                    {item.icon ? item.icon() : null}
+                                    {/* <FontAwesomeIcon name={faCoffee} /> */}
+                                    <span>{item.title}</span>
+                                </span>
+                            }
+                        >
+                            {this.getMenuNodes(item.children)}
+                        </SubMenu>,
+                    );
+                }
             }
-            //  }
 
             return pre;
         }, []);

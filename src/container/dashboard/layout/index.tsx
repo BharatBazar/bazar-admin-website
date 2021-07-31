@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import './layout.css';
+import { RouteComponentProps } from 'react-router-dom';
 import AppSider from './sider/Sider';
 import AppHeader from './header/Header';
 import AppContent from './content/Content';
 
-const MainLayout = (props) => {
+interface MainLayoutProps extends RouteComponentProps {}
+
+const MainLayout: React.FC<MainLayoutProps> = (props) => {
     console.log('mainLayout =>', props);
     const [collapsed, setcollapsed] = useState(false);
 
@@ -22,7 +25,7 @@ const MainLayout = (props) => {
         <Layout className="smooth-transition">
             <AppSider collapsed={collapsed} {...props} />
             <AppHeader collapsed={collapsed} handleToggle={handleToggle} />
-            <AppContent collapsed={collapsed} />
+            <AppContent collapsed={collapsed} {...props} />
         </Layout>
     );
 };

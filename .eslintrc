@@ -47,6 +47,14 @@
                 "children": "ignore"
             }
         ],
+        "react/jsx-props-no-spreading": [
+            "warn",
+            {
+                "html": "ignore",
+                "custom": "ignore",
+                "exceptions": []
+            }
+        ],
         "react/prop-types": "warn",
         "prettier/prettier": [
             "error",

@@ -2,10 +2,11 @@ import * as React from 'react';
 import { Layout } from 'antd';
 import Menu from './menu';
 import SiderHeader from './header/SiderHeader';
+import { RouteComponentProps } from 'react-router-dom';
 
 const { Sider } = Layout;
 
-export interface AppSiderProps {
+export interface AppSiderProps extends RouteComponentProps {
     collapsed: boolean;
 }
 

@@ -18,14 +18,12 @@ export const menuList: menuItem[] = [
     {
         title: 'Catalogue',
         path: '/catalogue',
-        icon: () => {
-            return <Icon component={EditIcon} />;
-        },
+        icon: () => <Icon component={EditIcon} />,
         roles: ['admin', 'editor', 'guest'],
         children: [
             {
                 title: 'Category',
-                path: '/catalogue/catagory',
+                path: '/catalogue/category',
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },
@@ -37,35 +35,35 @@ export const menuList: menuItem[] = [
             },
             {
                 title: 'SubCategory1',
-                path: '/catalogue/subCatagory1',
+                path: '/catalogue/subCategory1',
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },
         ],
     },
-    {
-        title: 'Location',
-        path: '/location',
-        icon: () => <Icon component={LocationIcons} />,
-        children: [
-            {
-                title: 'Add/Update State',
-                path: '/location/addState',
-                icon: () => <Icon component={EditIcon} />,
-                roles: ['admin'],
-            },
-            {
-                title: 'Add/Update City',
-                path: '/location/addCity',
-                icon: () => <Icon component={EditIcon} />,
-                roles: ['admin'],
-            },
-            {
-                title: 'Add/Update Area',
-                path: '/location/addArea',
-                icon: () => <Icon component={EditIcon} />,
-                roles: ['admin'],
-            },
-        ],
-    },
+    // {
+    //     title: 'Location',
+    //     path: '/location',
+    //     icon: () => <Icon component={LocationIcons} />,
+    //     children: [
+    //         {
+    //             title: 'Add/Update State',
+    //             path: '/location/addState',
+    //             icon: () => <Icon component={EditIcon} />,
+    //             roles: ['admin'],
+    //         },
+    //         {
+    //             title: 'Add/Update City',
+    //             path: '/location/addCity',
+    //             icon: () => <Icon component={EditIcon} />,
+    //             roles: ['admin'],
+    //         },
+    //         {
+    //             title: 'Add/Update Area',
+    //             path: '/location/addArea',
+    //             icon: () => <Icon component={EditIcon} />,
+    //             roles: ['admin'],
+    //         },
+    //     ],
+    // },
 ];
