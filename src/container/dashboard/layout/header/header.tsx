@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { Layout } from 'antd';
+import './Header.css';
 
 const { Header } = Layout;
 
@@ -14,18 +15,19 @@ const AppHeader: React.SFC<HeaderProps> = ({ collapsed, handleToggle }) => {
         <Header
             className="siteLayoutBackground smooth-transition"
             style={{
-                padding: 0,
-                height: '10vh',
+                height: '100px',
                 marginLeft: collapsed ? '8vw' : '20vw',
                 position: 'fixed',
-
+                paddingLeft: '2%',
+                alignItems: 'center',
                 width: '100vw',
+                backgroundColor: '#FFFFFF',
             }}
         >
             {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                className: 'trigger',
+                className: 'trigger sider-button',
                 onClick: handleToggle,
-                style: { color: '#fff' },
+                style: { color: '#000' },
             })}
         </Header>
     );

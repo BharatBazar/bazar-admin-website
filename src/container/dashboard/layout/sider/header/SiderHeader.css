@@ -1,6 +1,7 @@
 .sider-header {
-    height: '10vh';
-    width: '100%';
-    align-items: center;
-    justify-content: center;
+    height: 100px;
+
+    background-color: bisque;
+    align-content: center;
+    padding: 10px;
 }

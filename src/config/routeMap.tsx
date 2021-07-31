@@ -6,6 +6,21 @@ const Category = Loadable({
     loading: Loading,
 });
 
+const EditState = Loadable({
+    loader: () => import('../container/dashboard/location/AddState'),
+    loading: Loading,
+});
+
+const EditCity = Loadable({
+    loader: () => import('../container/dashboard/location/AddCity'),
+    loading: Loading,
+});
+
+const EditArea = Loadable({
+    loader: () => import('../container/dashboard/location/AddArea'),
+    loading: Loading,
+});
+
 const SubCategory = Loadable({
     loader: () => import('../container/dashboard/catalogue/SubCategory'),
     loading: Loading,
@@ -34,6 +49,21 @@ export default [
     {
         path: '/catalogue/subCategory1',
         component: SubCategory1,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/location/addState',
+        component: EditState,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/location/addCity',
+        component: EditCity,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/location/addArea',
+        component: EditArea,
         roles: ['admin', 'editor', 'guest'],
     },
     { path: '/error/404', component: Error404 },
