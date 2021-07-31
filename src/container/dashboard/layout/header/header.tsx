@@ -15,8 +15,8 @@ const AppHeader: React.SFC<HeaderProps> = ({ collapsed, handleToggle }) => {
             className="siteLayoutBackground smooth-transition"
             style={{
                 padding: 0,
-                height: '80px',
-                marginLeft: collapsed ? '5vw' : '10vw',
+                height: '10vh',
+                marginLeft: collapsed ? '8vw' : '20vw',
                 position: 'fixed',
 
                 width: '100vw',

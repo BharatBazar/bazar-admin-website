@@ -12,7 +12,7 @@ import { faCoffee, fas, faUser } from '@fortawesome/free-solid-svg-icons';
 import { getMenuItemInMenuListByProperty } from '../../../../../utils';
 import { menuList } from '../../../../../config/menuConfig';
 
-const SubMenu = Menu.SubMenu;
+const { SubMenu } = Menu;
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -21,7 +21,7 @@ const reorder = (list, startIndex, endIndex) => {
     return result;
 };
 
-class SiderMenu extends Component<{ location: any; role: any }, { menuTreeNode: any; openKey: any[] }> {
+class SiderMenu extends Component<any, { menuTreeNode: any; openKey: any[] }> {
     state = {
         menuTreeNode: null,
         openKey: [],
@@ -32,53 +32,56 @@ class SiderMenu extends Component<{ location: any; role: any }, { menuTreeNode: 
         const { role } = this.props;
         if (role === 'admin' || !roles || roles.includes(role)) {
             return true;
-        } else if (item.children) {
+        }
+        if (item.children) {
             return !!item.children.find((child) => roles.includes(child.role));
         }
         return false;
     };
+
     // Menu rendering
     getMenuNodes = (menuList) => {
         // Get the routing path of the current request
         const path = this.props.location.pathname;
+        console.log(path, this.filterMenuItem(menuList[0]));
         return menuList.reduce((pre, item) => {
-            if (this.filterMenuItem(item)) {
-                if (!item.children) {
-                    pre.push(
-                        <Menu.Item key={item.path}>
-                            <Link to={item.path}>
-                                {item.icon ? item.icon() : <FontAwesomeIcon name={faUser} />}
-                                <FontAwesomeIcon name={faUser} />
-                                <Icon component={faUser} />
-                                <span>{item.title}</span>
-                            </Link>
-                        </Menu.Item>,
-                    );
-                } else {
-                    const cItem = item.children.find((cItem) => path.indexOf(cItem.path) === 0);
+            // if (this.filterMenuItem(item)) {
+            if (!item.children) {
+                pre.push(
+                    <Menu.Item key={item.path}>
+                        <Link to={item.path}>
+                            {item.icon ? item.icon() : null}
+                            {/* <FontAwesomeIcon name={faUser} />
+                                <Icon component={faUser} /> */}
+                            <span>{item.title}</span>
+                        </Link>
+                    </Menu.Item>,
+                );
+            } else {
+                const cItem = item.children.find((cItem) => path.indexOf(cItem.path) === 0);
 
-                    if (cItem) {
-                        this.setState((state) => ({
-                            openKey: [...state.openKey, item.path],
-                        }));
-                    }
-
-                    pre.push(
-                        <SubMenu
-                            key={item.path}
-                            title={
-                                <span>
-                                    {item.icon ? item.icon() : null}
-                                    <FontAwesomeIcon name={faCoffee} />
-                                    <span>{item.title}</span>
-                                </span>
-                            }
-                        >
-                            {this.getMenuNodes(item.children)}
-                        </SubMenu>,
-                    );
+                if (cItem) {
+                    this.setState((state) => ({
+                        openKey: [...state.openKey, item.path],
+                    }));
                 }
+
+                pre.push(
+                    <SubMenu
+                        key={item.path}
+                        title={
+                            <span>
+                                {item.icon ? item.icon() : null}
+                                {/* <FontAwesomeIcon name={faCoffee} /> */}
+                                <span>{item.title}</span>
+                            </span>
+                        }
+                    >
+                        {this.getMenuNodes(item.children)}
+                    </SubMenu>,
+                );
             }
+            //  }
 
             return pre;
         }, []);
@@ -95,19 +98,23 @@ class SiderMenu extends Component<{ location: any; role: any }, { menuTreeNode: 
     };
 
     handleMenuSelect = ({ key = '/dashboard' }) => {
-        let menuItem = getMenuItemInMenuListByProperty(menuList, 'path', key);
+        const menuItem = getMenuItemInMenuListByProperty(menuList, 'path', key);
     };
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const menuTreeNode = this.getMenuNodes(menuList);
+
+        console.log('menuTreeNode', menuTreeNode, menuList);
         this.setState({
             menuTreeNode,
         });
-        this.handleMenuSelect(this.state.openKey);
+        // this.handleMenuSelect(this.state.openKey);
     }
+
     render() {
+        console.log(this.state);
         const path = this.props.location.pathname;
-        const openKey = this.state.openKey;
+        const { openKey } = this.state;
         return (
             <div className="sidebar-menu-container">
                 <Scrollbars autoHide autoHideTimeout={1000} autoHideDuration={200}>

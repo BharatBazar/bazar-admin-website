@@ -12,13 +12,13 @@ const AppContent: React.SFC<ContentProps> = ({ collapsed }) => {
         <Layout>
             <Content
                 style={{
-                    marginTop: '114px',
-                    marginLeft: collapsed ? '5vw' : '10vw',
+                    marginTop: '11vh',
+                    marginLeft: collapsed ? '8vw' : '20vw',
                     padding: 24,
 
                     position: 'static',
-                    height: '100%',
-                    // minHeight: 'calc(100vh - 114px)',
+
+                    minHeight: 'calc(100vh - 114px)',
                     backgroundColor: 'aliceblue',
                 }}
                 className="smooth-transition"

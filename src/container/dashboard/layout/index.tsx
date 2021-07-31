@@ -5,7 +5,8 @@ import AppSider from './sider/Sider';
 import AppHeader from './header/Header';
 import AppContent from './content/Content';
 
-const MainLayout = () => {
+const MainLayout = (props) => {
+    console.log('mainLayout =>', props);
     const [collapsed, setcollapsed] = useState(false);
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const MainLayout = () => {
 
     return (
         <Layout className="smooth-transition">
-            <AppSider collapsed={collapsed} />
+            <AppSider collapsed={collapsed} {...props} />
             <AppHeader collapsed={collapsed} handleToggle={handleToggle} />
             <AppContent collapsed={collapsed} />
         </Layout>
