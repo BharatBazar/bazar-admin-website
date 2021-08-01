@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { Layout } from 'antd';
 import './Header.css';
-import { HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../styles';
+import { HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../constants';
 
 const { Header } = Layout;
 

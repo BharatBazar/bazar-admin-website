@@ -1,15 +1,15 @@
+import { message } from 'antd';
+import { success } from './../components/ALert/index';
 import axios from 'axios';
 
 export const apiEndPoint = 'http://localhost:2112';
 
 const handleError = (error: { isAxiosError: any; response: { data: any } }) => {
     let message = '';
-    if (error.response) {
-        const { data } = error.response;
-        message = data;
-    } else {
-        message = error.message;
-    }
+
+    const { data } = error.response;
+    message = data.message;
+
     return Promise.reject({ message });
 };
 
@@ -19,16 +19,22 @@ function isNetworkError(err: { isAxiosError: any; response: { data: any } }) {
 
 export function setUpAxios() {
     axios.defaults.baseURL = apiEndPoint;
-    axios.interceptors.response.use(
-        (response) => {
-            return response.data;
-        },
-        (error) => {
-            if (isNetworkError(error)) {
-                const message = 'Network Error';
-                return Promise.reject({ message });
-            }
-            return handleError(error);
-        },
-    );
+    console.log('axios', axios.interceptors.response);
+    if (axios.interceptors.response.handlers.length == 0) {
+        axios.interceptors.response.use(
+            (response) => {
+                console.log('Response sucess', success);
+                return response.data;
+            },
+            (error) => {
+                console.log('error => ', error.response);
+                if (isNetworkError(error)) {
+                    const message = 'Network Error';
+                    return Promise.reject({ message });
+                } else {
+                    return handleError(error);
+                }
+            },
+        );
+    }
 }

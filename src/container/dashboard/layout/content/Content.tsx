@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { Layout } from 'antd';
 import routeList from '../../../../config/routeMap';
-import { ContentPadding, HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../styles';
+import { ContentPadding, HeaderHeight, SiderCollapsedWidth, SiderWidth } from '../../../../constants';
 
 const { Content } = Layout;
 

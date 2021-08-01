@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { HeaderHeight } from '../../../../../styles';
+import { HeaderHeight } from '../../../../../constants';
 import './SiderHeader.css';
 
 export interface SiderHeaderProps {}

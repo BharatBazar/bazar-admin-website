@@ -7,6 +7,7 @@ export enum categoryType {
 }
 
 export interface IProductCatalogue {
+    _id: string;
     name: string;
     description: string;
     image: string;

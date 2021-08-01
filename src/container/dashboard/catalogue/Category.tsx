@@ -1,32 +1,41 @@
-import { Table, Tag, Space, Button, Input, Row, Select, Form, Card } from 'antd';
+import { Table, Space, Button, Input, Form, Card } from 'antd';
+import React from 'react';
+import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { RouteComponentProps } from 'react-router-dom';
 
-import React, { Component } from 'react';
-import { UndoOutlined } from '@ant-design/icons';
-import { RouteComponentProps, RouteProps } from 'react-router-dom';
-// import { errorShow, success, warning } from '../../../components/ALert';
-// import {
-//     addProductCatelogue,
-//     deleteProductCatelogue,
-//     updateProductCatelogue,
-//     getProductCatelogue,
-// } from '../../../server/catalogue/catalogue.api';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 
-// const { Option } = Select;
+type LayoutType = Parameters<typeof Form>[0]['layout'];
 
-// const addressType = '';
+import {
+    addProductCatelogue,
+    deleteProductCatelogue,
+    updateProductCatelogue,
+    getProductCatelogue,
+} from '../../../server/catalogue/catalogue.api';
+import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
+import { errorShow, success } from '../../../components/ALert';
+import { formRequiredRule } from '../../../constants';
 
 const columns = (onDelete, onUpdate) => [
     {
-        title: 'Business category' + ' name',
+        title: 'Category' + ' name',
         dataIndex: 'name',
         key: '_id' + 'City',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Business category ' + ' description',
+        title: 'Category ' + ' description',
         dataIndex: 'description',
         key: '_id',
         render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Subcategory exist ',
+        dataIndex: 'subCategoryExist',
+        key: '_id',
+
+        render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
     },
     {
         title: 'Action',
@@ -37,7 +46,6 @@ const columns = (onDelete, onUpdate) => [
                     type={'primary'}
                     title={'Edit'}
                     onClick={() => {
-                        console.log(record);
                         onUpdate(record);
                     }}
                 >
@@ -47,7 +55,6 @@ const columns = (onDelete, onUpdate) => [
                     type={'primary'}
                     title={'Delete'}
                     onClick={() => {
-                        console.log(record);
                         onDelete(record);
                     }}
                     danger
@@ -70,134 +77,138 @@ const tailLayout = {
 export interface CategoryProps extends RouteComponentProps {}
 
 const Category: React.FC<CategoryProps> = ({}) => {
-    const [form] = Form.useForm();
-    const [loader, setLoader] = React.useState(0);
+    const [form] = Form.useForm<Partial<IProductCatalogue>>();
+    const [loader, setLoader] = React.useState<boolean>(false);
     const [update, setUpdate] = React.useState(null);
-    const [businessCategory, setBusinessCategory] = React.useState([]);
+    const [subCategoryExist, setSubCategoryExist] = React.useState(true);
+    const [categoryList, setCategoryList] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
-    // const createBusinessCategoryInServer = async (data) => {
-    //     setLoader(1);
-    //     try {
-    //         const response = await addProductCatelogue({
-    //             ...data,
-    //             occupationType: 'Business',
-    //         });
-    //         console.log(response);
-    //         setLoader(0);
-    //         if (response.payload) {
-    //             success('Business Category' + ' created!');
-    //             loadAllOccupationCategory();
-    //             form.resetFields();
-    //         }
-    //     } catch (error) {
-    //         setLoader(0);
-    //         errorShow(error.message);
-    //     }
-    // };
+    const createCategoryListInServer = async (data) => {
+        setLoader(true);
+        try {
+            const response = await addProductCatelogue({
+                ...data,
+                categoryType: categoryType.Category,
+                subCategoryExist,
+            });
 
-    // const loadAllOccupationCategory = async () => {
-    //     try {
-    //         const category = await getOccupationCategory({
-    //             occupationType: 'Business',
-    //         });
-    //         console.log(category);
-    //         setBusinessCategory(category.payload);
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
+            setLoader(false);
+            if (response.payload) {
+                success('Category' + ' created!');
+                loadAllCategory();
 
-    // const deleteBusinessCategoryInServer = async (data) => {
-    //     try {
-    //         const response = await deleteOccupationCategory({ ...data });
+                form.resetFields();
+            }
+        } catch (error) {
+            setLoader(false);
+            errorShow(error.message);
+        }
+    };
 
-    //         if (response.payload) {
-    //             success('BusinessCategory deleted!!');
-    //             loadAllOccupationCategory();
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
+    const loadAllCategory = async () => {
+        try {
+            setLoader(true);
+            const category = await getProductCatelogue({ categoryType: categoryType.Category });
+            setLoader(false);
 
-    // const updateBusinessCategoryInServer = async (data) => {
-    //     setLoader(1);
-    //     try {
-    //         const response = await updateOccupationCategory({ ...update, ...data });
-    //         setLoader(0);
-    //         if (response.payload) {
-    //             success('Business Category Updated');
-    //             loadAllOccupationCategory();
-    //             form.resetFields();
-    //             setUpdate(null);
-    //         }
-    //     } catch (error) {
-    //         setLoader(0);
-    //         errorShow(error.message);
-    //     }
-    // };
+            setCategoryList(category.payload);
+        } catch (error) {
+            errorShow(error.message);
+            setLoader(false);
+        }
+    };
 
-    const onClickUpdateInRow = (data) => {
+    const deleteCategoryListInServer = async (data) => {
+        try {
+            const response = await deleteProductCatelogue({ ...data });
+
+            if (response.payload) {
+                success('CategoryList deleted!!');
+                loadAllCategory();
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
+    };
+
+    const updateCategoryListInServer = async (data) => {
+        setLoader(true);
+
+        try {
+            const response = await updateProductCatelogue({ ...update, ...data, subCategoryExist });
+            setLoader(false);
+
+            if (response.payload) {
+                success('Category Updated');
+                loadAllCategory();
+                form.resetFields();
+                setUpdate(null);
+            }
+        } catch (error) {
+            setLoader(false);
+            errorShow(error.message);
+        }
+    };
+
+    const onClickUpdateInRow = (data: IProductCatalogue) => {
         const formValue = {};
         formValue.name = data.name;
         formValue.description = data.description;
+        formValue.subCategoryExist = data.subCategoryExist;
         form.setFieldsValue(formValue);
+        delete data['activate'];
+        setSubCategoryExist(data.subCategoryExist);
+
         setUpdate(data);
     };
 
     React.useEffect(() => {
-        // loadAllOccupationCategory();
+        loadAllCategory();
     }, []);
-
+    console.log(form.getFieldValue('subCategoryExist'));
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
-                <Card title="Add/Update Business Category" loading={loader === 1} bordered={false} style={{}}>
+                <Card title="Add/Update Category" loading={loader} bordered={false} style={{}}>
                     <Form
-                        // name="basic"
                         form={form}
-                        layout="vertical"
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 14 }}
+                        name="basic"
+                        layout="horizontal"
                         initialValues={{ remember: true }}
                         onFinish={() => {
-                            // form.validateFields().then((value) => {
-                            //     if (!update) {
-                            //         createBusinessCategoryInServer(value);
-                            //     } else {
-                            //         updateBusinessCategoryInServer(value);
-                            //     }
-                            // });
+                            form.validateFields().then((value) => {
+                                if (!update) {
+                                    createCategoryListInServer(value);
+                                } else {
+                                    updateCategoryListInServer(value);
+                                }
+                            });
                         }}
                         onFinishFailed={onFinishFailed}
                     >
-                        <Form.Item
-                            label={'Name'}
-                            name={'name'}
-                            rules={[
-                                {
-                                    required: true,
-                                },
-                                {
-                                    min: 3,
-                                },
-                            ]}
-                        >
+                        <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
-                        <Form.Item
-                            label={'Description'}
-                            name={'description'}
-                            rules={[
-                                {
-                                    min: 3,
-                                },
-                            ]}
-                        >
-                            <Input />
+                        <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
+                            <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
+                        <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
+                            <Checkbox
+                                checked={subCategoryExist}
+                                onChange={(subCategoryExist) => {
+                                    setSubCategoryExist(subCategoryExist.target.checked);
+                                }}
+                            >
+                                Sub Category Exist
+                            </Checkbox>
+                        </Form.Item>
+
                         <Space size="middle">
                             {update && (
                                 <Button
@@ -221,9 +232,8 @@ const Category: React.FC<CategoryProps> = ({}) => {
                 </Card>
             </div>
             <Table
-                columns={columns(() => {}, onClickUpdateInRow)}
-                dataSource={businessCategory}
-                on
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow)}
+                dataSource={categoryList}
                 style={{ marginTop: '10vh' }}
             />
         </div>

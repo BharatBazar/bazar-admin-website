@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import Menu from './menu';
 
 import SiderHeader from './header/SiderHeader';
-import { SiderCollapsedWidth, SiderWidth } from '../../../../styles';
+import { SiderCollapsedWidth, SiderWidth } from '../../../../constants';
 
 const { Sider } = Layout;
 

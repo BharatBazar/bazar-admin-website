@@ -2,18 +2,18 @@ import axios from 'axios';
 import { CommonApiResponse } from '../common.interface';
 import { IProductCatalogue, IRProductCatalogue } from './catalogue.interface';
 
-export function getProductCatelogue(data: IProductCatalogue): Promise<IRProductCatalogue> {
-    return axios.post('/productCatalogue/getProduct', data);
+export function getProductCatelogue(data: Partial<IProductCatalogue>): Promise<IRProductCatalogue> {
+    return axios.post('/catalogue/get', data);
 }
 
-export function addProductCatelogue(data: IProductCatalogue): Promise<CommonApiResponse> {
-    return axios.post('/productCatalogue/addProduct', data);
+export function addProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
+    return axios.post('/catalogue/add', data);
 }
 
-export function updateProductCatelogue(data: IProductCatalogue): Promise<CommonApiResponse> {
-    return axios.post('/productCatalogue/updateProduct', data);
+export function updateProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
+    return axios.patch('/catalogue/update', data);
 }
 
-export function deleteProductCatelogue(data: IProductCatalogue): Promise<CommonApiResponse> {
-    return axios.post('/productCatalogue/deleteProduct', data);
+export function deleteProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
+    return axios.delete('/catalogue/delete?_id=' + data._id);
 }
