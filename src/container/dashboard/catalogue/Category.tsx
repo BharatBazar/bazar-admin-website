@@ -1,4 +1,4 @@
-import { Table, Space, Button, Input, Form, Card } from 'antd';
+import { Table, Space, Button, Input, Form, Card, Tag } from 'antd';
 import React from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
@@ -36,6 +36,24 @@ const columns = (onDelete, onUpdate) => [
         key: '_id',
 
         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+    },
+    {
+        title: 'Child',
+        key: 'child',
+        dataIndex: 'child',
+        render: (child) => (
+            <span>
+                {child.map(({ name }) => {
+                    //let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+
+                    return (
+                        <Tag color={'blue'} key={name}>
+                            {name.toUpperCase()}
+                        </Tag>
+                    );
+                })}
+            </span>
+        ),
     },
     {
         title: 'Action',
