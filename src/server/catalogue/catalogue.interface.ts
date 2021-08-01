@@ -13,8 +13,8 @@ export interface IProductCatalogue {
     image: string;
     categoryType: categoryType;
     subCategoryExist: boolean;
-    parentRef: string | IProductCatalogue;
-    childRef: string[] | IProductCatalogue[];
+    parent: string | IProductCatalogue;
+    child: string[] | IProductCatalogue[];
     activate: boolean;
 }
 
