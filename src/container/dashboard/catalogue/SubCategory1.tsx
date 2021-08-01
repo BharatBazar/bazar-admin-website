@@ -1,11 +1,9 @@
-import { Table, Space, Button, Input, Form, Card } from 'antd';
+import { Table, Space, Button, Input, Form, Card, Select, Typography, Tag } from 'antd';
 import React from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Checkbox from 'antd/lib/checkbox/Checkbox';
-
-type LayoutType = Parameters<typeof Form>[0]['layout'];
 
 import {
     addProductCatelogue,
@@ -17,15 +15,25 @@ import { categoryType, IProductCatalogue } from '../../../server/catalogue/catal
 import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
 
+const { Option } = Select;
+const { Title } = Typography;
+
 const columns = (onDelete, onUpdate) => [
     {
-        title: 'Category' + ' name',
+        title: 'Parent ',
+        dataIndex: 'parent',
+        key: '_id',
+
+        render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Sub Category' + ' name',
         dataIndex: 'name',
         key: '_id' + 'City',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Category ' + ' description',
+        title: 'Sub Category ' + ' description',
         dataIndex: 'description',
         key: '_id',
         render: (text) => <a>{text}</a>,
@@ -37,6 +45,7 @@ const columns = (onDelete, onUpdate) => [
 
         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
     },
+
     {
         title: 'Action',
         key: 'action',
@@ -74,14 +83,17 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-export interface CategoryProps extends RouteComponentProps {}
+export interface SubCategory1Props extends RouteComponentProps {}
 
-const Category: React.FC<CategoryProps> = ({}) => {
+const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
+    const [form1] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
+    const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
     const [update, setUpdate] = React.useState(null);
     const [subCategoryExist, setSubCategoryExist] = React.useState(true);
     const [categoryList, setCategoryList] = React.useState([]);
+    const [SubCategory, setSubCategory] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -89,17 +101,19 @@ const Category: React.FC<CategoryProps> = ({}) => {
 
     const createCategoryListInServer = async (data) => {
         setLoader(true);
+
         try {
             const response = await addProductCatelogue({
                 ...data,
-                categoryType: categoryType.Category,
+                parent: form1.getFieldValue('parent'),
+                categoryType: categoryType.SubCategory1,
                 subCategoryExist,
             });
 
             setLoader(false);
             if (response.payload) {
-                success('Category' + ' created!');
-                loadAllCategory();
+                success('SubCategory1' + ' created!');
+                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
 
                 form.resetFields();
             }
@@ -109,13 +123,21 @@ const Category: React.FC<CategoryProps> = ({}) => {
         }
     };
 
-    const loadAllCategory = async () => {
+    const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
         try {
             setLoader(true);
-            const category = await getProductCatelogue({ categoryType: categoryType.Category });
+            console.log(data);
+            const category = await getProductCatelogue(data);
+            console.log(category);
             setLoader(false);
-
-            setCategoryList(category.payload);
+            if (data.categoryType === categoryType.SubCategory) {
+                setCategory(category.payload);
+            } else if (data.categoryType === categoryType.SubCategory1) {
+                category.payload.forEach((item) => (item.parent = item.parent.name));
+                setCategoryList(category.payload);
+            } else if (data.categoryType == categoryType.Category) {
+                setSubCategory(category.payload);
+            }
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -128,7 +150,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
 
             if (response.payload) {
                 success('CategoryList deleted!!');
-                loadAllCategory();
+                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
             }
         } catch (error) {
             errorShow(error.message);
@@ -139,12 +161,17 @@ const Category: React.FC<CategoryProps> = ({}) => {
         setLoader(true);
 
         try {
-            const response = await updateProductCatelogue({ ...update, ...data, subCategoryExist });
+            const response = await updateProductCatelogue({
+                ...update,
+                ...data,
+                subCategoryExist,
+                parent: form1.getFieldValue('parent'),
+            });
             setLoader(false);
 
             if (response.payload) {
-                success('Category Updated');
-                loadAllCategory();
+                success('SubCategory1 Updated');
+                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -167,13 +194,69 @@ const Category: React.FC<CategoryProps> = ({}) => {
     };
 
     React.useEffect(() => {
-        loadAllCategory();
+        loadAllCategory({ categoryType: categoryType.Category });
     }, []);
-    console.log(form.getFieldValue('subCategoryExist'));
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
-                <Card title="Add/Update Category" loading={loader} bordered={false} style={{}}>
+                <Card title={'Subcategory1 filter'}>
+                    <Form
+                        form={form1}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 14 }}
+                        name="basic"
+                        layout="horizontal"
+                        initialValues={{ remember: true }}
+                        onFinishFailed={onFinishFailed}
+                    >
+                        <Form.Item style={{ flex: 1 }} label="Category :" name="category" rules={formRequiredRule}>
+                            <Select
+                                allowClear
+                                onChange={(value) =>
+                                    loadAllCategory({ categoryType: categoryType.SubCategory, parent: value })
+                                }
+                            >
+                                {SubCategory.map((category) => (
+                                    <Option value={category._id}>{category.name}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                        <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
+                            <Select allowClear>
+                                {category.map((category) => (
+                                    <Option value={category._id}>{category.name}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Form>
+                    <Space>
+                        <Button
+                            type={'primary'}
+                            htmlType="submit"
+                            style={{ marginTop: '20px' }}
+                            onClick={() => {
+                                form1.validateFields().then((value) => {
+                                    loadAllCategory({ categoryType: categoryType.SubCategory1, parent: value.parent });
+                                });
+                            }}
+                        >
+                            {'Apply Filter'}
+                        </Button>
+                        <Button
+                            type={'default'}
+                            icon={<UndoOutlined />}
+                            htmlType="submit"
+                            style={{ marginTop: '20px' }}
+                            onClick={() => {
+                                form1.resetFields();
+                            }}
+                        >
+                            {'Reset Filter'}
+                        </Button>
+                    </Space>
+                </Card>
+
+                <Card title="Add/Update SubCategory1" loading={loader} bordered={false} style={{ marginTop: '10px' }}>
                     <Form
                         form={form}
                         labelCol={{ span: 4 }}
@@ -183,21 +266,31 @@ const Category: React.FC<CategoryProps> = ({}) => {
                         initialValues={{ remember: true }}
                         onFinish={() => {
                             form.validateFields().then((value) => {
-                                if (!update) {
-                                    createCategoryListInServer(value);
-                                } else {
-                                    updateCategoryListInServer(value);
-                                }
+                                form1.validateFields().then(() => {
+                                    if (!update) {
+                                        createCategoryListInServer(value);
+                                    } else {
+                                        updateCategoryListInServer(value);
+                                    }
+                                });
                             });
                         }}
                         onFinishFailed={onFinishFailed}
                     >
+                        {/* <Form.Item style={{ flex: 1 }} label="Parent :" name="parent">
+                            <Select allowClear onChange={(value) => {}}>
+                                {category.map((category) => (
+                                    <Option value={category._id}>{category.name}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item> */}
                         <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
+
                         <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
                             <Checkbox
                                 checked={subCategoryExist}
@@ -205,28 +298,27 @@ const Category: React.FC<CategoryProps> = ({}) => {
                                     setSubCategoryExist(subCategoryExist.target.checked);
                                 }}
                             >
-                                Sub Category Exist
+                                Sub SubCategory1 Exist
                             </Checkbox>
                         </Form.Item>
-
                         <Space size="middle">
+                            <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
+                                {update ? 'Save' : 'Create'}
+                            </Button>
                             {update && (
                                 <Button
                                     type={'default'}
                                     icon={<UndoOutlined />}
-                                    htmlType="submit"
+                                    htmlType="reset"
                                     style={{ marginTop: '20px' }}
                                     onClick={() => {
                                         setUpdate(null);
                                         form.resetFields();
                                     }}
                                 >
-                                    {'Reset'}
+                                    {'Reset Fields'}
                                 </Button>
                             )}
-                            <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
-                                {update ? 'Save' : 'Create'}
-                            </Button>
                         </Space>
                     </Form>
                 </Card>
@@ -234,10 +326,10 @@ const Category: React.FC<CategoryProps> = ({}) => {
             <Table
                 columns={columns(deleteCategoryListInServer, onClickUpdateInRow)}
                 dataSource={categoryList}
-                style={{ marginTop: '10vh' }}
+                style={{ marginTop: '10px' }}
             />
         </div>
     );
 };
 
-export default Category;
+export default SubCategory1;

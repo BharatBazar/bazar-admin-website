@@ -1,4 +1,4 @@
-import { Table, Space, Button, Input, Form, Card, Select, Typography } from 'antd';
+import { Table, Space, Button, Input, Form, Card, Select, Typography, Tag } from 'antd';
 import React from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
@@ -44,6 +44,24 @@ const columns = (onDelete, onUpdate) => [
         key: '_id',
 
         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+    },
+    {
+        title: 'Child',
+        key: 'child',
+        dataIndex: 'child',
+        render: (child) => (
+            <span>
+                {child.map(({ name }) => {
+                    //let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+
+                    return (
+                        <Tag color={'blue'} key={name}>
+                            {name.toUpperCase()}
+                        </Tag>
+                    );
+                })}
+            </span>
+        ),
     },
 
     {
@@ -112,7 +130,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
             setLoader(false);
             if (response.payload) {
                 success('Category' + ' created!');
-                loadAllCategory({ categoryType: categoryType.SubCategory, parent: data.parent });
+                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form1.getFieldValue('parent') });
 
                 form.resetFields();
             }
@@ -167,7 +185,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
 
             if (response.payload) {
                 success('Category Updated');
-                loadAllCategory({ categoryType: categoryType.SubCategory });
+                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form1.getFieldValue('parent') });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -205,7 +223,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
                         initialValues={{ remember: true }}
                         onFinishFailed={onFinishFailed}
                     >
-                        <Form.Item style={{ flex: 1 }} label="Parent :" name="parent">
+                        <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
                             <Select allowClear>
                                 {category.map((category) => (
                                     <Option value={category._id}>{category.name}</Option>
@@ -251,11 +269,13 @@ const Category: React.FC<CategoryProps> = ({}) => {
                         initialValues={{ remember: true }}
                         onFinish={() => {
                             form.validateFields().then((value) => {
-                                if (!update) {
-                                    createCategoryListInServer(value);
-                                } else {
-                                    updateCategoryListInServer(value);
-                                }
+                                form1.validateFields().then(() => {
+                                    if (!update) {
+                                        createCategoryListInServer(value);
+                                    } else {
+                                        updateCategoryListInServer(value);
+                                    }
+                                });
                             });
                         }}
                         onFinishFailed={onFinishFailed}
@@ -285,6 +305,9 @@ const Category: React.FC<CategoryProps> = ({}) => {
                             </Checkbox>
                         </Form.Item>
                         <Space size="middle">
+                            <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
+                                {update ? 'Save' : 'Create'}
+                            </Button>
                             {update && (
                                 <Button
                                     type={'default'}
@@ -296,12 +319,9 @@ const Category: React.FC<CategoryProps> = ({}) => {
                                         form.resetFields();
                                     }}
                                 >
-                                    {'Reset'}
+                                    {'Reset Fields'}
                                 </Button>
                             )}
-                            <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
-                                {update ? 'Save' : 'Create'}
-                            </Button>
                         </Space>
                     </Form>
                 </Card>
