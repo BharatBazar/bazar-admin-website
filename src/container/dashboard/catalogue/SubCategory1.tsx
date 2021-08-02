@@ -11,7 +11,7 @@ import {
     updateProductCatelogue,
     getProductCatelogue,
 } from '../../../server/catalogue/catalogue.api';
-import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
+import { categoryType, IProductCatalogue, IRProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
 
@@ -102,44 +102,19 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
     const [loader, setLoader] = React.useState<boolean>(false);
     const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
     const [update, setUpdate] = React.useState(null);
-    const [subCategoryExist, setSubCategoryExist] = React.useState(true);
+
     const [categoryList, setCategoryList] = React.useState([]);
     const [SubCategory, setSubCategory] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
-
-    const createCategoryListInServer = async (data) => {
-        setLoader(true);
-
-        try {
-            const response = await addProductCatelogue({
-                ...data,
-                parent: form1.getFieldValue('parent'),
-                categoryType: categoryType.SubCategory1,
-                subCategoryExist,
-            });
-
-            setLoader(false);
-            if (response.payload) {
-                success('SubCategory1' + ' created!');
-                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
-
-                form.resetFields();
-            }
-        } catch (error) {
-            setLoader(false);
-            errorShow(error.message);
-        }
-    };
-
     const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
         try {
             setLoader(true);
-            console.log(data);
+
             const category = await getProductCatelogue(data);
-            console.log(category);
+
             setLoader(false);
             if (data.categoryType === categoryType.SubCategory) {
                 setCategory(category.payload);
@@ -154,12 +129,34 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
             setLoader(false);
         }
     };
+    const createCategoryListInServer = async (data) => {
+        setLoader(true);
+
+        try {
+            const response: IRProductCatalogue = await addProductCatelogue({
+                ...data,
+                parent: form1.getFieldValue('parent'),
+                categoryType: categoryType.SubCategory1,
+            });
+
+            setLoader(false);
+            if (response.status === 1) {
+                success('SubCategory1' + ' created!');
+                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
+
+                form.resetFields();
+            }
+        } catch (error) {
+            setLoader(false);
+            errorShow(error.message);
+        }
+    };
 
     const deleteCategoryListInServer = async (data) => {
         try {
             const response = await deleteProductCatelogue({ ...data });
 
-            if (response.payload) {
+            if (response.status === 1) {
                 success('CategoryList deleted!!');
                 loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
             }
@@ -175,12 +172,12 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
             const response = await updateProductCatelogue({
                 ...update,
                 ...data,
-                subCategoryExist,
+
                 parent: form1.getFieldValue('parent'),
             });
             setLoader(false);
 
-            if (response.payload) {
+            if (response.status === 1) {
                 success('SubCategory1 Updated');
                 loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
                 form.resetFields();
@@ -305,7 +302,7 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
-                        <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
+                        {/* <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
                             <Checkbox
                                 checked={subCategoryExist}
                                 onChange={(subCategoryExist) => {
@@ -314,7 +311,7 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
                             >
                                 Sub SubCategory1 Exist
                             </Checkbox>
-                        </Form.Item>
+                        </Form.Item> */}
                         <Space size="middle">
                             <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
                                 {update ? 'Save' : 'Create'}

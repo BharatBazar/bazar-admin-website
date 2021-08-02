@@ -194,7 +194,6 @@ const Category: React.FC<CategoryProps> = ({}) => {
     React.useEffect(() => {
         loadAllCategory();
     }, []);
-    console.log(form.getFieldValue('subCategoryExist'));
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
