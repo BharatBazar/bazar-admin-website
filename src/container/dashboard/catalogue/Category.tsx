@@ -5,8 +5,6 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 
-type LayoutType = Parameters<typeof Form>[0]['layout'];
-
 import {
     addProductCatelogue,
     deleteProductCatelogue,
@@ -16,6 +14,8 @@ import {
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
+
+type LayoutType = Parameters<typeof Form>[0]['layout'];
 
 const columns = (onDelete, onUpdate) => [
     {
@@ -31,6 +31,12 @@ const columns = (onDelete, onUpdate) => [
         render: (text) => <a>{text}</a>,
     },
     {
+        title: 'Category ' + ' image',
+        dataIndex: 'image',
+        key: '_id',
+        render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
+    },
+    {
         title: 'Subcategory exist ',
         dataIndex: 'subCategoryExist',
         key: '_id',
@@ -44,7 +50,7 @@ const columns = (onDelete, onUpdate) => [
         render: (child) => (
             <span>
                 {child.map(({ name }) => {
-                    //let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+                    // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
 
                     return (
                         <Tag color={'blue'} key={name}>
@@ -177,8 +183,9 @@ const Category: React.FC<CategoryProps> = ({}) => {
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.subCategoryExist = data.subCategoryExist;
+        formValue.image = data.image;
         form.setFieldsValue(formValue);
-        delete data['activate'];
+        delete data.activate;
         setSubCategoryExist(data.subCategoryExist);
 
         setUpdate(data);
@@ -215,6 +222,9 @@ const Category: React.FC<CategoryProps> = ({}) => {
                         </Form.Item>
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
+                        </Form.Item>
+                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                            <Input />
                         </Form.Item>
                         <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
                             <Checkbox

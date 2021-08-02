@@ -27,23 +27,34 @@ const columns = (onDelete, onUpdate) => [
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Sub Category' + ' name',
+        title: 'Sub Category1' + ' name',
         dataIndex: 'name',
         key: '_id' + 'City',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Sub Category ' + ' description',
+        title: 'Sub Category1 ' + ' description',
         dataIndex: 'description',
         key: '_id',
         render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Sub Category1 ' + ' image',
+        dataIndex: 'image',
+        key: '_id',
+        render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
     },
     {
         title: 'Subcategory exist ',
         dataIndex: 'subCategoryExist',
         key: '_id',
 
-        render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+        render: (text) =>
+            text ? (
+                <CheckCircleOutlined style={{ alignSelf: 'center', marginRight: '40%' }} />
+            ) : (
+                <CloseCircleOutlined />
+            ),
     },
 
     {
@@ -186,8 +197,9 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.subCategoryExist = data.subCategoryExist;
+        formValue.image = data.image;
         form.setFieldsValue(formValue);
-        delete data['activate'];
+        delete data.activate;
         setSubCategoryExist(data.subCategoryExist);
 
         setUpdate(data);
@@ -290,7 +302,9 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
-
+                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
                         <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
                             <Checkbox
                                 checked={subCategoryExist}
