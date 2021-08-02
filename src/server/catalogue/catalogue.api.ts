@@ -15,5 +15,9 @@ export function updateProductCatelogue(data: Partial<IProductCatalogue>): Promis
 }
 
 export function deleteProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
-    return axios.delete('/catalogue/delete?_id=' + data._id);
+    return axios.delete(`/catalogue/delete?_id=${data._id}`);
+}
+
+export function activateCatelogueItem(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
+    return axios.patch('/catalogue/activateItem', data);
 }

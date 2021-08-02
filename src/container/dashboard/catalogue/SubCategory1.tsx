@@ -10,6 +10,7 @@ import {
     deleteProductCatelogue,
     updateProductCatelogue,
     getProductCatelogue,
+    activateCatelogueItem,
 } from '../../../server/catalogue/catalogue.api';
 import { categoryType, IProductCatalogue, IRProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
@@ -18,7 +19,7 @@ import { formRequiredRule } from '../../../constants';
 const { Option } = Select;
 const { Title } = Typography;
 
-const columns = (onDelete, onUpdate) => [
+const columns = (onDelete, onUpdate, activate) => [
     {
         title: 'Parent ',
         dataIndex: 'parent',
@@ -56,7 +57,17 @@ const columns = (onDelete, onUpdate) => [
                 <CloseCircleOutlined />
             ),
     },
-
+    {
+        title: 'Active',
+        dataIndex: 'active',
+        width: 150,
+        key: '_id',
+        render: (value) => (
+            <div style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Checkbox value={value} checked={value} style={{ alignSelf: 'center' }} />
+            </div>
+        ),
+    },
     {
         title: 'Action',
         key: 'action',
@@ -70,6 +81,15 @@ const columns = (onDelete, onUpdate) => [
                     }}
                 >
                     {'Edit'}
+                </Button>
+                <Button
+                    type={'primary'}
+                    title={text.active ? 'Deactive' : 'Active'}
+                    onClick={() => {
+                        activate(record, !text.active);
+                    }}
+                >
+                    {text.active ? 'Deactive' : 'Active'}
                 </Button>
                 <Button
                     type={'primary'}
@@ -193,13 +213,24 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
         const formValue = {};
         formValue.name = data.name;
         formValue.description = data.description;
-        formValue.subCategoryExist = data.subCategoryExist;
         formValue.image = data.image;
         form.setFieldsValue(formValue);
         delete data.activate;
-        setSubCategoryExist(data.subCategoryExist);
 
         setUpdate(data);
+    };
+
+    const activateCatalogueItemInServer = async (data: IProductCatalogue, activate: boolean) => {
+        try {
+            const response = await activateCatelogueItem({ _id: data._id, activate });
+
+            if (response.status === 1) {
+                success('Catalogue item activated!!');
+                loadAllCategory({ categoryType: categoryType.SubCategory1, parent: form1.getFieldValue('parent') });
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
     };
 
     React.useEffect(() => {
@@ -335,7 +366,7 @@ const SubCategory1: React.FC<SubCategory1Props> = ({}) => {
                 </Card>
             </div>
             <Table
-                columns={columns(deleteCategoryListInServer, onClickUpdateInRow)}
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, activateCatalogueItemInServer)}
                 dataSource={categoryList}
                 style={{ marginTop: '10px' }}
             />

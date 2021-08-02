@@ -10,6 +10,7 @@ import {
     deleteProductCatelogue,
     updateProductCatelogue,
     getProductCatelogue,
+    activateCatelogueItem,
 } from '../../../server/catalogue/catalogue.api';
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
@@ -17,7 +18,7 @@ import { formRequiredRule } from '../../../constants';
 
 type LayoutType = Parameters<typeof Form>[0]['layout'];
 
-const columns = (onDelete, onUpdate) => [
+const columns = (onDelete, onUpdate, activate) => [
     {
         title: 'Category' + ' name',
         dataIndex: 'name',
@@ -42,6 +43,17 @@ const columns = (onDelete, onUpdate) => [
         key: '_id',
 
         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+    },
+    {
+        title: 'Active',
+        dataIndex: 'active',
+        width: 150,
+        key: '_id',
+        render: (value) => (
+            <div style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Checkbox value={value} checked={value} style={{ alignSelf: 'center' }} />
+            </div>
+        ),
     },
     {
         title: 'Child',
@@ -74,6 +86,15 @@ const columns = (onDelete, onUpdate) => [
                     }}
                 >
                     {'Edit'}
+                </Button>
+                <Button
+                    type={'primary'}
+                    title={'Active'}
+                    onClick={() => {
+                        activate(record, !text.active);
+                    }}
+                >
+                    {text.active ? 'Deactive' : 'Active'}
                 </Button>
                 <Button
                     type={'primary'}
@@ -152,6 +173,19 @@ const Category: React.FC<CategoryProps> = ({}) => {
 
             if (response.payload) {
                 success('CategoryList deleted!!');
+                loadAllCategory();
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
+    };
+
+    const activateCatalogueItemInServer = async (data: IProductCatalogue, activate: boolean) => {
+        try {
+            const response = await activateCatelogueItem({ _id: data._id, activate });
+
+            if (response.status == 1) {
+                success('Catalogue item activated!!');
                 loadAllCategory();
             }
         } catch (error) {
@@ -259,7 +293,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
                 </Card>
             </div>
             <Table
-                columns={columns(deleteCategoryListInServer, onClickUpdateInRow)}
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, activateCatalogueItemInServer)}
                 dataSource={categoryList}
                 style={{ marginTop: '10vh' }}
             />

@@ -10,6 +10,7 @@ import {
     deleteProductCatelogue,
     updateProductCatelogue,
     getProductCatelogue,
+    activateCatelogueItem,
 } from '../../../server/catalogue/catalogue.api';
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
@@ -18,7 +19,7 @@ import { formRequiredRule } from '../../../constants';
 const { Option } = Select;
 const { Title } = Typography;
 
-const columns = (onDelete, onUpdate) => [
+const columns = (onDelete, onUpdate, activate) => [
     {
         title: 'Parent ',
         dataIndex: 'parent',
@@ -38,6 +39,7 @@ const columns = (onDelete, onUpdate) => [
         key: '_id',
         render: (text) => <a>{text}</a>,
     },
+
     {
         title: 'Sub Category ' + ' image',
         dataIndex: 'image',
@@ -50,6 +52,17 @@ const columns = (onDelete, onUpdate) => [
         key: '_id',
 
         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+    },
+    {
+        title: 'Active',
+        dataIndex: 'active',
+        width: 150,
+        key: '_id',
+        render: (value) => (
+            <div style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Checkbox value={value} checked={value} style={{ alignSelf: 'center' }} />
+            </div>
+        ),
     },
     {
         title: 'Child',
@@ -83,6 +96,15 @@ const columns = (onDelete, onUpdate) => [
                     }}
                 >
                     {'Edit'}
+                </Button>
+                <Button
+                    type={'primary'}
+                    title={'Active'}
+                    onClick={() => {
+                        activate(record, !text.active);
+                    }}
+                >
+                    {text.active ? 'Deactive' : 'Active'}
                 </Button>
                 <Button
                     type={'primary'}
@@ -122,9 +144,26 @@ const Category: React.FC<CategoryProps> = ({}) => {
         console.log('Failed:', errorInfo);
     };
 
+    const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
+        try {
+            setLoader(true);
+            const category = await getProductCatelogue(data);
+            console.log(category);
+            setLoader(false);
+            if (data.categoryType === categoryType.Category) {
+                setCategory(category.payload);
+            } else {
+                category.payload.forEach((item) => (item.parent = item.parent.name));
+                setCategoryList(category.payload);
+            }
+        } catch (error) {
+            errorShow(error.message);
+            setLoader(false);
+        }
+    };
     const createCategoryListInServer = async (data) => {
         setLoader(true);
-        console.log(data);
+
         try {
             const response = await addProductCatelogue({
                 ...data,
@@ -146,21 +185,16 @@ const Category: React.FC<CategoryProps> = ({}) => {
         }
     };
 
-    const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
+    const activateCatalogueItemInServer = async (data: IProductCatalogue, activate: boolean) => {
         try {
-            setLoader(true);
-            const category = await getProductCatelogue(data);
-            console.log(category);
-            setLoader(false);
-            if (data.categoryType === categoryType.Category) {
-                setCategory(category.payload);
-            } else {
-                category.payload.forEach((item) => (item.parent = item.parent.name));
-                setCategoryList(category.payload);
+            const response = await activateCatelogueItem({ _id: data._id, activate });
+
+            if (response.status == 1) {
+                success('Catalogue item activated!!');
+                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form1.getFieldValue('parent') });
             }
         } catch (error) {
             errorShow(error.message);
-            setLoader(false);
         }
     };
 
@@ -168,7 +202,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
         try {
             const response = await deleteProductCatelogue({ ...data });
 
-            if (response.payload) {
+            if (response.status === 1) {
                 success('CategoryList deleted!!');
                 loadAllCategory({ categoryType: categoryType.SubCategory });
             }
@@ -189,7 +223,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
             });
             setLoader(false);
 
-            if (response.payload) {
+            if (response.status === 1) {
                 success('Category Updated');
                 loadAllCategory({ categoryType: categoryType.SubCategory, parent: form1.getFieldValue('parent') });
                 form.resetFields();
@@ -336,7 +370,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
                 </Card>
             </div>
             <Table
-                columns={columns(deleteCategoryListInServer, onClickUpdateInRow)}
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, activateCatalogueItemInServer)}
                 dataSource={categoryList}
                 style={{ marginTop: '10px' }}
             />
