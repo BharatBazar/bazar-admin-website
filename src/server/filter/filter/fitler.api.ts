@@ -8,7 +8,7 @@ export function createFilter(data: Partial<IFilter>): Promise<CommonApiResponse>
 }
 
 export function updateFilter(data: Partial<IFilter>): Promise<CommonApiResponse> {
-    return axios.post('/filter/update', data);
+    return axios.patch('/filter/update', data);
 }
 
 export function getFilter(data: Partial<IFilter>): Promise<IRGetFilter> {
