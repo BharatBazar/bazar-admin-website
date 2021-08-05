@@ -41,6 +41,26 @@ export const menuList: menuItem[] = [
             },
         ],
     },
+    {
+        title: 'Filter',
+        path: '/filter',
+        icon: () => <Icon component={EditIcon} />,
+        roles: ['admin', 'editor', 'guest'],
+        children: [
+            {
+                title: 'Filter',
+                path: '/filter/filter',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+            {
+                title: 'Classifier',
+                path: '/filter/classifier',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+        ],
+    },
     // {
     //     title: 'Location',
     //     path: '/location',

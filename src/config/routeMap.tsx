@@ -30,6 +30,18 @@ const SubCategory1 = Loadable({
     loading: Loading,
 });
 
+// Filter drawer
+
+const Classifier = Loadable({
+    loader: () => import('../container/dashboard/filter/Classifier'),
+    loading: Loading,
+});
+
+const Filter = Loadable({
+    loader: () => import('../container/dashboard/filter/Filter'),
+    loading: Loading,
+});
+
 const Error404 = Loadable({
     loader: () => import('../container/404'),
     loading: Loading,
@@ -49,6 +61,16 @@ export default [
     {
         path: '/catalogue/subCategory1',
         component: SubCategory1,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/filter/filter',
+        component: Filter,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/filter/classifier',
+        component: Classifier,
         roles: ['admin', 'editor', 'guest'],
     },
     // {

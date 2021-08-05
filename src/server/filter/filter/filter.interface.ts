@@ -2,6 +2,7 @@ import { CommonApiResponse } from '../../common.interface';
 import { classifierTypes } from '../category/category.interface';
 
 export interface IFilter {
+    _id: string;
     name: string; // Filter name Like waist size
     description: string; // Filter details descipbing about filter
     image: string; // Image url
