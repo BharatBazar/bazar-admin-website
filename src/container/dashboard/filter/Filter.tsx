@@ -242,7 +242,7 @@ const Filter: React.FC<CategoryProps> = () => {
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
-                <Card title={'Subcategory filter'}>
+                <Card title={'Choose filter category'}>
                     <Form
                         form={form1}
                         labelCol={{ span: 4 }}
@@ -286,6 +286,7 @@ const Filter: React.FC<CategoryProps> = () => {
                                 form1.resetFields();
                                 form.resetFields();
                                 setFilterList([]);
+                                setClassifier([]);
                             }}
                         >
                             {'Reset Filter'}
@@ -320,9 +321,6 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
-                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
                         <Form.Item style={{ flex: 1 }} label="Classifier type :" name="type" rules={formRequiredRule}>
                             <Select allowClear>
                                 {classifier.map((classifier) => (
@@ -330,6 +328,10 @@ const Filter: React.FC<CategoryProps> = () => {
                                 ))}
                             </Select>
                         </Form.Item>
+                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+
                         <Space size="middle">
                             {update && (
                                 <Button
