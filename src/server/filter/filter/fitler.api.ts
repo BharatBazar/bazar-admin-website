@@ -15,6 +15,10 @@ export function getFilter(data: Partial<IFilter>): Promise<IRGetFilter> {
     return axios.post('/filter/getAll', data);
 }
 
+export function getClassifier(): Promise<{ payload: string[] }> {
+    return axios.get('/filter/classifier');
+}
+
 export function deleteFilter(data: Partial<IFilter>): Promise<CommonApiResponse> {
     return axios.delete(`/filter/delete?_id=${data._id}`);
 }

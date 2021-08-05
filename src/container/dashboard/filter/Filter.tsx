@@ -6,7 +6,13 @@ import { RouteComponentProps } from 'react-router-dom';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 import axios from 'axios';
-import { createFilter, deleteFilter, updateFilter, getFilter } from '../../../server/filter/filter/fitler.api';
+import {
+    createFilter,
+    deleteFilter,
+    updateFilter,
+    getFilter,
+    getClassifier,
+} from '../../../server/filter/filter/fitler.api';
 
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
@@ -35,7 +41,12 @@ const columns = (onDelete, onUpdate, activate) => [
         key: '_id',
         render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
     },
-
+    {
+        title: 'Filter ' + ' type',
+        dataIndex: 'type',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
     {
         title: 'Active',
         dataIndex: 'active',
@@ -114,6 +125,7 @@ const Filter: React.FC<CategoryProps> = () => {
     const [filterList, setFilterList] = React.useState([]);
     const [category, setCategory] = React.useState([]);
     const [selectedCategory, setSelectedCategory] = React.useState(null);
+    const [classifier, setClassifier] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -177,6 +189,18 @@ const Filter: React.FC<CategoryProps> = () => {
         }
     };
 
+    const loadClassifiersFromServer = async () => {
+        try {
+            const response = await getClassifier();
+
+            if (response.status === 1) {
+                setClassifier(response.payload);
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
+    };
+
     const updateFilterInServer = async (data) => {
         setLoader(true);
         try {
@@ -210,6 +234,7 @@ const Filter: React.FC<CategoryProps> = () => {
 
     React.useEffect(() => {
         loadCategoriesFromServer();
+
         return () => {
             axios.defaults.baseURL = apiEndPoint;
         };
@@ -245,6 +270,7 @@ const Filter: React.FC<CategoryProps> = () => {
                                     setSelectedCategory(value.parent);
                                     axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
                                     loadAllFilter();
+                                    loadClassifiersFromServer();
                                     // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
                                 });
                             }}
@@ -267,7 +293,7 @@ const Filter: React.FC<CategoryProps> = () => {
                     </Space>
                 </Card>
 
-                <Card title="Add/Update Filter" loading={loader} bordered={false} style={{}}>
+                <Card title="Add/Update Filter" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>
                     <Form
                         form={form}
                         labelCol={{ span: 4 }}
@@ -297,7 +323,13 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
-
+                        <Form.Item style={{ flex: 1 }} label="Classifier type :" name="type" rules={formRequiredRule}>
+                            <Select allowClear>
+                                {classifier.map((classifier) => (
+                                    <Option value={classifier}>{classifier}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
                         <Space size="middle">
                             {update && (
                                 <Button
@@ -323,7 +355,7 @@ const Filter: React.FC<CategoryProps> = () => {
             <Table
                 columns={columns(deleteCategoryListInServer, onClickUpdateInRow, () => {})}
                 dataSource={filterList}
-                style={{ marginTop: '10vh' }}
+                style={{ marginTop: '2vh' }}
             />
         </div>
     );
