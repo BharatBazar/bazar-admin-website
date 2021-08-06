@@ -1,6 +1,6 @@
 import { Table, Space, Button, Input, Form, Card, Tag, Select } from 'antd';
 import React from 'react';
-import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { UndoOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Checkbox from 'antd/lib/checkbox/Checkbox';
@@ -12,6 +12,7 @@ import {
     updateFilter,
     getFilter,
     getClassifier,
+    getFilterWithValue,
 } from '../../../server/filter/filter/fitler.api';
 
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
@@ -58,24 +59,24 @@ const columns = (onDelete, onUpdate, activate) => [
             </div>
         ),
     },
-    // {
-    //     title: 'Child',
-    //     key: 'child',
-    //     dataIndex: 'child',
-    //     render: (child) => (
-    //         <span>
-    //             {child.map(({ name }) => {
-    //                 // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+    {
+        title: 'Child',
+        key: 'values',
+        dataIndex: 'values',
+        render: (child) => (
+            <span>
+                {child.map(({ name }) => {
+                    // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
 
-    //                 return (
-    //                     <Tag color={'blue'} key={name}>
-    //                         {name.toUpperCase()}
-    //                     </Tag>
-    //                 );
-    //             })}
-    //         </span>
-    //     ),
-    // },
+                    return (
+                        <Tag color={'blue'} key={name}>
+                            {name.toUpperCase()}
+                        </Tag>
+                    );
+                })}
+            </span>
+        ),
+    },
     {
         title: 'Action',
         key: 'action',
@@ -134,10 +135,11 @@ const Filter: React.FC<CategoryProps> = () => {
     const loadAllFilter = async () => {
         try {
             setLoader(true);
-            const category = await getFilter({});
+            const category = await getFilterWithValue({});
+            console.log('category', category);
             setLoader(false);
 
-            setFilterList(category.payload);
+            setFilterList([...category.payload.filter, ...category.payload.distribution]);
         } catch (error) {
             errorShow(error.message);
             setLoader(false);

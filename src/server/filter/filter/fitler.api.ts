@@ -15,6 +15,10 @@ export function getFilter(data: Partial<IFilter>): Promise<IRGetFilter> {
     return axios.post('/filter/getAll', data);
 }
 
+export function getFilterWithValue(data: Partial<IFilter>): Promise<IRGetFilter> {
+    return axios.post('/filter/getAllWithValue', data);
+}
+
 export function getClassifier(): Promise<{ payload: string[] }> {
     return axios.get('/filter/classifier');
 }
