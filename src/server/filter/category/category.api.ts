@@ -7,9 +7,13 @@ export function createCategory(data: Partial<IClassfier>): Promise<CommonApiResp
 }
 
 export function updateCategory(data: Partial<IClassfier>): Promise<CommonApiResponse> {
-    return axios.post('/classifiers/update', data);
+    return axios.patch('/classifiers/update', data);
 }
 
 export function getCategory(data: Partial<IClassfier>): Promise<IRGetAllClassifier> {
     return axios.post('/classifiers/getAll', data);
+}
+
+export function deleteCategory(data: Partial<IClassfier>): Promise<CommonApiResponse> {
+    return axios.delete(`/classifiers/delete?_id=${data._id}`);
 }
