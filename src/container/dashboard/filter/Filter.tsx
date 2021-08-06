@@ -1,4 +1,4 @@
-import { Table, Space, Button, Input, Form, Card, Tag, Select } from 'antd';
+import { Table, Space, Button, Input, Form, Card, Tag, Select, Radio } from 'antd';
 import React from 'react';
 import { UndoOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
@@ -45,6 +45,12 @@ const columns = (onDelete, onUpdate, activate) => [
     {
         title: 'Filter ' + ' type',
         dataIndex: 'type',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Filter ' + ' level',
+        dataIndex: 'filterLevel',
         key: '_id',
         render: (text) => <a>{text}</a>,
     },
@@ -225,7 +231,8 @@ const Filter: React.FC<CategoryProps> = () => {
         const formValue = {};
         formValue.name = data.name;
         formValue.description = data.description;
-        formValue.subCategoryExist = data.subCategoryExist;
+        formValue.type = data.type;
+        formValue.filterLevel = data.filterLevel;
         formValue.image = data.image;
         form.setFieldsValue(formValue);
         delete data.activate;
@@ -323,15 +330,30 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
+
                         <Form.Item style={{ flex: 1 }} label="Classifier type :" name="type" rules={formRequiredRule}>
-                            <Select allowClear>
+                            <Select allowClear disabled={update}>
                                 {classifier.map((classifier) => (
                                     <Option value={classifier}>{classifier}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
+
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
+                        </Form.Item>
+                        <Form.Item label="Filter level" name="filterLevel" rules={formRequiredRule} initialValue={0}>
+                            <Radio.Group defaultValue={0}>
+                                <Radio defaultChecked value={0}>
+                                    {'0 for a basic filter'}
+                                </Radio>
+                                <Radio value={1}>
+                                    {
+                                        '1 is for higher filter which is main categorical distribution like color for a jeans.'
+                                    }
+                                </Radio>
+                                <Radio value={2}>{'2 is for category under higher filter like size in color.'}</Radio>
+                            </Radio.Group>
                         </Form.Item>
 
                         <Space size="middle">

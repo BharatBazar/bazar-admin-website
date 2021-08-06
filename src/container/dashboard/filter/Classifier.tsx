@@ -159,7 +159,7 @@ const Classifier: React.FC<CategoryProps> = () => {
             setLoader(false);
             if (response.status === 1) {
                 success('Classifier' + ' created!');
-                loadAllFilterItem();
+                loadAllFilterItem({ type: classifier[selectedCategory].type });
 
                 form.resetFields();
             }
@@ -203,7 +203,7 @@ const Classifier: React.FC<CategoryProps> = () => {
 
             if (response.status === 1) {
                 success('Classifier Updated');
-                loadAllFilterItem();
+                loadAllFilterItem({ type: classifier[selectedCategory].type });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -279,7 +279,7 @@ const Classifier: React.FC<CategoryProps> = () => {
                                 ))}
                             </Select>
                         </Form.Item>
-                        <Form.Item style={{ flex: 1 }} label="Parent :" name="type" rules={formRequiredRule}>
+                        <Form.Item style={{ flex: 1 }} label="Choose filter :" name="type" rules={formRequiredRule}>
                             <Select
                                 allowClear
                                 onChange={(value) => {
