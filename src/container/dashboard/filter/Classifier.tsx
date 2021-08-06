@@ -96,7 +96,7 @@ const columns = (onDelete, onUpdate, activate) => [
                     type={'primary'}
                     title={'Active'}
                     onClick={() => {
-                        activate(record, !text.active);
+                        activate({ active: !text.active, _id: record._id });
                     }}
                 >
                     {text.active ? 'Deactive' : 'Active'}
@@ -299,7 +299,11 @@ const Classifier: React.FC<CategoryProps> = () => {
                             style={{ marginTop: '20px' }}
                             onClick={() => {
                                 if (form1.getFieldValue('category')) {
-                                    loadAllFilterItem({ parent: classifier[selectedCategory]._id });
+                                    loadAllFilterItem({
+                                        parent: classifier[selectedCategory]
+                                            ? classifier[selectedCategory]._id
+                                            : undefined,
+                                    });
                                 } else {
                                     errorShow('Please select product category.');
                                 }
@@ -379,7 +383,7 @@ const Classifier: React.FC<CategoryProps> = () => {
                 </Card>
             </div>
             <Table
-                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, () => {})}
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, updateFilterInServer)}
                 dataSource={filterList}
                 style={{ marginTop: '2vh' }}
             />

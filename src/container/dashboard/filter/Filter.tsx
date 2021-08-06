@@ -13,6 +13,7 @@ import {
     getFilter,
     getClassifier,
     getFilterWithValue,
+    activateFilter,
 } from '../../../server/filter/filter/fitler.api';
 
 import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
@@ -101,7 +102,7 @@ const columns = (onDelete, onUpdate, activate) => [
                     type={'primary'}
                     title={'Active'}
                     onClick={() => {
-                        activate(record, !text.active);
+                        activate({ _id: record._id, active: !text.active });
                     }}
                 >
                     {text.active ? 'Deactive' : 'Active'}
@@ -220,6 +221,22 @@ const Filter: React.FC<CategoryProps> = () => {
                 loadAllFilter();
                 form.resetFields();
                 setUpdate(null);
+            }
+        } catch (error) {
+            setLoader(false);
+            errorShow(error.message);
+        }
+    };
+
+    const activateFilterInServer = async (data: { _id: string; active: boolean }) => {
+        setLoader(true);
+        try {
+            const response = await activateFilter(data);
+            setLoader(false);
+
+            if (response.status === 1) {
+                success('Filter Activated');
+                loadAllFilter();
             }
         } catch (error) {
             setLoader(false);
@@ -379,7 +396,7 @@ const Filter: React.FC<CategoryProps> = () => {
                 </Card>
             </div>
             <Table
-                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, () => {})}
+                columns={columns(deleteCategoryListInServer, onClickUpdateInRow, activateFilterInServer)}
                 dataSource={filterList}
                 style={{ marginTop: '2vh' }}
             />

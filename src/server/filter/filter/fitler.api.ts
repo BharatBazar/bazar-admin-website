@@ -11,6 +11,10 @@ export function updateFilter(data: Partial<IFilter>): Promise<CommonApiResponse>
     return axios.patch('/filter/update', data);
 }
 
+export function activateFilter(data: Partial<IFilter>): Promise<CommonApiResponse> {
+    return axios.patch('/filter/activate', data);
+}
+
 export function getFilter(data: Partial<IFilter>): Promise<IRGetFilter> {
     return axios.post('/filter/getAll', data);
 }
