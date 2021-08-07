@@ -153,13 +153,14 @@ const Classifier: React.FC<CategoryProps> = () => {
                 type: classifier[selectedCategory].type,
                 parent: classifier[selectedCategory]._id,
             };
-            console.log(filterItem);
             const response = await createCategory(filterItem);
 
             setLoader(false);
             if (response.status === 1) {
                 success('Classifier' + ' created!');
-                loadAllFilterItem({ type: classifier[selectedCategory].type });
+                loadAllFilterItem({
+                    type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
+                });
 
                 form.resetFields();
             }
@@ -175,7 +176,9 @@ const Classifier: React.FC<CategoryProps> = () => {
 
             if (response.status === 1) {
                 success('Classifier deleted!!');
-                loadAllFilterItem();
+                loadAllFilterItem({
+                    type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
+                });
             }
         } catch (error) {
             errorShow(error.message);
@@ -203,7 +206,9 @@ const Classifier: React.FC<CategoryProps> = () => {
 
             if (response.status === 1) {
                 success('Classifier Updated');
-                loadAllFilterItem({ type: classifier[selectedCategory].type });
+                loadAllFilterItem({
+                    type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
+                });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -268,7 +273,6 @@ const Classifier: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
-                                    setSelectedCategory(value);
                                     axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.toLowerCase()}`;
 
                                     loadAllFilter();
