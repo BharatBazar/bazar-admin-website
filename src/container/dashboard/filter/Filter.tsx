@@ -359,11 +359,9 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
-                        <Form.Item label="Filter level" name="filterLevel" rules={formRequiredRule} initialValue={0}>
-                            <Radio.Group defaultValue={0}>
-                                <Radio defaultChecked value={0}>
-                                    {'0 for a basic filter'}
-                                </Radio>
+                        <Form.Item label="Filter level" name="filterLevel" rules={formRequiredRule}>
+                            <Radio.Group>
+                                <Radio value={0}>{'0 for a basic filter'}</Radio>
                                 <Radio value={1}>
                                     {
                                         '1 is for higher filter which is main categorical distribution like color for a jeans.'
