@@ -1,10 +1,10 @@
 import { createAddress, getAddress, deleteAddress, updateAddress } from '@/api/address';
 
-import { errorShow, success, warning } from '@/components/ALert';
 import { Table, Tag, Space, Button, Input, Row, Select, Form, Card } from 'antd';
 
 import React, { Component } from 'react';
 import { UndoOutlined } from '@ant-design/icons';
+import { errorShow, success, warning } from '../../../components/ALert';
 
 const { Option } = Select;
 

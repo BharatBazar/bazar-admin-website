@@ -21,6 +21,7 @@ import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
 import { getProductCatelogue } from '../../../server/catalogue/catalogue.api';
 import { apiEndPoint } from '../../../server';
+import { IFilter } from '../../../server/filter/filter/filter.interface';
 
 const { Option } = Select;
 
@@ -244,13 +245,14 @@ const Filter: React.FC<CategoryProps> = () => {
         }
     };
 
-    const onClickUpdateInRow = (data: IProductCatalogue) => {
+    const onClickUpdateInRow = (data: IFilter) => {
         const formValue = {};
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.type = data.type;
         formValue.filterLevel = data.filterLevel;
         formValue.image = data.image;
+        formValue.multiple = data.multiple;
         form.setFieldsValue(formValue);
         delete data.activate;
         setSubCategoryExist(data.subCategoryExist);
@@ -358,6 +360,12 @@ const Filter: React.FC<CategoryProps> = () => {
 
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
+                        </Form.Item>
+                        <Form.Item label="Multiple selection" name="multiple" rules={formRequiredRule}>
+                            <Radio.Group>
+                                <Radio value={false}>{'No multiple values of filter cannot be selected.'}</Radio>
+                                <Radio value>{'Yes multiple value of filter can be selected.'}</Radio>
+                            </Radio.Group>
                         </Form.Item>
                         <Form.Item label="Filter level" name="filterLevel" rules={formRequiredRule}>
                             <Radio.Group>
