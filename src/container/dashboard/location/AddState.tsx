@@ -69,7 +69,7 @@ const AddState = () => {
         try {
             const response = await createAddress({
                 name: data[addressType],
-                parent: '',
+
                 addressType,
             });
             setLoader(0);
@@ -121,6 +121,7 @@ const AddState = () => {
         const formValue = {};
         formValue[addressType] = data.name;
         form.setFieldsValue(formValue);
+
         setUpdate(data);
     };
 

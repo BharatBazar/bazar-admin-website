@@ -99,7 +99,7 @@ const AddCity = () => {
         try {
             const response = await createAddress({
                 name: data[addressType],
-                parent: data.city,
+                parent: data.parent,
                 addressType,
             });
 
@@ -136,7 +136,6 @@ const AddCity = () => {
             const response = await updateAddress({
                 ...update,
                 name: data[addressType],
-                parent: data.city,
             });
             setLoader(0);
             if (response.payload) {
@@ -156,6 +155,7 @@ const AddCity = () => {
         formValue[addressType] = data.name;
         formValue.parent = data.parent;
         form.setFieldsValue(formValue);
+
         setUpdate(data);
     };
 
@@ -193,7 +193,7 @@ const AddCity = () => {
                                 },
                             ]}
                         >
-                            <Select loading={city.length === 0} allowClear>
+                            <Select loading={city.length === 0} allowClear disabled={update}>
                                 {city.map((address) => (
                                     <Option value={address._id}>{address.name}</Option>
                                 ))}

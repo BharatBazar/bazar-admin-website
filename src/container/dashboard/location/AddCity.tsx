@@ -99,7 +99,7 @@ const AddCity = () => {
         try {
             const response = await createAddress({
                 name: data[addressType],
-                parent: data.state,
+                parent: data.parent,
                 addressType,
             });
 
@@ -130,13 +130,12 @@ const AddCity = () => {
     };
 
     const updateAddressInServer = async (data) => {
-        console.log({ ...update, name: data[addressType], parent: data.state });
+        console.log({ ...update, name: data[addressType], parent: data.parent, data });
         setLoader(1);
         try {
             const response = await updateAddress({
                 ...update,
                 name: data[addressType],
-                parent: data.state,
             });
             setLoader(0);
             if (response.payload) {
@@ -156,6 +155,7 @@ const AddCity = () => {
         formValue[addressType] = data.name;
         formValue.parent = data.parent;
         form.setFieldsValue(formValue);
+
         setUpdate(data);
     };
 
@@ -193,7 +193,7 @@ const AddCity = () => {
                                 },
                             ]}
                         >
-                            <Select loading={state.length === 0} allowClear>
+                            <Select loading={state.length === 0} allowClear disabled={update}>
                                 {state.map((address) => (
                                     <Option value={address._id}>{address.name}</Option>
                                 ))}

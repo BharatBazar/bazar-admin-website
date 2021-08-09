@@ -99,7 +99,7 @@ const AddArea = () => {
         try {
             const response = await createAddress({
                 name: data[addressType],
-                parent: data.state,
+                parent: data.parent,
                 addressType,
             });
 
@@ -136,7 +136,7 @@ const AddArea = () => {
             const response = await updateAddress({
                 ...update,
                 name: data[addressType],
-                parent: data.state,
+                parent: data.parent,
             });
             setLoader(0);
             if (response.payload) {
@@ -156,6 +156,7 @@ const AddArea = () => {
         formValue[addressType] = data.name;
         formValue.parent = data.parent;
         form.setFieldsValue(formValue);
+        // delete data.parent;
         setUpdate(data);
     };
 
@@ -193,7 +194,7 @@ const AddArea = () => {
                                 },
                             ]}
                         >
-                            <Select loading={state.length === 0} allowClear>
+                            <Select loading={state.length === 0} allowClear disabled={update}>
                                 {state.map((address) => (
                                     <Option value={address._id}>{address.name}</Option>
                                 ))}
