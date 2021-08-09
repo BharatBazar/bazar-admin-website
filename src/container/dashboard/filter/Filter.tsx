@@ -1,6 +1,6 @@
 import { Table, Space, Button, Input, Form, Card, Tag, Select, Radio } from 'antd';
 import React from 'react';
-import { UndoOutlined } from '@ant-design/icons';
+import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Checkbox from 'antd/lib/checkbox/Checkbox';
@@ -55,6 +55,12 @@ const columns = (onDelete, onUpdate, activate) => [
         dataIndex: 'filterLevel',
         key: '_id',
         render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Multiple value select',
+        dataIndex: 'multiple',
+        key: '_id',
+        render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
     },
     {
         title: 'Active',
