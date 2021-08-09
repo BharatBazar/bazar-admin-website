@@ -154,7 +154,7 @@ const AddCity = () => {
     const onClickUpdateInRow = (data) => {
         const formValue = {};
         formValue[addressType] = data.name;
-        formValue.state = data.parent;
+        formValue.parent = data.parent;
         form.setFieldsValue(formValue);
         setUpdate(data);
     };
@@ -185,8 +185,8 @@ const AddCity = () => {
                         onFinishFailed={onFinishFailed}
                     >
                         <Form.Item
-                            label="State:"
-                            name={'state'}
+                            label="Select State:"
+                            name={'parent'}
                             rules={[
                                 {
                                     required: true,
@@ -237,12 +237,9 @@ const AddCity = () => {
                     </Form>
                 </Card>
             </div>
-            <Table
-                columns={columns(deleteAddressInServer, onClickUpdateInRow)}
-                dataSource={city}
-                on
-                style={{ marginTop: '10vh' }}
-            />
+            <Card title={'City table'} style={{ marginTop: '2vh' }}>
+                <Table columns={columns(deleteAddressInServer, onClickUpdateInRow)} dataSource={city} on />
+            </Card>
         </div>
     );
 };

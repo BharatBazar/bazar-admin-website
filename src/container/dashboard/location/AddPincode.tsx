@@ -63,8 +63,8 @@ const AddCity = () => {
     const [form] = Form.useForm();
     const [loader, setLoader] = React.useState(0);
     const [update, setUpdate] = React.useState(null);
-    const [state, setState] = React.useState([]);
     const [city, setCity] = React.useState([]);
+    const [pincode, setPincode] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -76,13 +76,13 @@ const AddCity = () => {
             console.log(address);
             if (address && address.payload) {
                 if (data.addressType === 'Pincode') {
-                    const city = address.payload.map((item) => {
+                    const pincode = address.payload.map((item) => {
                         item.parent = item.parent.name;
                         return item;
                     });
-                    setCity(city);
+                    setPincode(pincode);
                 } else if (data.addressType === 'City') {
-                    setState(address.payload);
+                    setCity(address.payload);
                 }
             } else if (!address) {
                 errorShow('Error loading address. Please refresh the page.');
@@ -90,7 +90,7 @@ const AddCity = () => {
                 errorShow(address.message);
             }
         } catch (error) {
-            errorShow("Error loading state's");
+            errorShow("Error loading city's");
         }
     }
 
@@ -99,13 +99,13 @@ const AddCity = () => {
         try {
             const response = await createAddress({
                 name: data[addressType],
-                parent: data.state,
+                parent: data.city,
                 addressType,
             });
 
             setLoader(0);
             if (response.payload) {
-                success(`${data[addressType]} city` + ` created!!`);
+                success(`${data[addressType]} pincode` + ` created!!`);
                 form.resetFields();
                 loadAddress({ addressType });
             }
@@ -121,7 +121,7 @@ const AddCity = () => {
             const response = await deleteAddress({ ...data });
             console.log(response);
             if (response.payload) {
-                success(`${data.name} city` + ` deleted!!`);
+                success(`${data.name} pincode` + ` deleted!!`);
                 loadAddress({ addressType });
             }
         } catch (error) {
@@ -130,18 +130,18 @@ const AddCity = () => {
     };
 
     const updateAddressInServer = async (data) => {
-        console.log({ ...update, name: data[addressType], parent: data.state });
+        console.log({ ...update, name: data[addressType], parent: data.city });
         setLoader(1);
         try {
             const response = await updateAddress({
                 ...update,
                 name: data[addressType],
-                parent: data.state,
+                parent: data.city,
             });
             setLoader(0);
             if (response.payload) {
                 loadAddress({ addressType });
-                success(`${data[addressType]} city` + ` updated!!`);
+                success(`${data[addressType]} pincode` + ` updated!!`);
                 form.resetFields();
                 setUpdate(null);
             }
@@ -154,7 +154,7 @@ const AddCity = () => {
     const onClickUpdateInRow = (data) => {
         const formValue = {};
         formValue[addressType] = data.name;
-        formValue.state = data.parent;
+        formValue.parent = data.parent;
         form.setFieldsValue(formValue);
         setUpdate(data);
     };
@@ -167,7 +167,7 @@ const AddCity = () => {
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
-                <Card title="Add/Update City" loading={loader === 1} bordered={false} style={{}}>
+                <Card title="Add/Update Pincode" loading={loader === 1} bordered={false} style={{}}>
                     <Form
                         // name="basic"
                         form={form}
@@ -186,21 +186,21 @@ const AddCity = () => {
                     >
                         <Form.Item
                             label="Select city:"
-                            name={'state'}
+                            name={'parent'}
                             rules={[
                                 {
                                     required: true,
                                 },
                             ]}
                         >
-                            <Select loading={state.length === 0} allowClear>
-                                {state.map((address) => (
+                            <Select loading={city.length === 0} allowClear>
+                                {city.map((address) => (
                                     <Option value={address._id}>{address.name}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
                         <Form.Item
-                            label={`Provide ${addressType}`}
+                            label={`Provide ${addressType.toLowerCase()}`}
                             name={addressType}
                             rules={[
                                 {
@@ -237,12 +237,9 @@ const AddCity = () => {
                     </Form>
                 </Card>
             </div>
-            <Table
-                columns={columns(deleteAddressInServer, onClickUpdateInRow)}
-                dataSource={city}
-                on
-                style={{ marginTop: '10vh' }}
-            />
+            <Card title={'Pincode table'} style={{ marginTop: '2vh' }}>
+                <Table columns={columns(deleteAddressInServer, onClickUpdateInRow)} dataSource={pincode} on />
+            </Card>
         </div>
     );
 };

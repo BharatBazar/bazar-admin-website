@@ -186,12 +186,9 @@ const AddState = () => {
                     </Form>
                 </Card>
             </div>
-            <Table
-                columns={columns(deleteAddressInServer, onClickUpdateInRow)}
-                dataSource={address}
-                on
-                style={{ marginTop: '10vh' }}
-            />
+            <Card title={'State table'} style={{ marginTop: '2vh' }}>
+                <Table columns={columns(deleteAddressInServer, onClickUpdateInRow)} dataSource={address} on />
+            </Card>
         </div>
     );
 };

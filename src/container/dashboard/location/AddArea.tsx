@@ -9,7 +9,7 @@ const addressType = at.area;
 
 const columns = (onDelete, onUpdate) => [
     {
-        title: 'Area' + ' name',
+        title: 'City name',
         dataIndex: 'parent',
         key: '_id' + 'State',
         render: (text) => <a>{text}</a>,
@@ -75,14 +75,14 @@ const AddArea = () => {
             const address = await getAddress(data);
             console.log(address);
             if (address && address.payload) {
-                if (data.addressType === 'State') {
-                    setState(address.payload);
-                } else if (data.addressType === 'City') {
+                if (data.addressType === 'Area') {
                     const city = address.payload.map((item) => {
                         item.parent = item.parent.name;
                         return item;
                     });
                     setCity(city);
+                } else if (data.addressType === 'City') {
+                    setState(address.payload);
                 }
             } else if (!address) {
                 errorShow('Error loading address. Please refresh the page.');
@@ -122,7 +122,7 @@ const AddArea = () => {
             console.log(response);
             if (response.payload) {
                 success(`${data.name} city` + ` deleted!!`);
-                loadAddress({ addressType: 'City' });
+                loadAddress({ addressType });
             }
         } catch (error) {
             errorShow(error.message);
@@ -140,7 +140,7 @@ const AddArea = () => {
             });
             setLoader(0);
             if (response.payload) {
-                loadAddress({ addressType: 'City' });
+                loadAddress({ addressType });
                 success(`${data[addressType]} city` + ` updated!!`);
                 form.resetFields();
                 setUpdate(null);
@@ -154,20 +154,20 @@ const AddArea = () => {
     const onClickUpdateInRow = (data) => {
         const formValue = {};
         formValue[addressType] = data.name;
-        formValue.state = data.parent;
+        formValue.parent = data.parent;
         form.setFieldsValue(formValue);
         setUpdate(data);
     };
 
     React.useEffect(() => {
-        loadAddress({ addressType: 'State' });
         loadAddress({ addressType: 'City' });
+        loadAddress({ addressType: 'Area' });
     }, []);
 
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
-                <Card title="Add/Update City" loading={loader === 1} bordered={false} style={{}}>
+                <Card title="Add/Update Area" loading={loader === 1} bordered={false} style={{}}>
                     <Form
                         // name="basic"
                         form={form}
@@ -185,8 +185,8 @@ const AddArea = () => {
                         onFinishFailed={onFinishFailed}
                     >
                         <Form.Item
-                            label="State:"
-                            name={'state'}
+                            label="Select City:"
+                            name={'parent'}
                             rules={[
                                 {
                                     required: true,
@@ -237,12 +237,9 @@ const AddArea = () => {
                     </Form>
                 </Card>
             </div>
-            <Table
-                columns={columns(deleteAddressInServer, onClickUpdateInRow)}
-                dataSource={city}
-                on
-                style={{ marginTop: '10vh' }}
-            />
+            <Card title={'Area table'} style={{ marginTop: '2vh' }}>
+                <Table columns={columns(deleteAddressInServer, onClickUpdateInRow)} dataSource={city} on />
+            </Card>
         </div>
     );
 };

@@ -20,5 +20,5 @@ export async function updateAddress(data: IAddress): Promise<CommonApiResponse> 
 }
 
 export async function deleteAddress(data: Partial<IAddress>): Promise<CommonApiResponse> {
-    return Axios.delete(`/address/delete?=${data._id}`);
+    return Axios.delete(`/address/delete?_id=${data._id}`);
 }
