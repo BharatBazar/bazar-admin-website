@@ -319,6 +319,7 @@ const Filter: React.FC<CategoryProps> = () => {
                             onClick={() => {
                                 form1.resetFields();
                                 form.resetFields();
+                                setUpdate(null);
                                 setFilterList([]);
                                 setClassifier([]);
                             }}
