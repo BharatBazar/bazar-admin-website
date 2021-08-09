@@ -1,14 +1,12 @@
-//import { createAddress, getAddress, deleteAddress, updateAddress } from '@/api/address';
-
-import { errorShow, success } from '../../../components/ALert';
-import { Table, Tag, Space, Button, Input, Row, Select, Form, Card } from 'antd';
-
-import React, { Component } from 'react';
+import { Table, Space, Button, Input, Form, Card, Select } from 'antd';
+import React from 'react';
 import { UndoOutlined } from '@ant-design/icons';
+import { addressType as at } from '../../../server/location/address.interface';
+import { errorShow, success } from '../../../components/ALert';
+import { createAddress, getAddress, deleteAddress, updateAddress } from '../../../server/location/address.api';
 
-const { Option } = Select;
+const addressType = at.city;
 
-const addressType = 'City';
 const columns = (onDelete, onUpdate) => [
     {
         title: 'State' + ' name',
@@ -61,7 +59,7 @@ const tailLayout = {
     wrapperCol: { offset: 8, span: 16 },
 };
 
-const AddState = () => {
+const AddCity = () => {
     const [form] = Form.useForm();
     const [loader, setLoader] = React.useState(0);
     const [update, setUpdate] = React.useState(null);
@@ -72,86 +70,86 @@ const AddState = () => {
         console.log('Failed:', errorInfo);
     };
 
-    // const createAddressInServer = async (data) => {
-    //     setLoader(1);
-    //     try {
-    //         const response = await createAddress({
-    //             name: data[addressType],
-    //             parent: data.state,
-    //             addressType,
-    //         });
+    async function loadAddress(data) {
+        try {
+            const address = await getAddress(data);
+            console.log(address);
+            if (address && address.payload) {
+                if (data.addressType === 'State') {
+                    setState(address.payload);
+                } else if (data.addressType === 'City') {
+                    const city = address.payload.map((item) => {
+                        item.parent = item.parent.name;
+                        return item;
+                    });
+                    setCity(city);
+                }
+            } else if (!address) {
+                errorShow('Error loading address. Please refresh the page.');
+            } else {
+                errorShow(address.message);
+            }
+        } catch (error) {
+            errorShow("Error loading state's");
+        }
+    }
 
-    //         setLoader(0);
-    //         if (response.payload) {
-    //             success(`${data[addressType]} city` + ` created!!`);
-    //             form.resetFields();
-    //             loadAddress({ addressType: 'City' });
-    //         }
-    //     } catch (error) {
-    //         setLoader(0);
-    //         errorShow(error.message);
-    //     }
-    // };
+    const createAddressInServer = async (data) => {
+        setLoader(1);
+        try {
+            const response = await createAddress({
+                name: data[addressType],
+                parent: data.state,
+                addressType,
+            });
 
-    // async function loadAddress(data) {
-    //     try {
-    //         const address = await getAddress(data);
+            setLoader(0);
+            if (response.payload) {
+                success(`${data[addressType]} city` + ` created!!`);
+                form.resetFields();
+                loadAddress({ addressType: 'City' });
+            }
+        } catch (error) {
+            setLoader(0);
+            errorShow(error.message);
+        }
+    };
 
-    //         if (address && address.payload) {
-    //             if (data.addressType === 'State') {
-    //                 setState(address.payload);
-    //             } else if (data.addressType === 'City') {
-    //                 const city = address.payload.map((item) => {
-    //                     item.parent = item.parent.name;
-    //                     return item;
-    //                 });
-    //                 setCity(city);
-    //             }
-    //         } else if (!address) {
-    //             errorShow('Error loading address. Please refresh the page.');
-    //         } else {
-    //             errorShow(address.message);
-    //         }
-    //     } catch (error) {
-    //         errorShow("Error loading state's");
-    //     }
-    // }
+    const deleteAddressInServer = async (data) => {
+        console.log(data);
+        try {
+            const response = await deleteAddress({ ...data });
+            console.log(response);
+            if (response.payload) {
+                success(`${data.name} city` + ` deleted!!`);
+                loadAddress({ addressType: 'City' });
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
+    };
 
-    // const deleteAddressInServer = async (data) => {
-    //     console.log(data);
-    //     try {
-    //         const response = await deleteAddress({ ...data });
-    //         console.log(response);
-    //         if (response.payload) {
-    //             success(`${data.name} city` + ` deleted!!`);
-    //             loadAddress({ addressType: 'City' });
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
-
-    // const updateAddressInServer = async (data) => {
-    //     console.log({ ...update, name: data[addressType], parent: data.state });
-    //     setLoader(1);
-    //     try {
-    //         const response = await updateAddress({
-    //             ...update,
-    //             name: data[addressType],
-    //             parent: data.state,
-    //         });
-    //         setLoader(0);
-    //         if (response.payload) {
-    //             loadAddress({ addressType: 'City' });
-    //             success(`${data[addressType]} city` + ` updated!!`);
-    //             form.resetFields();
-    //             setUpdate(null);
-    //         }
-    //     } catch (error) {
-    //         setLoader(0);
-    //         errorShow(error.message);
-    //     }
-    // };
+    const updateAddressInServer = async (data) => {
+        console.log({ ...update, name: data[addressType], parent: data.state });
+        setLoader(1);
+        try {
+            const response = await updateAddress({
+                ...update,
+                name: data[addressType],
+                parent: data.state,
+            });
+            setLoader(0);
+            if (response.payload) {
+                loadAddress({ addressType: 'City' });
+                success(`${data[addressType]} city` + ` updated!!`);
+                form.resetFields();
+                setUpdate(null);
+            }
+        } catch (error) {
+            setLoader(0);
+            errorShow(error.message);
+        }
+    };
 
     const onClickUpdateInRow = (data) => {
         const formValue = {};
@@ -162,8 +160,8 @@ const AddState = () => {
     };
 
     React.useEffect(() => {
-        // loadAddress({ addressType: 'State' });
-        // loadAddress({ addressType: 'City' });
+        loadAddress({ addressType: 'State' });
+        loadAddress({ addressType: 'City' });
     }, []);
 
     return (
@@ -178,9 +176,9 @@ const AddState = () => {
                         onFinish={() => {
                             form.validateFields().then((value) => {
                                 if (!update) {
-                                 //   createAddressInServer(value);
+                                    createAddressInServer(value);
                                 } else {
-                                 //   updateAddressInServer(value);
+                                    updateAddressInServer(value);
                                 }
                             });
                         }}
@@ -240,7 +238,7 @@ const AddState = () => {
                 </Card>
             </div>
             <Table
-                columns={columns(() =>{}), onClickUpdateInRow)}
+                columns={columns(deleteAddressInServer, onClickUpdateInRow)}
                 dataSource={city}
                 on
                 style={{ marginTop: '10vh' }}
@@ -249,4 +247,4 @@ const AddState = () => {
     );
 };
 
-export default AddState;
+export default AddCity;

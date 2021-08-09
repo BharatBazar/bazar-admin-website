@@ -4,6 +4,7 @@ export enum addressType {
     'state' = 'State',
     'city' = 'City',
     'area' = 'Area',
+    'pincode' = 'Pincode',
 }
 
 export interface IAddress {

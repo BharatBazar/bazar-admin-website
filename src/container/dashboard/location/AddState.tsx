@@ -1,12 +1,12 @@
-import { createAddress, getAddress, deleteAddress, updateAddress } from '@/api/address';
-
-import { errorShow, success } from '@/components/ALert';
-import { Table, Tag, Space, Button, Input, Row, Form, Card } from 'antd';
-
-import React, { Component } from 'react';
+import { Table, Space, Button, Input, Form, Card } from 'antd';
+import React from 'react';
 import { UndoOutlined } from '@ant-design/icons';
+import { addressType as at } from '../../../server/location/address.interface';
+import { errorShow, success } from '../../../components/ALert';
+import { createAddress, getAddress, deleteAddress, updateAddress } from '../../../server/location/address.api';
 
-const addressType = 'State';
+const addressType = at.state;
+
 const columns = (onDelete, onUpdate) => [
     {
         title: `${addressType} name`,
@@ -23,7 +23,6 @@ const columns = (onDelete, onUpdate) => [
                     type={'primary'}
                     title={'Update'}
                     onClick={() => {
-                        console.log(record);
                         onUpdate(record);
                     }}
                 >
@@ -33,7 +32,6 @@ const columns = (onDelete, onUpdate) => [
                     type={'primary'}
                     title={'Delete'}
                     onClick={() => {
-                        console.log(record);
                         onDelete(record);
                     }}
                     danger
@@ -45,38 +43,6 @@ const columns = (onDelete, onUpdate) => [
     },
 ];
 
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
-
-const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-};
-const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
-};
-
 const AddState = () => {
     const [form] = Form.useForm();
     const [loader, setLoader] = React.useState(0);
@@ -85,28 +51,6 @@ const AddState = () => {
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
-    };
-
-    const createAddressInServer = async (data) => {
-        console.log(data[addressType], data);
-        setLoader(1);
-        try {
-            const response = await createAddress({
-                name: data[addressType],
-                parent: '',
-                addressType,
-            });
-            console.log(response);
-            setLoader(0);
-            if (response.payload) {
-                success(`State ${data[addressType]} saved!!`);
-                form.resetFields();
-                loadAddress();
-            }
-        } catch (error) {
-            setLoader(0);
-            errorShow(error.message);
-        }
     };
 
     const loadAddress = async () => {
@@ -120,12 +64,31 @@ const AddState = () => {
         }
     };
 
+    const createAddressInServer = async (data) => {
+        setLoader(1);
+        try {
+            const response = await createAddress({
+                name: data[addressType],
+                parent: '',
+                addressType,
+            });
+            setLoader(0);
+            if (response.status === 1) {
+                success(`State ${data[addressType]} saved!!`);
+                form.resetFields();
+                loadAddress();
+            }
+        } catch (error) {
+            setLoader(0);
+            errorShow(error.message);
+        }
+    };
+
     const deleteAddressInServer = async (data) => {
-        console.log(data);
         try {
             const response = await deleteAddress({ ...data });
-            console.log(response);
-            if (response.payload) {
+
+            if (response.status === 1) {
                 success(`State ${data.name} deleted!!`);
                 loadAddress();
             }
@@ -135,7 +98,6 @@ const AddState = () => {
     };
 
     const updateAddressInServer = async (data) => {
-        console.log({ ...update, name: data[addressType] });
         setLoader(1);
         try {
             const response = await updateAddress({
@@ -143,7 +105,7 @@ const AddState = () => {
                 name: data[addressType],
             });
             setLoader(0);
-            if (response.payload) {
+            if (response.status === 1) {
                 success(`State ${data[addressType]} updated!!`);
                 loadAddress();
                 form.resetFields();

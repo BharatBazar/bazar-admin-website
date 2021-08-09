@@ -61,29 +61,35 @@ export const menuList: menuItem[] = [
             },
         ],
     },
-    // {
-    //     title: 'Location',
-    //     path: '/location',
-    //     icon: () => <Icon component={LocationIcons} />,
-    //     children: [
-    //         {
-    //             title: 'Add/Update State',
-    //             path: '/location/addState',
-    //             icon: () => <Icon component={EditIcon} />,
-    //             roles: ['admin'],
-    //         },
-    //         {
-    //             title: 'Add/Update City',
-    //             path: '/location/addCity',
-    //             icon: () => <Icon component={EditIcon} />,
-    //             roles: ['admin'],
-    //         },
-    //         {
-    //             title: 'Add/Update Area',
-    //             path: '/location/addArea',
-    //             icon: () => <Icon component={EditIcon} />,
-    //             roles: ['admin'],
-    //         },
-    //     ],
-    // },
+    {
+        title: 'Location',
+        path: '/location',
+        icon: () => <Icon component={LocationIcons} />,
+        children: [
+            {
+                title: 'Add/Update State',
+                path: '/location/addState',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+            {
+                title: 'Add/Update City',
+                path: '/location/addCity',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+            {
+                title: 'Add/Update Pincode',
+                path: '/location/addPincode',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+            {
+                title: 'Add/Update Area',
+                path: '/location/addArea',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+        ],
+    },
 ];
