@@ -57,6 +57,12 @@ const columns = (onDelete, onUpdate, activate) => [
         render: (text) => <a>{text}</a>,
     },
     {
+        title: 'Mandatory filter',
+        dataIndex: 'mandatory',
+        key: '_id',
+        render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
+    },
+    {
         title: 'Multiple value select',
         dataIndex: 'multiple',
         key: '_id',
@@ -252,13 +258,14 @@ const Filter: React.FC<CategoryProps> = () => {
     };
 
     const onClickUpdateInRow = (data: IFilter) => {
-        const formValue = {};
+        const formValue: Partial<IFilter> = {};
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.type = data.type;
         formValue.filterLevel = data.filterLevel;
         formValue.image = data.image;
         formValue.multiple = data.multiple;
+        formValue.mandatory = data.mandatory;
         form.setFieldsValue(formValue);
         delete data.activate;
         setSubCategoryExist(data.subCategoryExist);
@@ -284,7 +291,6 @@ const Filter: React.FC<CategoryProps> = () => {
                         name="basic"
                         layout="horizontal"
                         initialValues={{ remember: true }}
-                        onFinishFailed={onFinishFailed}
                     >
                         <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
                             <Select allowClear>
@@ -367,6 +373,12 @@ const Filter: React.FC<CategoryProps> = () => {
 
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
+                        </Form.Item>
+                        <Form.Item label="Mandatory" name="mandatory" rules={formRequiredRule}>
+                            <Radio.Group>
+                                <Radio value>{'Need to provide when launching product to market.'}</Radio>
+                                <Radio value={false}>{'No need to provide when launching to market.'}</Radio>
+                            </Radio.Group>
                         </Form.Item>
                         <Form.Item label="Multiple selection" name="multiple" rules={formRequiredRule}>
                             <Radio.Group>
