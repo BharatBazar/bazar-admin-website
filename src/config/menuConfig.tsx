@@ -92,4 +92,17 @@ export const menuList: menuItem[] = [
             },
         ],
     },
+    {
+        title: 'Product',
+        path: '/product',
+        icon: () => <Icon component={LocationIcons} />,
+        children: [
+            {
+                title: 'List Product',
+                path: '/product/status',
+                icon: () => <Icon component={EditIcon} />,
+                roles: ['admin'],
+            },
+        ],
+    },
 ];

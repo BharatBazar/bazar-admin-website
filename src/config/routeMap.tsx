@@ -47,6 +47,13 @@ const Filter = Loadable({
     loading: Loading,
 });
 
+// Product
+
+const ProductStatus = Loadable({
+    loader: () => import('../container/dashboard/product/ProductStatus'),
+    loading: Loading,
+});
+
 const Error404 = Loadable({
     loader: () => import('../container/404'),
     loading: Loading,
@@ -96,6 +103,11 @@ export default [
     {
         path: '/location/addPincode',
         component: Pincode,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/product/status',
+        component: ProductStatus,
         roles: ['admin', 'editor', 'guest'],
     },
     { path: '/error/404', component: Error404 },

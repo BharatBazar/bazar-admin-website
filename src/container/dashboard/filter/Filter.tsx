@@ -199,7 +199,7 @@ const Filter: React.FC<CategoryProps> = () => {
     };
 
     // To load all categories from backend which are avaialable in the market
-    const loadCategoriesFromServer = async () => {
+    const loadCatalogueFromServer = async () => {
         try {
             const response = await getProductCatelogue({ subCategoryExist: false });
 
@@ -274,7 +274,7 @@ const Filter: React.FC<CategoryProps> = () => {
     };
 
     React.useEffect(() => {
-        loadCategoriesFromServer();
+        loadCatalogueFromServer();
 
         return () => {
             axios.defaults.baseURL = apiEndPoint;
