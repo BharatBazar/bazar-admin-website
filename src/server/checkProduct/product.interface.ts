@@ -1,3 +1,5 @@
+import { CommonApiResponse } from '../common.interface';
+
 export enum productStatus {
     NOTCOMPLETED = 0,
     INVENTORY = 1,
@@ -30,7 +32,7 @@ export interface IProduct {
     releaseDate: string;
 }
 
-export interface IProductMeta {
+export interface IProductMetaData {
     createdAt: string;
     shopId: {
         shopName: string;
@@ -40,4 +42,7 @@ export interface IProductMeta {
             name: string;
         };
     };
+}
+export interface IProductMeta extends CommonApiResponse {
+    payload: IProductMetaData;
 }

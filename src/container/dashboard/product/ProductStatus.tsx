@@ -1,27 +1,118 @@
-import { Card, Form, Select } from 'antd';
+import { UndoOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Select, Space, Table } from 'antd';
+
 import * as React from 'react';
 
 import { errorShow } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
-import { getProductCatelogue, getProductCatelogueWithAncestors } from '../../../server/catalogue/catalogue.api';
+import { getProductCatelogueWithAncestors } from '../../../server/catalogue/catalogue.api';
+import { getProductMeta } from '../../../server/checkProduct/product.api';
+import { IProductMeta, IProductMetaData, productStatus } from '../../../server/checkProduct/product.interface';
 
 const { Option } = Select;
 
+const columns = (onDelete, onUpdate, activate) => [
+    {
+        title: 'Shop' + ' name',
+        dataIndex: 'shopName',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
+
+    {
+        title: 'City name',
+        dataIndex: 'city',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Area' + ' name',
+        dataIndex: 'area',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Owner name',
+        dataIndex: 'owner',
+        key: '_id',
+        render: (text) => <a>{text}</a>,
+    },
+    {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => (
+            <Space size="middle">
+                <Button
+                    type={'primary'}
+                    title={'Check'}
+                    onClick={() => {
+                        onDelete(record);
+                    }}
+                >
+                    {'Check product'}
+                </Button>
+            </Space>
+        ),
+    },
+];
+
 interface ProductStatusProps {}
+
+interface form {
+    status: productStatus;
+    type: string;
+}
+
+interface IProductTable {
+    shopName: string;
+    area: string;
+    city: string;
+    owner: string;
+}
 
 const ProductStatus: React.FunctionComponent<ProductStatusProps> = () => {
     const [loading, setLoading] = React.useState(true);
     const [catalogue, setCatalogue] = React.useState([]);
-    const [form] = Form.useForm();
+    const [products, setProducts] = React.useState<IProductTable[]>([]);
+    const [form] = Form.useForm<form | null>(null);
+
+    const pareseProductData = (data) => {
+        const products: IProductTable[] = data.map((item: IProductMetaData) => {
+            return {
+                shopName: item.shopId.shopName,
+                area: item.shopId.area.name,
+                city: item.shopId.city.name,
+                owner: item.shopId.owner.name,
+            };
+        });
+        setProducts(products);
+    };
 
     // To load all categories from backend which are avaialable in the market
     const loadCatalogueFromServer = async () => {
         try {
+            setLoading(true);
             const response = await getProductCatelogueWithAncestors();
             setLoading(false);
             if (response.status === 1) {
                 console.log(response);
                 setCatalogue(response.payload);
+            }
+        } catch (error) {
+            setLoading(false);
+            errorShow(error.message);
+        }
+    };
+
+    const loadAvailabeProduct = async (data: form) => {
+        setLoading(true);
+
+        try {
+            const response: IProductMeta = await getProductMeta(data.type, { query: { status: data.status } });
+            setLoading(false);
+            console.log(response);
+            if (response.status === 1) {
+                pareseProductData(response.payload.payload);
             }
         } catch (error) {
             setLoading(false);
@@ -52,7 +143,41 @@ const ProductStatus: React.FunctionComponent<ProductStatusProps> = () => {
                             ))}
                         </Select>
                     </Form.Item>
+                    <Form.Item style={{ flex: 1 }} label="Product status :" name="status" rules={formRequiredRule}>
+                        <Select allowClear>
+                            {[0, 1, 2, 3, 4, 5].map((classifier) => (
+                                <Option value={classifier}>{productStatus[classifier]}</Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Space style={{ marginTop: '20px' }}>
+                        <Button
+                            type={'primary'}
+                            htmlType="submit"
+                            onClick={() => {
+                                form.validateFields().then((value) => {
+                                    loadAvailabeProduct(value);
+                                });
+                            }}
+                        >
+                            {'Apply Filter'}
+                        </Button>
+                        <Button
+                            type={'default'}
+                            icon={<UndoOutlined />}
+                            htmlType="submit"
+                            onClick={() => {
+                                form.resetFields();
+                                setProducts([]);
+                            }}
+                        >
+                            {'Reset Filter'}
+                        </Button>
+                    </Space>
                 </Form>
+            </Card>
+            <Card title={'Products'} style={{ marginTop: '10px' }}>
+                <Table columns={columns(() => {})} dataSource={products} style={{ marginTop: '2vh' }} />
             </Card>
         </div>
     );
