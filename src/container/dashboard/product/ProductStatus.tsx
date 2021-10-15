@@ -2,6 +2,7 @@ import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Select, Space, Table } from 'antd';
 
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 
 import { errorShow } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
@@ -11,7 +12,7 @@ import { IProductMeta, IProductMetaData, productStatus } from '../../../server/c
 
 const { Option } = Select;
 
-const columns = (onDelete, onUpdate, activate) => [
+const columns = (onEdit) => [
     {
         title: 'Shop' + ' name',
         dataIndex: 'shopName',
@@ -46,7 +47,7 @@ const columns = (onDelete, onUpdate, activate) => [
                     type={'primary'}
                     title={'Check'}
                     onClick={() => {
-                        onDelete(record);
+                        onEdit(record);
                     }}
                 >
                     {'Check product'}
@@ -56,7 +57,7 @@ const columns = (onDelete, onUpdate, activate) => [
     },
 ];
 
-interface ProductStatusProps {}
+interface ProductStatusProps extends RouteComponentProps {}
 
 interface form {
     status: productStatus;
@@ -70,7 +71,8 @@ interface IProductTable {
     owner: string;
 }
 
-const ProductStatus: React.FunctionComponent<ProductStatusProps> = () => {
+const ProductStatus: React.FunctionComponent<ProductStatusProps> = (props) => {
+    console.log(props);
     const [loading, setLoading] = React.useState(true);
     const [catalogue, setCatalogue] = React.useState([]);
     const [products, setProducts] = React.useState<IProductTable[]>([]);
@@ -83,6 +85,7 @@ const ProductStatus: React.FunctionComponent<ProductStatusProps> = () => {
                 area: item.shopId.area.name,
                 city: item.shopId.city.name,
                 owner: item.shopId.owner.name,
+                _id: item._id,
             };
         });
         setProducts(products);
@@ -177,7 +180,13 @@ const ProductStatus: React.FunctionComponent<ProductStatusProps> = () => {
                 </Form>
             </Card>
             <Card title={'Products'} style={{ marginTop: '10px' }}>
-                <Table columns={columns(() => {})} dataSource={products} style={{ marginTop: '2vh' }} />
+                <Table
+                    columns={columns((data: IProductMetaData) => {
+                        props.history.push(`/product/edit?id=${data._id}&divison=${form.getFieldValue('type')}`);
+                    })}
+                    dataSource={products}
+                    style={{ marginTop: '2vh' }}
+                />
             </Card>
         </div>
     );

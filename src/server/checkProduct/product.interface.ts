@@ -9,16 +9,33 @@ export enum productStatus {
     LIVE = 5,
 }
 
+export enum classifierTypes {
+    SIZE = 'size',
+    COLOR = 'color',
+    BRAND = 'brand',
+    PATTERN = 'pattern',
+    FIT = 'fit',
+}
+
+export interface IClassfier {
+    name: string; // Name should be any thing like value for example for size name will be 28, for color name will be red etc..
+    description: string; // Description should be meta data or for example for color colorCode will be description, for size unit like cm or inch will be description
+    image: string; // Can be provided for pattern or brand etc..
+    type: classifierTypes; // type is the classifier to which the document belongs
+    parent: string;
+    active: boolean;
+}
+
 export interface IProduct {
-    brand: string;
-    pattern: [string];
-    fit: string;
-    colors: [string];
+    brand: IClassfier;
+    pattern: IClassfier[];
+    fit: IClassfier;
+    colors: IColor[];
     shopId: string;
     // Above field will have predifined information about the size, unit etc.
     title: string; // It can be possible that a shop sells particular brand items on their shop.
     subTitle: string;
-    color: [string];
+
     showPrice: boolean; // Whether dukandar wants to show price to customer or not
     productStatus: productStatus;
     rating: number;
@@ -33,6 +50,7 @@ export interface IProduct {
 }
 
 export interface IProductMetaData {
+    _id: string;
     createdAt: string;
     shopId: {
         shopName: string;
@@ -45,4 +63,32 @@ export interface IProductMetaData {
 }
 export interface IProductMeta extends CommonApiResponse {
     payload: IProductMetaData;
+}
+
+export interface IRProductDetails extends CommonApiResponse {
+    payload: IProduct;
+}
+
+export interface IColor {
+    parentId: string; // will refer to main table
+    color: string; // will refer to color table
+    sizes: [string]; // will refer to jeans size table
+    photos: [string];
+    includedColor: [string];
+}
+
+export enum idCreationStatus {
+    'NotCreated' = 0,
+    'CreatedNotProvided' = 1,
+    'CreatedAndProvided' = 2,
+}
+
+export interface ISize {
+    size: string; // Will refer to size table
+    mrp: string;
+    quantity: string;
+    sp: string;
+    parentId: string;
+    itemId: string;
+    idStatus: idCreationStatus;
 }

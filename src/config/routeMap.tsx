@@ -54,6 +54,11 @@ const ProductStatus = Loadable({
     loading: Loading,
 });
 
+const Product = Loadable({
+    loader: () => import('../container/dashboard/product/Product'),
+    loading: Loading,
+});
+
 const Error404 = Loadable({
     loader: () => import('../container/404'),
     loading: Loading,
@@ -108,6 +113,11 @@ export default [
     {
         path: '/product/status',
         component: ProductStatus,
+        roles: ['admin', 'editor', 'guest'],
+    },
+    {
+        path: '/product/edit',
+        component: Product,
         roles: ['admin', 'editor', 'guest'],
     },
     { path: '/error/404', component: Error404 },
