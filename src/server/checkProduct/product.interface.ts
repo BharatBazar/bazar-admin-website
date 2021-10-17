@@ -71,8 +71,8 @@ export interface IRProductDetails extends CommonApiResponse {
 
 export interface IColor {
     parentId: string; // will refer to main table
-    color: string; // will refer to color table
-    sizes: [string]; // will refer to jeans size table
+    color: IClassfier; // will refer to color table
+    sizes: [ISize]; // will refer to jeans size table
     photos: [string];
     includedColor: [string];
 }
@@ -84,7 +84,7 @@ export enum idCreationStatus {
 }
 
 export interface ISize {
-    size: string; // Will refer to size table
+    size: IClassfier; // Will refer to size table
     mrp: string;
     quantity: string;
     sp: string;
