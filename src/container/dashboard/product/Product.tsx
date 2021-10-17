@@ -1,4 +1,4 @@
-import { Card, Form, Typography, Slider, Divider, Input, Row, Avatar, Col } from 'antd';
+import { Card, Form, Typography, Slider, Divider, Select, Input, Row, Avatar, Col, Space, Button } from 'antd';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import queryString from 'query-string';
@@ -6,12 +6,13 @@ import { AntDesignOutlined, UserAddOutlined } from '@ant-design/icons';
 import { render } from 'react-dom';
 import { getProduct } from '../../../server/checkProduct/product.api';
 import { errorShow } from '../../../components/ALert';
-import { IColor, IProduct } from '../../../server/checkProduct/product.interface';
+import { IColor, IProduct, productStatus } from '../../../server/checkProduct/product.interface';
 import { formRequiredRule } from '../../../constants';
 import { IClassfier } from '../../../server/filter/category/category.interface';
 import { LeftDivider } from '../../../components/Divider';
 
 const { Paragraph, Text, Title } = Typography;
+const { Option } = Select;
 
 interface ProductProps extends RouteComponentProps {}
 
@@ -19,6 +20,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     const [rows, setRows] = React.useState(1);
     const [productDetails, setProductDetails] = React.useState<IProduct>('');
     const [loader, setLoader] = React.useState(false);
+    const [productStatuss, setProductStatus] = React.useState(undefined);
     const params: { id: string; divison: string } = queryString.parse(props.location.search);
 
     const fetchProduct = async () => {
@@ -48,7 +50,12 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                         {LeftDivider(colors[i].color.name)}
                         <Row style={{ alignItems: 'center' }}>
                             <div
-                                style={{ backgroundColor: colors[i].color.description, width: '30px', height: '30px' }}
+                                style={{
+                                    backgroundColor: colors[i].color.description,
+                                    width: '30px',
+                                    height: '30px',
+                                    marginRight: '10px',
+                                }}
                             />
                             {colors[i].sizes.map((item) => (
                                 <Text code>{item.size.name}</Text>
@@ -137,12 +144,41 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                 <Form.Item label={'Product Subtitle'} name={'name'} rules={formRequiredRule}>
                     <Input.TextArea />
                 </Form.Item>
+                {renderFilter(productDetails?.brand, 'Brand')}
+                {renderFilter(productDetails?.fit, 'Fit')}
+                {renderFilter(productDetails?.pattern, 'Pattern')}
+                {LeftDivider('Colors')}
+                {renderColor(productDetails?.colors)}
+                <Form.Item
+                    style={{ flex: 1, marginTop: '20px' }}
+                    label="Provide product status:"
+                    name="status"
+                    rules={formRequiredRule}
+                >
+                    <Select
+                        allowClear
+                        onChange={(item) => {
+                            setProductStatus(item);
+                        }}
+                    >
+                        {[2, 5].map((classifier) => (
+                            <Option value={classifier}>{productStatus[classifier]}</Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                {productStatuss && productStatuss === productStatus.REJECTED && (
+                    <Form.Item
+                        label={'Please provide reason for rejection'}
+                        name={'rejected reason'}
+                        rules={formRequiredRule}
+                    >
+                        <Input.TextArea rows={5} />
+                    </Form.Item>
+                )}
+                <Space>
+                    <Button type={'primary'}>{'Save'}</Button>
+                </Space>
             </Form>
-            {renderFilter(productDetails?.brand, 'Brand')}
-            {renderFilter(productDetails?.fit, 'Fit')}
-            {renderFilter(productDetails?.pattern, 'Pattern')}
-            {LeftDivider('Colors')}
-            {renderColor(productDetails?.colors)}
         </Card>
     );
 };
