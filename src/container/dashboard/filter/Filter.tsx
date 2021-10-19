@@ -199,7 +199,7 @@ const Filter: React.FC<CategoryProps> = () => {
     };
 
     // To load all categories from backend which are avaialable in the market
-    const loadCategoriesFromServer = async () => {
+    const loadCatalogueFromServer = async () => {
         try {
             const response = await getProductCatelogue({ subCategoryExist: false });
 
@@ -274,7 +274,7 @@ const Filter: React.FC<CategoryProps> = () => {
     };
 
     React.useEffect(() => {
-        loadCategoriesFromServer();
+        loadCatalogueFromServer();
 
         return () => {
             axios.defaults.baseURL = apiEndPoint;
@@ -299,40 +299,40 @@ const Filter: React.FC<CategoryProps> = () => {
                                 ))}
                             </Select>
                         </Form.Item>
+                        <Space>
+                            <Button
+                                type={'primary'}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                onClick={() => {
+                                    form1.validateFields().then((value) => {
+                                        setSelectedCategory(value.parent);
+                                        axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
+                                        loadAllFilter();
+                                        loadClassifiersFromServer();
+                                        // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
+                                    });
+                                }}
+                            >
+                                {'Apply Filter'}
+                            </Button>
+                            <Button
+                                type={'default'}
+                                icon={<UndoOutlined />}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                onClick={() => {
+                                    form1.resetFields();
+                                    form.resetFields();
+                                    setUpdate(null);
+                                    setFilterList([]);
+                                    setClassifier([]);
+                                }}
+                            >
+                                {'Reset Filter'}
+                            </Button>
+                        </Space>
                     </Form>
-                    <Space>
-                        <Button
-                            type={'primary'}
-                            htmlType="submit"
-                            style={{ marginTop: '20px' }}
-                            onClick={() => {
-                                form1.validateFields().then((value) => {
-                                    setSelectedCategory(value.parent);
-                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
-                                    loadAllFilter();
-                                    loadClassifiersFromServer();
-                                    // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
-                                });
-                            }}
-                        >
-                            {'Apply Filter'}
-                        </Button>
-                        <Button
-                            type={'default'}
-                            icon={<UndoOutlined />}
-                            htmlType="submit"
-                            style={{ marginTop: '20px' }}
-                            onClick={() => {
-                                form1.resetFields();
-                                form.resetFields();
-                                setUpdate(null);
-                                setFilterList([]);
-                                setClassifier([]);
-                            }}
-                        >
-                            {'Reset Filter'}
-                        </Button>
-                    </Space>
                 </Card>
 
                 <Card title="Add/Update Filter" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>

@@ -5,6 +5,9 @@ import { IProductCatalogue, IRProductCatalogue } from './catalogue.interface';
 export function getProductCatelogue(data: Partial<IProductCatalogue>): Promise<IRProductCatalogue> {
     return axios.post('/catalogue/get', data);
 }
+export function getProductCatelogueWithAncestors(): Promise<IRProductCatalogue> {
+    return axios.get('/catalogue/getAll');
+}
 
 export function addProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
     return axios.post('/catalogue/add', data);
