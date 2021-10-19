@@ -38,7 +38,7 @@ export interface IProduct {
     subTitle: string;
 
     showPrice: boolean; // Whether dukandar wants to show price to customer or not
-    productStatus: productStatus;
+    status: productStatus;
     rating: number;
     new: boolean; // Sometimes customer comes to shop asking what is new in the shop so this will show all the new available s
     newDeadline: Date;

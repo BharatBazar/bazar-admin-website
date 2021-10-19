@@ -1,4 +1,4 @@
-import { Card, Form, Typography, Slider, Divider, Select, Input, Row, Avatar, Col, Space, Button } from 'antd';
+import { Card, Form, Typography, Slider, Divider, Select, Input, Row, Avatar, Col, Space, Button, Alert } from 'antd';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import queryString from 'query-string';
@@ -37,6 +37,8 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                     title: a.payload.title,
                     subTitle: a.payload.subTitle,
                     descriptionCustomer: a.payload.descriptionCustomer,
+                    note: a.payload.note,
+                    status: a.payload.status,
                 });
                 setProductDetails(a.payload);
             }
@@ -47,9 +49,14 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     };
 
     const updateProductC = async (value: Partial<IProduct>) => {
+        console.log(value);
         setLoader(true);
         try {
-            const a = await updateProduct(params.divison, { ...value, _id: productDetails._id });
+            const a = await updateProduct(params.divison, {
+                ...value,
+                _id: productDetails._id,
+                alreadyRejected: value.status && value.status == 2,
+            });
             if (a.status == 1) {
                 success('Product details updated');
             }
@@ -146,6 +153,16 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
 
     return (
         <Card title={'Product Details'} loading={loader}>
+            {productDetails.alreadyRejected ? (
+                <Alert
+                    message={
+                        'The product is rejected once and is sent for approval again. Please reject only if very much necessary.'
+                    }
+                    type={'error'}
+                />
+            ) : (
+                <div />
+            )}
             {LeftDivider('Product Description By Seller')}
             <Paragraph style={{ marginTop: 0 }} code title={`${productDetails.description}--William Shakespeare`}>
                 {productDetails.description}
@@ -183,12 +200,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                     name="status"
                     // rules={formRequiredRule}
                 >
-                    <Select
-                        allowClear
-                        onChange={(item) => {
-                            setProductStatus(item);
-                        }}
-                    >
+                    <Select allowClear>
                         {[2, 5].map((classifier) => (
                             <Option value={classifier}>{productStatus[classifier]}</Option>
                         ))}
