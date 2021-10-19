@@ -17,6 +17,8 @@
         "antd": "^4.16.9",
         "axios": "^0.21.1",
         "babe": "^0.0.1",
+        "lottie-ios": "3.2.3",
+        "lottie-react-native": "4.0.3",
         "nprogress": "^0.2.0",
         "prop-types": "^15.7.2",
         "query-string": "^7.0.1",

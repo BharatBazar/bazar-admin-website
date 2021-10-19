@@ -138,10 +138,10 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                 <Form.Item label={''} name={'name'} rules={formRequiredRule}>
                     <Input.TextArea rows={10} />
                 </Form.Item>
-                <Form.Item label={'Product Title'} name={'name'} rules={formRequiredRule}>
+                <Form.Item label={'Product Title'} name={'title'} rules={formRequiredRule}>
                     <Input.TextArea />
                 </Form.Item>
-                <Form.Item label={'Product Subtitle'} name={'name'} rules={formRequiredRule}>
+                <Form.Item label={'Product Subtitle'} name={'subTitle'} rules={formRequiredRule}>
                     <Input.TextArea />
                 </Form.Item>
                 {renderFilter(productDetails?.brand, 'Brand')}
@@ -176,7 +176,15 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                     </Form.Item>
                 )}
                 <Space>
-                    <Button type={'primary'}>{'Save'}</Button>
+                    <Button
+                        type={'primary'}
+                        htmlType="submit"
+                        onClick={() => {
+                            form.validateFields().then((value) => {});
+                        }}
+                    >
+                        {'Save'}
+                    </Button>
                 </Space>
             </Form>
         </Card>
