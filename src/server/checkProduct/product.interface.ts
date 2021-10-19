@@ -27,6 +27,7 @@ export interface IClassfier {
 }
 
 export interface IProduct {
+    _id: string;
     brand: IClassfier;
     pattern: IClassfier[];
     fit: IClassfier;
@@ -42,11 +43,14 @@ export interface IProduct {
     new: boolean; // Sometimes customer comes to shop asking what is new in the shop so this will show all the new available s
     newDeadline: Date;
     description: string; // Will be a audio as audio is better to understand in common language
+    descriptionCustomer: string; // description that customer will see
     discount: [number]; // If a dukandar has decided that he wants to give special discount on particular  so discount will for each color
     discountDeadline: [Date];
     bazarAssured: boolean; // It is the flag if we have personally verified the product and it is really a good product
     createdAt: string;
     releaseDate: string;
+    note: string;
+    alreadyRejected: boolean;
 }
 
 export interface IProductMetaData {

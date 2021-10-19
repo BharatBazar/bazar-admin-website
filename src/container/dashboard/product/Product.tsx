@@ -4,8 +4,8 @@ import { RouteComponentProps } from 'react-router';
 import queryString from 'query-string';
 import { AntDesignOutlined, UserAddOutlined } from '@ant-design/icons';
 import { render } from 'react-dom';
-import { getProduct } from '../../../server/checkProduct/product.api';
-import { errorShow } from '../../../components/ALert';
+import { getProduct, updateProduct } from '../../../server/checkProduct/product.api';
+import { errorShow, success } from '../../../components/ALert';
 import { IColor, IProduct, productStatus } from '../../../server/checkProduct/product.interface';
 import { formRequiredRule } from '../../../constants';
 import { IClassfier } from '../../../server/filter/category/category.interface';
@@ -22,6 +22,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     const [loader, setLoader] = React.useState(false);
     const [productStatuss, setProductStatus] = React.useState(undefined);
     const params: { id: string; divison: string } = queryString.parse(props.location.search);
+    const [form] = Form.useForm<Partial<IProduct>>();
 
     const fetchProduct = async () => {
         setLoader(true);
@@ -29,7 +30,29 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
             const a = await getProduct(params.divison, params.id);
             console.log(a);
             setLoader(false);
-            setProductDetails(a.payload);
+            if (a.status == 1) {
+                form.setFieldsValue({
+                    title: a.payload.title,
+                    subTitle: a.payload.subTitle,
+                    descriptionCustomer: a.payload.descriptionCustomer,
+                });
+                setProductDetails(a.payload);
+            }
+        } catch (error) {
+            setLoader(false);
+            errorShow(error.message);
+        }
+    };
+
+    const updateProductC = async (value: Partial<IProduct>) => {
+        setLoader(true);
+        try {
+            const a = await updateProduct(params.divison, { ...value, _id: productDetails._id });
+            if (a.status == 1) {
+                success('Product details updated');
+            }
+            setLoader(false);
+            //  setProductDetails(a.payload);
         } catch (error) {
             setLoader(false);
             errorShow(error.message);
@@ -119,11 +142,10 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
         );
     };
 
-    const [form] = Form.useForm();
     return (
         <Card title={'Product Details'} loading={loader}>
-            {LeftDivider('Product Description')}
-            <Paragraph title={`${productDetails.description}--William Shakespeare`}>
+            {LeftDivider('Product Description By Seller')}
+            <Paragraph style={{ marginTop: 0 }} code title={`${productDetails.description}--William Shakespeare`}>
                 {productDetails.description}
             </Paragraph>
 
@@ -135,7 +157,11 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                 layout="vertical"
                 initialValues={{ remember: true }}
             >
-                <Form.Item label={''} name={'name'} rules={formRequiredRule}>
+                <Form.Item
+                    label={'Provide description that customer going to see'}
+                    name={'descriptionCustomer'}
+                    rules={formRequiredRule}
+                >
                     <Input.TextArea rows={10} />
                 </Form.Item>
                 <Form.Item label={'Product Title'} name={'title'} rules={formRequiredRule}>
@@ -153,7 +179,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                     style={{ flex: 1, marginTop: '20px' }}
                     label="Provide product status:"
                     name="status"
-                    rules={formRequiredRule}
+                    // rules={formRequiredRule}
                 >
                     <Select
                         allowClear
@@ -166,21 +192,23 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                         ))}
                     </Select>
                 </Form.Item>
-                {productStatuss && productStatuss === productStatus.REJECTED && (
-                    <Form.Item
-                        label={'Please provide reason for rejection'}
-                        name={'rejected reason'}
-                        rules={formRequiredRule}
-                    >
-                        <Input.TextArea rows={5} />
-                    </Form.Item>
-                )}
+
+                <Form.Item
+                    label={'Provide note for seller to better the product details'}
+                    name={'note'}
+                    // rules={formRequiredRule}
+                >
+                    <Input.TextArea rows={5} />
+                </Form.Item>
+
                 <Space>
                     <Button
                         type={'primary'}
                         htmlType="submit"
                         onClick={() => {
-                            form.validateFields().then((value) => {});
+                            form.validateFields().then((value) => {
+                                updateProductC(value);
+                            });
                         }}
                     >
                         {'Save'}
