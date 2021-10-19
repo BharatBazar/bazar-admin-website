@@ -14,14 +14,16 @@ import { LeftDivider } from '../../../components/Divider';
 const { Paragraph, Text, Title } = Typography;
 const { Option } = Select;
 
-interface ProductProps extends RouteComponentProps {}
+interface ProductProps extends RouteComponentProps {
+    location: { search: string };
+}
 
 const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     const [rows, setRows] = React.useState(1);
     const [productDetails, setProductDetails] = React.useState<IProduct>('');
     const [loader, setLoader] = React.useState(false);
-    const [productStatuss, setProductStatus] = React.useState(undefined);
-    const params: { id: string; divison: string } = queryString.parse(props.location.search);
+
+    const params: queryString.ParsedQuery<{ _id: string; divison: string }> = queryString.parse(props.location.search);
     const [form] = Form.useForm<Partial<IProduct>>();
 
     const fetchProduct = async () => {
