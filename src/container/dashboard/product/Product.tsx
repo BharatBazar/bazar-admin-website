@@ -10,6 +10,7 @@ import { IColor, IProduct, productStatus } from '../../../server/checkProduct/pr
 import { formRequiredRule } from '../../../constants';
 import { IClassfier } from '../../../server/filter/category/category.interface';
 import { LeftDivider } from '../../../components/Divider';
+import Points from './component/PointsComponent';
 
 const { Paragraph, Text, Title } = Typography;
 const { Option } = Select;
@@ -206,6 +207,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                         ))}
                     </Select>
                 </Form.Item>
+                <Points title={'Provide points to make the product better'} />
 
                 <Form.Item
                     label={'Provide note for seller to better the product details'}
