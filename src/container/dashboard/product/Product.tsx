@@ -23,6 +23,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     const [rows, setRows] = React.useState(1);
     const [productDetails, setProductDetails] = React.useState<IProduct>('');
     const [loader, setLoader] = React.useState(false);
+    const [points, setPoints] = React.useState(['']);
 
     const params: queryString.ParsedQuery<{ _id: string; divison: string }> = queryString.parse(props.location.search);
     const [form] = Form.useForm<Partial<IProduct>>();
@@ -31,16 +32,17 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
         setLoader(true);
         try {
             const a = await getProduct(params.divison, params.id);
-            console.log(a);
+
             setLoader(false);
-            if (a.status == 1) {
+            if (a.status === 1) {
                 form.setFieldsValue({
                     title: a.payload.title,
                     subTitle: a.payload.subTitle,
                     descriptionCustomer: a.payload.descriptionCustomer,
-                    note: a.payload.note,
+
                     status: a.payload.status,
                 });
+                setPoints(a.payload.note);
                 setProductDetails(a.payload);
             }
         } catch (error) {
@@ -50,14 +52,16 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
     };
 
     const updateProductC = async (value: Partial<IProduct>) => {
-        console.log(value);
         setLoader(true);
         try {
-            const a = await updateProduct(params.divison, {
+            const data = {
                 ...value,
+                note: points,
                 _id: productDetails._id,
-                alreadyRejected: value.status && value.status == 2,
-            });
+                alreadyRejected: value.status && value.status === 2,
+            };
+            console.log('data =>', data);
+            const a = await updateProduct(params.divison, data);
             if (a.status == 1) {
                 success('Product details updated');
             }
@@ -207,17 +211,10 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
                         ))}
                     </Select>
                 </Form.Item>
-                <Points title={'Provide points to make the product better'} />
 
-                <Form.Item
-                    label={'Provide note for seller to better the product details'}
-                    name={'note'}
-                    // rules={formRequiredRule}
-                >
-                    <Input.TextArea rows={5} />
-                </Form.Item>
+                <Points title={'Provide points to make the product better'} points={points} setPoints={setPoints} />
 
-                <Space>
+                <Space style={{ marginTop: '10px' }}>
                     <Button
                         type={'primary'}
                         htmlType="submit"

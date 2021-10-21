@@ -1,26 +1,26 @@
-import { Button, Col, Input, Row, Space, Typography } from 'antd';
+import { Button, Card, Col, Input, Row, Space, Typography } from 'antd';
 // import Title from 'antd/lib/skeleton/Title';
 import React from 'react';
 import { LeftDivider } from '../../../../components/Divider';
 
 interface PointsProps {
     title: string;
+    points: string[];
+    setPoints: (points: string[]) => void;
 }
 
 const { Text } = Typography;
-const Points: React.FunctionComponent<PointsProps> = ({ title }) => {
-    const [points, setPoints] = React.useState<string[]>(['']);
+const Points: React.FunctionComponent<PointsProps> = ({ title, points, setPoints }) => {
+    // const [points, setPoints] = React.useState<string[]>(['']);
 
     return (
-        <div>
-            {LeftDivider(title)}
+        <Card title={title}>
             <Space>
                 <Button
                     type={'primary'}
                     onClick={() => {
                         const point: string[] = [...points];
                         point.push('');
-                        console.log('point => ', point);
                         setPoints(point);
                     }}
                 >
@@ -30,8 +30,10 @@ const Points: React.FunctionComponent<PointsProps> = ({ title }) => {
                     type={'primary'}
                     onClick={() => {
                         const point: string[] = [...points];
-                        point.pop();
-                        setPoints(point);
+                        if (point.length !== 1) {
+                            point.pop();
+                            setPoints(point);
+                        }
                     }}
                 >
                     {'delete last point'}
@@ -51,7 +53,7 @@ const Points: React.FunctionComponent<PointsProps> = ({ title }) => {
                     />
                 </Row>
             ))}
-        </div>
+        </Card>
     );
 };
 
