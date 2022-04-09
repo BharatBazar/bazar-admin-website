@@ -56,7 +56,7 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
         try {
             const data = {
                 ...value,
-                note: points,
+                note: points.filter((item) => item && item.length > 0),
                 _id: productDetails._id,
                 alreadyRejected: value.status && value.status === 2,
             };
