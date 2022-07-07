@@ -37,8 +37,8 @@ const SubCategory1 = Loadable({
 
 // Filter drawer
 
-const Classifier = Loadable({
-    loader: () => import('../container/dashboard/filter/Classifier'),
+const FilterValues = Loadable({
+    loader: () => import('../container/dashboard/filter/FilterValues'),
     loading: Loading,
 });
 
@@ -86,8 +86,8 @@ export default [
         roles: ['admin', 'editor', 'guest'],
     },
     {
-        path: '/filter/classifier',
-        component: Classifier,
+        path: '/filter/values',
+        component: FilterValues,
         roles: ['admin', 'editor', 'guest'],
     },
     {

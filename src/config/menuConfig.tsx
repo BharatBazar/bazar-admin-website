@@ -54,8 +54,8 @@ export const menuList: menuItem[] = [
                 roles: ['admin'],
             },
             {
-                title: 'Classifier',
-                path: '/filter/classifier',
+                title: 'Filter Values',
+                path: '/filter/values',
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },

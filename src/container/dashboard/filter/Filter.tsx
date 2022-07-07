@@ -201,10 +201,11 @@ const Filter: React.FC<CategoryProps> = () => {
     // To load all categories from backend which are avaialable in the market
     const loadCatalogueFromServer = async () => {
         try {
-            const response = await getProductCatelogue({ subCategoryExist: false });
-
+            // const response = await getProductCatelogue({ subCategoryExist: false });
+            const response = await getProductCatelogue();
+            const getRealProduct = response.payload.filter((elem) => elem.child.length === 0);
             if (response.status === 1) {
-                setCategory(response.payload);
+                setCategory(getRealProduct);
             }
         } catch (error) {
             errorShow(error.message);

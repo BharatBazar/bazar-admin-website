@@ -26,25 +26,25 @@ const { Option } = Select;
 
 const columns = (onDelete, onUpdate, activate) => [
     {
-        title: 'Classifier' + ' name',
+        title: 'Filter Value' + ' name',
         dataIndex: 'name',
         key: '_id' + 'City',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Classifier ' + ' description',
+        title: 'Filter Value ' + ' description',
         dataIndex: 'description',
         key: '_id',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Classifier ' + ' image',
+        title: 'Filter Value ' + ' image',
         dataIndex: 'image',
         key: '_id',
         render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
     },
     {
-        title: 'Classifier ' + ' type',
+        title: 'Filter Value ' + ' type',
         dataIndex: 'type',
         key: '_id',
         render: (text) => <a>{text}</a>,
@@ -118,7 +118,7 @@ const columns = (onDelete, onUpdate, activate) => [
 
 export interface CategoryProps extends RouteComponentProps {}
 
-const Classifier: React.FC<CategoryProps> = () => {
+const FilterValues: React.FC<CategoryProps> = () => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
     const [form1] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
@@ -395,4 +395,4 @@ const Classifier: React.FC<CategoryProps> = () => {
     );
 };
 
-export default Classifier;
+export default FilterValues;
