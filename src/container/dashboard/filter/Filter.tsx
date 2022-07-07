@@ -1,5 +1,5 @@
 import { Table, Space, Button, Input, Form, Card, Tag, Select, Radio } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -147,6 +147,8 @@ const Filter: React.FC<CategoryProps> = () => {
     const [category, setCategory] = React.useState([]);
     const [selectedCategory, setSelectedCategory] = React.useState(null);
     const [classifier, setClassifier] = React.useState([]);
+    const [active, setActive] = React.useState(false);
+    const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -294,7 +296,7 @@ const Filter: React.FC<CategoryProps> = () => {
                         initialValues={{ remember: true }}
                     >
                         <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
-                            <Select allowClear>
+                            <Select allowClear showSearch optionFilterProp="children">
                                 {category.map((category) => (
                                     <Option value={category.name}>{category.name}</Option>
                                 ))}
@@ -363,16 +365,26 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
-
-                        <Form.Item style={{ flex: 1 }} label="Classifier type :" name="type" rules={formRequiredRule}>
+                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label={'Customer Heading'} name={'customerHeading'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label={'Customer Description'} name={'customerDescription'} rules={formRequiredRule}>
+                            <Input.TextArea showCount maxLength={100} />
+                        </Form.Item>
+                        <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
                             <Select allowClear disabled={update}>
                                 {classifier.map((classifier) => (
                                     <Option value={classifier}>{classifier}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
-
-                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                        <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
                         <Form.Item label="Mandatory" name="mandatory" rules={formRequiredRule}>
@@ -397,6 +409,26 @@ const Filter: React.FC<CategoryProps> = () => {
                                 </Radio>
                                 <Radio value={2}>{'2 is for category under higher filter like size in color.'}</Radio>
                             </Radio.Group>
+                        </Form.Item>
+                        <Form.Item name="active" valuePropName="active" wrapperCol={{ offset: 4 }}>
+                            <Checkbox
+                                checked={active}
+                                onChange={(active) => {
+                                    setActive(active.target.checked);
+                                }}
+                            >
+                                Active
+                            </Checkbox>
+                        </Form.Item>
+                        <Form.Item name="defaultSelectAll" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
+                            <Checkbox
+                                checked={defaultSelectAll}
+                                onChange={(defaultSelectAll) => {
+                                    setDefaultSelectAll(defaultSelectAll.target.checked);
+                                }}
+                            >
+                                Default Select All
+                            </Checkbox>
                         </Form.Item>
 
                         <Space size="middle">
