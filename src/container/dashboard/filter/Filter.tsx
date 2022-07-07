@@ -157,11 +157,12 @@ const Filter: React.FC<CategoryProps> = () => {
     const loadAllFilter = async () => {
         try {
             setLoader(true);
-            const category = await getFilterWithValue({});
+            const category = await getFilterWithValue();
             console.log('category', category);
             setLoader(false);
 
             setFilterList([...category.payload.filter, ...category.payload.distribution]);
+            // setFilterList();
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -310,7 +311,8 @@ const Filter: React.FC<CategoryProps> = () => {
                                 onClick={() => {
                                     form1.validateFields().then((value) => {
                                         setSelectedCategory(value.parent);
-                                        axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
+                                        // axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
+                                        axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
                                         loadAllFilter();
                                         loadClassifiersFromServer();
                                         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
