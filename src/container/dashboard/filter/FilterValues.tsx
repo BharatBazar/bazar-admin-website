@@ -43,12 +43,7 @@ const columns = (onDelete, onUpdate, activate) => [
         key: '_id',
         render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
     },
-    {
-        title: 'Filter Value ' + ' type',
-        dataIndex: 'type',
-        key: '_id',
-        render: (text) => <a>{text}</a>,
-    },
+
     {
         title: 'Active',
         dataIndex: 'active',
@@ -335,7 +330,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
                                     //         : undefined,
                                     // });
                                     loadAllFilterItem({
-                                        parent: selectedCategory ? selectedCategory : undefined,
+                                        parent: selectedCategory || undefined,
                                     });
                                     loadClassifiersFromServer();
                                 } else {
@@ -398,13 +393,16 @@ const FilterValues: React.FC<CategoryProps> = () => {
                         <Form.Item label={'CustomerDescription'} name={'customerDescription'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
-                        <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
+                        <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        {/* <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
                             <Select allowClear disabled={update}>
                                 {classifier.map((classifier) => (
                                     <Option value={classifier}>{classifier}</Option>
                                 ))}
                             </Select>
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item name="active" valuePropName="active" wrapperCol={{ offset: 4 }}>
                             <Checkbox
