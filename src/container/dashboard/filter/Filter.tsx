@@ -154,14 +154,17 @@ const Filter: React.FC<CategoryProps> = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const loadAllFilter = async () => {
+    const loadAllFilter = async (parentValue) => {
         try {
             setLoader(true);
             const category = await getFilterWithValue();
-            console.log('category', category);
+            console.log('category', category.payload);
+            const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === parentValue);
+            console.log('GSF', getSingleFilterValue);
             setLoader(false);
 
-            setFilterList([...category.payload.filter, ...category.payload.distribution]);
+            // setFilterList([...category.payload.filter, ...category.payload.distribution]);
+            setFilterList([...getSingleFilterValue, ...category.payload.distribution]);
             // setFilterList();
         } catch (error) {
             errorShow(error.message);
@@ -169,16 +172,18 @@ const Filter: React.FC<CategoryProps> = () => {
         }
     };
     const createFilterInServer = async (data) => {
+        console.log('DDAATTAA', data);
         setLoader(true);
         try {
             const response = await createFilter({
-                ...data,
+                ...data.value,
+                parent: data.selectedCategory,
             });
 
             setLoader(false);
             if (response.status === 1) {
                 success('Filter' + ' created!');
-                loadAllFilter();
+                loadAllFilter(data.selectedCategory);
 
                 form.resetFields();
             }
@@ -299,7 +304,7 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
                             <Select allowClear showSearch optionFilterProp="children">
                                 {category.map((category) => (
-                                    <Option value={category.name}>{category.name}</Option>
+                                    <Option value={category._id}>{category.name}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
@@ -310,10 +315,11 @@ const Filter: React.FC<CategoryProps> = () => {
                                 style={{ marginTop: '20px' }}
                                 onClick={() => {
                                     form1.validateFields().then((value) => {
+                                        console.log('VALUE', value);
                                         setSelectedCategory(value.parent);
                                         // axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
                                         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-                                        loadAllFilter();
+                                        loadAllFilter(value.parent);
                                         loadClassifiersFromServer();
                                         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
                                     });
@@ -352,7 +358,7 @@ const Filter: React.FC<CategoryProps> = () => {
                             form1.validateFields().then(() => {
                                 form.validateFields().then((value) => {
                                     if (!update) {
-                                        createFilterInServer(value);
+                                        createFilterInServer({ value, selectedCategory });
                                     } else {
                                         updateFilterInServer(value);
                                     }
