@@ -79,24 +79,24 @@ const columns = (onDelete, onUpdate, activate) => [
             </div>
         ),
     },
-    {
-        title: 'Child',
-        key: 'values',
-        dataIndex: 'values',
-        render: (child) => (
-            <span>
-                {child.map(({ name }) => {
-                    // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+    // {
+    //     title: 'Child',
+    //     key: 'values',
+    //     dataIndex: 'values',
+    //     render: (child) => (
+    //         <span>
+    //             {child.map(({ name }) => {
+    //                 // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
 
-                    return (
-                        <Tag color={'blue'} key={name}>
-                            {name.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </span>
-        ),
-    },
+    //                 return (
+    //                     <Tag color={'blue'} key={name}>
+    //                         {name.toUpperCase()}
+    //                     </Tag>
+    //                 );
+    //             })}
+    //         </span>
+    //     ),
+    // },
     {
         title: 'Action',
         key: 'action',
@@ -154,17 +154,20 @@ const Filter: React.FC<CategoryProps> = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const loadAllFilter = async (parentValue) => {
+    const loadAllFilter = async (data) => {
         try {
             setLoader(true);
-            const category = await getFilterWithValue();
-            console.log('category', category.payload);
-            const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === parentValue);
+            // const category = await getFilterWithValue();
+            const category = await getFilter();
+            console.log('category', category);
+            const getSingleFilterValue = category.payload.filter((e) => e.parent === data.parent);
+            // const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === data.parent);
             console.log('GSF', getSingleFilterValue);
             setLoader(false);
 
             // setFilterList([...category.payload.filter, ...category.payload.distribution]);
-            setFilterList([...getSingleFilterValue, ...category.payload.distribution]);
+            // setFilterList([...getSingleFilterValue, ...category.distribution]);
+            setFilterList([...getSingleFilterValue]);
             // setFilterList();
         } catch (error) {
             errorShow(error.message);
@@ -320,7 +323,7 @@ const Filter: React.FC<CategoryProps> = () => {
                                         setSelectedCategory(value.parent);
                                         // axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.parent.toLowerCase()}`;
                                         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-                                        loadAllFilter(value.parent);
+                                        loadAllFilter(value);
                                         loadClassifiersFromServer();
                                         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
                                     });

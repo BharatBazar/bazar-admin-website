@@ -242,6 +242,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
             const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
             console.log('GSF', getSingleFilterValue);
             // setClassifier(response.payload);
+            setFilterList([...getSingleFilterValue]);
             setClassifier(getSingleFilterValue);
         } catch (error) {
             errorShow(error.message);
