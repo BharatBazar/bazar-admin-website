@@ -305,7 +305,7 @@ const Filter: React.FC<CategoryProps> = () => {
                         <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
                             <Select allowClear showSearch optionFilterProp="children">
                                 {category.map((category) => (
-                                    <Option value={category._id}>{category.name}</Option>
+                                    <Option value={category._id}>{category.type}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
