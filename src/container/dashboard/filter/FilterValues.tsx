@@ -135,10 +135,11 @@ const FilterValues: React.FC<CategoryProps> = () => {
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
+            console.log('DATA => ', data);
             setLoader(true);
             const category = await getCategory(data);
             setLoader(false);
-
+            console.log('LOAD FILTER ITEM => ', category.payload);
             setFilterList(category.payload);
         } catch (error) {
             errorShow(error.message);
@@ -188,10 +189,11 @@ const FilterValues: React.FC<CategoryProps> = () => {
     // To load all categories from backend which are avaialable in the market
     const loadCategoriesFromServer = async () => {
         try {
-            const response = await getProductCatelogue({ subCategoryExist: false });
+            const response = await getProductCatelogue();
 
             if (response.status === 1) {
-                setCategory(response.payload);
+                const getRealProduct = response.payload.filter((elem) => elem.child.length === 0);
+                setCategory(getRealProduct);
             }
         } catch (error) {
             errorShow(error.message);
@@ -223,7 +225,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
             setLoader(true);
             const response = await getFilter({});
             setLoader(false);
-
+            console.log('CLASSIFIER => ', response.payload);
             setClassifier(response.payload);
         } catch (error) {
             errorShow(error.message);
@@ -273,7 +275,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
-                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.toLowerCase()}`;
+                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
 
                                     loadAllFilter();
                                 }}
@@ -287,6 +289,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
+                                    console.log('VALUE => ', value);
                                     setSelectedCategory(value);
                                 }}
                             >
@@ -303,6 +306,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
                             style={{ marginTop: '20px' }}
                             onClick={() => {
                                 if (form1.getFieldValue('category')) {
+                                    console.log(classifier[selectedCategory], 'LL', selectedCategory);
                                     loadAllFilterItem({
                                         parent: classifier[selectedCategory]
                                             ? classifier[selectedCategory]._id
