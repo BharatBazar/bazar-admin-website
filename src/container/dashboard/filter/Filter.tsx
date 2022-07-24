@@ -186,6 +186,7 @@ const Filter: React.FC<CategoryProps> = () => {
                 loadAllFilter(data.selectedCategory);
 
                 form.resetFields();
+                setDefaultSelectAll(false);
             }
         } catch (error) {
             setLoader(false);
