@@ -169,7 +169,7 @@ const FilterValues: React.FC<CategoryProps> = () => {
                 });
 
                 form.resetFields();
-                // form1.resetFields();
+                form1.resetFields();
                 setActive(false);
             }
         } catch (error) {
