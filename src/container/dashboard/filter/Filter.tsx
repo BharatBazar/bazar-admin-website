@@ -158,9 +158,9 @@ const Filter: React.FC<CategoryProps> = () => {
         try {
             setLoader(true);
             // const category = await getFilterWithValue();
-            const category = await getFilter();
+            const category = await getFilterWithValue();
             console.log('category', category);
-            const getSingleFilterValue = category.payload.filter((e) => e.parent === data.parent);
+            const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === data.parent);
             // const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === data.parent);
             console.log('GSF', getSingleFilterValue);
             setLoader(false);
