@@ -404,13 +404,13 @@ const FilterValues: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
-                        <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
+                        {/* <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
                             <Select allowClear disabled={update}>
                                 {classifier.map((classifier) => (
                                     <Option value={classifier}>{classifier}</Option>
                                 ))}
                             </Select>
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item name="active" valuePropName="active" wrapperCol={{ offset: 4 }}>
                             <Checkbox
