@@ -53,6 +53,7 @@ export const menuList: menuItem[] = [
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },
+
             {
                 title: 'Filter Values',
                 path: '/filter/values',

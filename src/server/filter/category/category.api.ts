@@ -17,3 +17,7 @@ export function getCategory(data: Partial<IClassfier>): Promise<IRGetAllClassifi
 export function deleteCategory(data: Partial<IClassfier>): Promise<CommonApiResponse> {
     return axios.delete(`/classifiers/delete?_id=${data._id}`);
 }
+
+export function activateClassfier(data: Partial<IClassfier>): Promise<CommonApiResponse> {
+    return axios.patch('/classifiers/activate', data);
+}

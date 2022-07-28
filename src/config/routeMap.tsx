@@ -38,12 +38,16 @@ const SubCategory1 = Loadable({
 // Filter drawer
 
 const FilterValues = Loadable({
-    loader: () => import('../container/dashboard/filter/FilterValues'),
+    loader: () => import('../container/dashboard/filter/filterValues/FilterValues'),
     loading: Loading,
 });
 
 const Filter = Loadable({
-    loader: () => import('../container/dashboard/filter/Filter'),
+    loader: () => import('../container/dashboard/filter/filters/Filter'),
+    loading: Loading,
+});
+const FilterValue1 = Loadable({
+    loader: () => import('../container/dashboard/filter/FilterValues'),
     loading: Loading,
 });
 
@@ -85,6 +89,7 @@ export default [
         component: Filter,
         roles: ['admin', 'editor', 'guest'],
     },
+
     {
         path: '/filter/values',
         component: FilterValues,
