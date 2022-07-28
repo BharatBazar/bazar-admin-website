@@ -162,12 +162,12 @@ const Filter: React.FC<CategoryProps> = () => {
             console.log('category', category);
             const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === data.parent);
             // const getSingleFilterValue = category.payload.filter.filter((e) => e.parent === data.parent);
-            console.log('GSF', getSingleFilterValue);
+            // console.log('GSF', getSingleFilterValue);
             setLoader(false);
 
-            // setFilterList([...category.payload.filter, ...category.payload.distribution]);
+            setFilterList([...category.payload.filter, ...category.payload.distribution]);
             // setFilterList([...getSingleFilterValue, ...category.distribution]);
-            setFilterList([...getSingleFilterValue]);
+            // setFilterList([...getSingleFilterValue]);
             // setFilterList();
         } catch (error) {
             errorShow(error.message);

@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 import './layout.css';
 import { RouteComponentProps } from 'react-router-dom';
 import AppSider from './sider/Sider';
-import AppHeader from './header/header';
+import AppHeader from './header/Header';
 import AppContent from './content/Content';
 
 interface MainLayoutProps extends RouteComponentProps {}
