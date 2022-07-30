@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Checkbox, Form, Input, Space } from 'antd';
 import React from 'react';
 import AddUpdateForms from './forms/AddUpdateForms';
@@ -11,7 +13,9 @@ const AddUpdateFilter = ({
     setFilterList,
     filterList,
     loadAllFilterItem,
+    loadAllFilter,
     classifier,
+    loadAllFilterSubItem,
 }) => {
     return (
         <AddUpdateForms
@@ -24,6 +28,8 @@ const AddUpdateFilter = ({
             filterList={filterList}
             loadAllFilterItem={loadAllFilterItem}
             classifier={classifier}
+            loadAllFilter={loadAllFilter}
+            loadAllFilterSubItem={loadAllFilterSubItem}
         />
     );
 };

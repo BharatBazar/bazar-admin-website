@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Checkbox, Form, Input, Radio, Select, Space } from 'antd';
 import React from 'react';
@@ -11,7 +12,7 @@ import {
 } from '../../../../../server/filter/filter/fitler.api';
 import ProductView from '../ProductView/ProductView';
 
-const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory }) => {
+const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, setFilterList, loadAllFilterChild }) => {
     const [loader, setLoader] = React.useState(false);
     const [update, setUpdate] = React.useState(null);
     const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
@@ -70,8 +71,8 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory })
             setLoader(false);
 
             if (response.status === 1) {
-                success('Filter Updated');
-                loadAllFilter(selectedCategory);
+                success('Filter updated');
+                loadAllFilter({ parent: selectedCategory });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -91,7 +92,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory })
             if (response.status === 1) {
                 console.log('RESPONSE', response);
                 success(response.payload);
-                loadAllFilter({ parent: data._id });
+                loadAllFilterChild({ _id: data._id });
             }
         } catch (error) {
             setLoader(false);

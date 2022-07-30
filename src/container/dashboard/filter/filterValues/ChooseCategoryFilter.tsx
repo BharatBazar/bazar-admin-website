@@ -82,6 +82,25 @@ const ChooseCategoryFilter = () => {
         }
     };
 
+    const loadAllFilterSubItem = async (parentValue) => {
+        console.log('PARENTVALUE', parentValue);
+        try {
+            setLoader(true);
+            const response = await getFilter({});
+            setLoader(false);
+            console.log('CLASSIFIER => ', response.payload);
+            const getSingleFilterValue = response.payload.filter((e) => e._id === parentValue);
+            console.log('GSF', getSingleFilterValue);
+            // setClassifier(response.payload);
+            setClassifier(getSingleFilterValue);
+
+            setFilterList([...getSingleFilterValue]);
+        } catch (error) {
+            errorShow(error.message);
+            setLoader(false);
+        }
+    };
+
     React.useEffect(() => {
         loadCategoriesFromServer();
 
@@ -92,7 +111,7 @@ const ChooseCategoryFilter = () => {
 
     return (
         <>
-            <Card title={'Choose filter category'}>
+            <Card title={'Choose filter category'} loading={loader}>
                 <Form
                     form={form1}
                     labelCol={{ span: 5 }}
@@ -121,12 +140,11 @@ const ChooseCategoryFilter = () => {
                         <Select
                             allowClear
                             onChange={(value) => {
-                                console.log('VALUE => ', value);
                                 setSelectedCategory(value);
                             }}
                             optionFilterProp="children"
                         >
-                            {classifier.map((classifier, index) => (
+                            {classifier.map((classifier) => (
                                 <Option value={classifier._id}>{classifier.name}</Option>
                             ))}
                         </Select>
@@ -182,7 +200,9 @@ const ChooseCategoryFilter = () => {
                     setFilterList={setFilterList}
                     filterList={filterList}
                     loadAllFilterItem={loadAllFilterItem}
+                    loadAllFilter={loadAllFilter}
                     classifier={classifier}
+                    loadAllFilterSubItem={loadAllFilterSubItem}
                 />
             </div>
         </>

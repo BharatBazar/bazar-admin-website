@@ -56,6 +56,29 @@ const ChooseFilterCategory = () => {
         }
     };
 
+    const loadAllFilterChild = async (data) => {
+        console.log('_ID', data._id);
+        try {
+            setLoader(true);
+            setFilterList([]);
+
+            // const categories = await getFilterWithValue();
+            const categories = await getFilterWithValue();
+            console.log('category', categories);
+            const getSingleFilterValue = categories.payload.filter.filter((e) => e._id === data._id);
+            console.log('GSF', getSingleFilterValue);
+            setLoader(false);
+
+            // setFilterList([...category.payload.filter, ...category.payload.distribution]);
+            // setFilterList([...getSingleFilterValue, ...category.distribution]);
+            setFilterList([...getSingleFilterValue]);
+            // setFilterList();
+        } catch (error) {
+            errorShow(error.message);
+            setLoader(false);
+        }
+    };
+
     const loadClassifiersFromServer = async () => {
         try {
             const response = await getClassifier();
@@ -78,7 +101,7 @@ const ChooseFilterCategory = () => {
 
     return (
         <>
-            <Card title={'Choose filter category'}>
+            <Card title={'Choose filter category'} loading={loader}>
                 <Form
                     form={form1}
                     labelCol={{ span: 4 }}
@@ -137,6 +160,8 @@ const ChooseFilterCategory = () => {
                     setLoader={setLoader}
                     loadAllFilter={loadAllFilter}
                     selectedCategory={selectedCategory}
+                    setFilterList={setFilterList}
+                    loadAllFilterChild={loadAllFilterChild}
                 />
             </div>
         </>

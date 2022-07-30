@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Checkbox, Form, Input, Select, Space } from 'antd';
 import React from 'react';
@@ -23,6 +25,9 @@ const AddUpdateForms = ({
     filterList,
     loadAllFilterItem,
     classifier,
+    loadAllFilter,
+    loadAllFilterSubItem,
+    loadClassifiersFromServer,
 }) => {
     const [update, setUpdate] = React.useState(false);
     const [active, setActive] = React.useState(false);
@@ -91,10 +96,11 @@ const AddUpdateForms = ({
         }
     };
 
-    const updateFilterInServer = async (data) => {
+    const updateFilterInServer = async ({ value, selectedCategory }) => {
         setLoader(true);
+        console.log('UPFDATE', value);
         try {
-            const response = await updateCategory({ ...update, ...data });
+            const response = await updateCategory({ ...update, ...value });
             setLoader(false);
 
             if (response.status === 1) {
@@ -103,7 +109,8 @@ const AddUpdateForms = ({
                 // loadAllFilterItem({
                 //     type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
                 // });
-                loadAllFilterItem({ parent: data.parent });
+                // loadAllFilterItem({ parent: data.parent });
+                loadAllFilterItem({ parent: selectedCategory });
                 form.resetFields();
                 setUpdate(null);
             }
@@ -114,7 +121,7 @@ const AddUpdateForms = ({
     };
 
     const activateClassfierInServer = async (data: { _id: string; active: boolean }) => {
-        console.log('ACTIVE', data);
+        console.log('ACTIVE', data._id);
         setLoader(true);
         try {
             const response = await activateClassfier(data);
@@ -123,7 +130,7 @@ const AddUpdateForms = ({
             if (response.status === 1) {
                 console.log('RESPONSE', response);
                 success(response.payload);
-                loadAllFilterItem({ parent: data._id });
+                loadAllFilterItem({ parent: selectedCategory });
             }
         } catch (error) {
             setLoader(false);
@@ -147,7 +154,7 @@ const AddUpdateForms = ({
                                 if (!update) {
                                     createFilterInServer({ value, selectedCategory });
                                 } else {
-                                    updateFilterInServer(value);
+                                    updateFilterInServer({ value, selectedCategory });
                                 }
                             });
                         });
