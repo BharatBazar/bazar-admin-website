@@ -154,10 +154,10 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                     <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
                         <Input />
                     </Form.Item>
-
                     <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
                         <Input />
                     </Form.Item>
+
                     <Form.Item label="Mandatory" name="mandatory" rules={formRequiredRule}>
                         <Radio.Group>
                             <Radio value>{'Need to provide when launching product to market.'}</Radio>
@@ -191,7 +191,6 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                             Default Select All
                         </Checkbox>
                     </Form.Item>
-
                     <Space size="middle">
                         {update && (
                             <Button

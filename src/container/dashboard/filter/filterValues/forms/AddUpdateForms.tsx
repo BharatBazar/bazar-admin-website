@@ -30,7 +30,8 @@ const AddUpdateForms = ({
     loadClassifiersFromServer,
 }) => {
     const [update, setUpdate] = React.useState(false);
-    const [active, setActive] = React.useState(false);
+    const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
+    // const [active, setActive] = React.useState(false);
 
     const deleteCategoryListInServer = async (data) => {
         console.log('DELETE DATA', data);
@@ -56,7 +57,8 @@ const AddUpdateForms = ({
         formValue.customerImage = data.customerImage;
         formValue.customerName = data.customerName;
         formValue.customerDescription = data.customerDescription;
-        formValue.active = data.active;
+        formValue.defaultSelectAll = data.defaultSelectAll;
+        formValue.showSearch = data.showSearch;
         formValue.image = data.image;
         form.setFieldsValue(formValue);
         delete data.activate;
@@ -66,6 +68,7 @@ const AddUpdateForms = ({
     };
 
     const createFilterInServer = async (data) => {
+        console.log('CREATE DATA', data);
         setLoader(true);
         try {
             const filterItem = {
@@ -88,7 +91,7 @@ const AddUpdateForms = ({
 
                 form.resetFields();
                 // form1.resetFields();
-                setActive(false);
+                // setActive(false);
             }
         } catch (error) {
             setLoader(false);
@@ -138,6 +141,8 @@ const AddUpdateForms = ({
         }
     };
 
+    const data = [1, 2, 3, 4, 5];
+
     return (
         <>
             <Card title="Add/Update Filter Item" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>
@@ -179,24 +184,29 @@ const AddUpdateForms = ({
                     <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
                         <Input />
                     </Form.Item>
-                    {/* <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
-                    <Select allowClear disabled={update}>
-                        {classifier.map((classifier) => (
-                            <Option value={classifier}>{classifier}</Option>
-                        ))}
-                    </Select>
-                </Form.Item> */}
 
-                    {/* <Form.Item name="active" valuePropName="active" wrapperCol={{ offset: 4 }}>
+                    <Form.Item
+                        style={{ flex: 1 }}
+                        label="Search Classifier:"
+                        name="showSearch"
+                        rules={formRequiredRule}
+                    >
+                        <Select allowClear disabled={update}>
+                            {classifier.map((classifier) => (
+                                <Option value={true}>{classifier}</Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="Default select all" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
                         <Checkbox
-                            checked={active}
-                            onChange={(active) => {
-                                setActive(active.target.checked);
+                            checked={defaultSelectAll}
+                            onChange={(defaultSelectAll) => {
+                                setDefaultSelectAll(defaultSelectAll.target.checked);
                             }}
                         >
-                            Active
+                            Default select all
                         </Checkbox>
-                    </Form.Item> */}
+                    </Form.Item>
                     <Space size="middle">
                         {update && (
                             <Button

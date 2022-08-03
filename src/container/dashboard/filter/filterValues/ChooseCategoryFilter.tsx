@@ -63,7 +63,7 @@ const ChooseCategoryFilter = () => {
             errorShow(error.message);
         }
     };
-    const loadAllFilter = async (parentValue) => {
+    const loadAllFilter = async (parentValue, number) => {
         console.log('PARENTVALUE', parentValue);
         try {
             setLoader(true);
@@ -73,9 +73,17 @@ const ChooseCategoryFilter = () => {
             const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
             console.log('GSF', getSingleFilterValue);
             // setClassifier(response.payload);
-            setClassifier(getSingleFilterValue);
+            if (getSingleFilterValue.length === 0) {
+                errorShow('No filter to show');
+            } else {
+                setClassifier(getSingleFilterValue);
+            }
 
-            setFilterList([...getSingleFilterValue]);
+            if (number === 2) {
+                setFilterList([]);
+            } else {
+                setFilterList([...getSingleFilterValue]);
+            }
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -127,7 +135,7 @@ const ChooseCategoryFilter = () => {
                             onChange={(value) => {
                                 axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
 
-                                loadAllFilter(value);
+                                loadAllFilter(value, 2);
                             }}
                             onClick={() => form1.setFieldsValue({ type: '' })}
                         >
@@ -138,6 +146,7 @@ const ChooseCategoryFilter = () => {
                     </Form.Item>
                     <Form.Item style={{ flex: 1 }} label="Choose filter :" name="type" rules={formRequiredRule}>
                         <Select
+                            notFoundContent="No data"
                             allowClear
                             onChange={(value) => {
                                 setSelectedCategory(value);
