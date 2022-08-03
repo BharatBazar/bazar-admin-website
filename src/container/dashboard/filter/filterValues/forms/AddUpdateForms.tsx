@@ -31,6 +31,7 @@ const AddUpdateForms = ({
 }) => {
     const [update, setUpdate] = React.useState(false);
     const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
+    const [showSearch, setShowSearch] = React.useState(false);
     // const [active, setActive] = React.useState(false);
 
     const deleteCategoryListInServer = async (data) => {
@@ -57,8 +58,6 @@ const AddUpdateForms = ({
         formValue.customerImage = data.customerImage;
         formValue.customerName = data.customerName;
         formValue.customerDescription = data.customerDescription;
-        formValue.defaultSelectAll = data.defaultSelectAll;
-        formValue.showSearch = data.showSearch;
         formValue.image = data.image;
         form.setFieldsValue(formValue);
         delete data.activate;
@@ -185,28 +184,6 @@ const AddUpdateForms = ({
                         <Input />
                     </Form.Item>
 
-                    <Form.Item
-                        style={{ flex: 1 }}
-                        label="Search Classifier:"
-                        name="showSearch"
-                        rules={formRequiredRule}
-                    >
-                        <Select allowClear disabled={update}>
-                            {classifier.map((classifier) => (
-                                <Option value={true}>{classifier}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="Default select all" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
-                        <Checkbox
-                            checked={defaultSelectAll}
-                            onChange={(defaultSelectAll) => {
-                                setDefaultSelectAll(defaultSelectAll.target.checked);
-                            }}
-                        >
-                            Default select all
-                        </Checkbox>
-                    </Form.Item>
                     <Space size="middle">
                         {update && (
                             <Button

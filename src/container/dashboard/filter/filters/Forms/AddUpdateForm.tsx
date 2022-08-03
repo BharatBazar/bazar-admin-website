@@ -16,6 +16,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
     const [loader, setLoader] = React.useState(false);
     const [update, setUpdate] = React.useState(null);
     const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
+    const [showSearch, setShowSearch] = React.useState(false);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -33,6 +34,8 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
         formValue.customerHeading = data.customerHeading;
         formValue.customerDescription = data.customerDescription;
         formValue.customerImage = data.customerImage;
+        formValue.showSearch = data.showSearch;
+        formValue.defaultSelectAll = data.defaultSelectAll;
         formValue.key = data.key;
         form.setFieldsValue(formValue);
         delete data.activate;
@@ -181,6 +184,18 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                             <Radio value={2}>{'2 is for category under higher filter like size in color.'}</Radio>
                         </Radio.Group>
                     </Form.Item>
+                    <Form.Item name="showSearch" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
+                        <Checkbox
+                            checked={showSearch}
+                            onChange={(showSearch) => {
+                                setShowSearch(showSearch.target.checked);
+                                console.log(showSearch.target.checked);
+                            }}
+                        >
+                            Show Search
+                        </Checkbox>
+                    </Form.Item>
+
                     <Form.Item name="defaultSelectAll" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
                         <Checkbox
                             checked={defaultSelectAll}
