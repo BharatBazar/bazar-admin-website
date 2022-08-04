@@ -19,6 +19,7 @@ const ChooseCategoryFilter = () => {
     const [category, setCategory] = React.useState([]);
     const [filterList, setFilterList] = React.useState([]);
     const [loader, setLoader] = React.useState(false);
+    const [showForm, setShowForm] = React.useState(false);
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
@@ -166,6 +167,7 @@ const ChooseCategoryFilter = () => {
                         style={{ marginTop: '20px' }}
                         onClick={() => {
                             if (form1.getFieldValue('category')) {
+                                setShowForm(true);
                                 console.log(classifier[selectedCategory], 'LL', selectedCategory);
                                 // loadAllFilterItem({
                                 //     parent: classifier[selectedCategory]
@@ -189,6 +191,7 @@ const ChooseCategoryFilter = () => {
                         htmlType="submit"
                         style={{ marginTop: '20px' }}
                         onClick={() => {
+                            setShowForm(false);
                             form1.resetFields();
                             form.resetFields();
                             setFilterList([]);
@@ -200,19 +203,21 @@ const ChooseCategoryFilter = () => {
                 </Space>
             </Card>
             <div>
-                <AddUpdateFilter
-                    form={form}
-                    form1={form1}
-                    setLoader={setLoader}
-                    loader={loader}
-                    selectedCategory={selectedCategory}
-                    setFilterList={setFilterList}
-                    filterList={filterList}
-                    loadAllFilterItem={loadAllFilterItem}
-                    loadAllFilter={loadAllFilter}
-                    classifier={classifier}
-                    loadAllFilterSubItem={loadAllFilterSubItem}
-                />
+                {showForm ? (
+                    <AddUpdateFilter
+                        form={form}
+                        form1={form1}
+                        setLoader={setLoader}
+                        loader={loader}
+                        selectedCategory={selectedCategory}
+                        setFilterList={setFilterList}
+                        filterList={filterList}
+                        loadAllFilterItem={loadAllFilterItem}
+                        loadAllFilter={loadAllFilter}
+                        classifier={classifier}
+                        loadAllFilterSubItem={loadAllFilterSubItem}
+                    />
+                ) : null}
             </div>
         </>
     );

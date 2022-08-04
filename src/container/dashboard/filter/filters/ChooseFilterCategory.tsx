@@ -143,6 +143,7 @@ const ChooseFilterCategory = () => {
                             onClick={() => {
                                 form1.resetFields();
                                 form.resetFields();
+                                setSelectedCategory(null);
                                 setUpdate(null);
                                 setFilterList([]);
                                 setClassifier([]);
@@ -154,15 +155,17 @@ const ChooseFilterCategory = () => {
                 </Form>
             </Card>
             <div>
-                <AddAndUpdateFilter
-                    form={form}
-                    filterList={filterList}
-                    setLoader={setLoader}
-                    loadAllFilter={loadAllFilter}
-                    selectedCategory={selectedCategory}
-                    setFilterList={setFilterList}
-                    loadAllFilterChild={loadAllFilterChild}
-                />
+                {selectedCategory ? (
+                    <AddAndUpdateFilter
+                        form={form}
+                        filterList={filterList}
+                        setLoader={setLoader}
+                        loadAllFilter={loadAllFilter}
+                        selectedCategory={selectedCategory}
+                        setFilterList={setFilterList}
+                        loadAllFilterChild={loadAllFilterChild}
+                    />
+                ) : null}
             </div>
         </>
     );
