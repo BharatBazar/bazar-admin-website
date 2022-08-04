@@ -93,8 +93,8 @@ const ProductView = ({
             render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
         },
         {
-            title: 'Active',
-            dataIndex: 'active',
+            title: 'Default Select All',
+            dataIndex: 'defaultSelectAll',
             width: 150,
             key: '_id',
             render: (value) => (
@@ -103,24 +103,18 @@ const ProductView = ({
                 </div>
             ),
         },
-        // {
-        //     title: 'Child',
-        //     key: 'values',
-        //     dataIndex: 'values',
-        //     render: (child) => (
-        //         <span>
-        //             {child.map(({ name }) => {
-        //                 // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
+        {
+            title: 'Show Search',
+            dataIndex: 'showSearch',
+            width: 150,
+            key: '_id',
+            render: (value) => (
+                <div style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Checkbox value={value} checked={value} style={{ alignSelf: 'center' }} />
+                </div>
+            ),
+        },
 
-        //                 return (
-        //                     <Tag color={'blue'} key={name}>
-        //                         {name.toUpperCase()}
-        //                     </Tag>
-        //                 );
-        //             })}
-        //         </span>
-        //     ),
-        // },
         {
             title: 'Action',
             key: 'action',

@@ -157,9 +157,15 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                     <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
-                        <Input />
-                    </Form.Item>
+                    {!update ? (
+                        <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                    ) : (
+                        <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
+                            <Input disabled={true} />
+                        </Form.Item>
+                    )}
 
                     <Form.Item label="Mandatory" name="mandatory" rules={formRequiredRule}>
                         <Radio.Group>
@@ -191,6 +197,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                                 setShowSearch(showSearch.target.checked);
                                 console.log(showSearch.target.checked);
                             }}
+                            value={showSearch}
                         >
                             Show Search
                         </Checkbox>
