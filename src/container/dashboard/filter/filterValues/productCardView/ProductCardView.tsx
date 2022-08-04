@@ -23,13 +23,14 @@ const ProductCardView = ({
             dataIndex: 'description',
             key: '_id',
             fixed: 'left',
-            width: 150,
+            width: 250,
             render: (text) => <a>{text}</a>,
         },
         {
             title: 'Filter Value ' + ' image',
             dataIndex: 'image',
             key: '_id',
+            width: 150,
             render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
         },
         {
@@ -42,6 +43,7 @@ const ProductCardView = ({
             title: 'Customer description',
             dataIndex: 'customerDescription',
             key: '_id',
+            width: 250,
             render: (text) => <a>{text}</a>,
         },
         {

@@ -31,8 +31,8 @@ const ProductView = ({
             title: ' description',
             dataIndex: 'description',
             key: '_id',
-            width: 100,
-            fixed: 'left',
+            width: 250,
+
             render: (text) => <a>{text}</a>,
         },
         {
@@ -53,7 +53,7 @@ const ProductView = ({
             title: ' customer description',
             dataIndex: 'customerDescription',
             key: '_id',
-            width: 110,
+            width: 250,
             render: (text) => <a>{text}</a>,
         },
         {
@@ -68,7 +68,7 @@ const ProductView = ({
             title: 'Filter ' + ' type',
             dataIndex: 'key',
             key: '_id',
-            width: 100,
+            width: 200,
             render: (text) => <a>{text}</a>,
         },
         {

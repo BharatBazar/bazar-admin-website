@@ -36,6 +36,7 @@ const columns = (onDelete, onUpdate, activate) => [
         title: 'Filter ' + ' description',
         dataIndex: 'description',
         key: '_id',
+        width: 300,
         render: (text) => <a>{text}</a>,
     },
     {
@@ -100,6 +101,7 @@ const columns = (onDelete, onUpdate, activate) => [
     {
         title: 'Action',
         key: 'action',
+        fixed: 'right',
         render: (text, record) => (
             <Space size="middle">
                 <Button
