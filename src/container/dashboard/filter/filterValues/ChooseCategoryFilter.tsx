@@ -76,6 +76,7 @@ const ChooseCategoryFilter = () => {
             // setClassifier(response.payload);
             if (getSingleFilterValue.length === 0) {
                 errorShow('No filter to show');
+                setClassifier([]);
             } else {
                 setClassifier(getSingleFilterValue);
             }

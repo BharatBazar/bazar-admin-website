@@ -56,7 +56,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
             setLoader(false);
             if (response.status === 1) {
                 success('Filter' + ' created!');
-                loadAllFilter(data.selectedCategory);
+                loadAllFilter({ parent: data.selectedCategory });
 
                 form.resetFields();
                 setDefaultSelectAll(false);
