@@ -58,7 +58,7 @@ const ChooseCategoryFilter = () => {
             const response = await getClassifier();
 
             if (response.status === 1) {
-                setClassifier(response.payload);
+                // setClassifier(response.payload);
             }
         } catch (error) {
             errorShow(error.message);
@@ -148,10 +148,10 @@ const ChooseCategoryFilter = () => {
                     </Form.Item>
                     <Form.Item style={{ flex: 1 }} label="Choose filter :" name="type" rules={formRequiredRule}>
                         <Select
-                            notFoundContent="No data"
                             allowClear
                             onChange={(value) => {
                                 setSelectedCategory(value);
+                                loadAllFilterItem({ parent: value });
                             }}
                             optionFilterProp="children"
                         >

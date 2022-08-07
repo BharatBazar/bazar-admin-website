@@ -73,8 +73,6 @@ const AddUpdateForms = ({
             const filterItem = {
                 ...data.value,
                 parent: data.selectedCategory,
-                // type: classifier[selectedCategory].type,
-                // parent: classifier[selectedCategory]._id,
             };
             const response = await createCategory(filterItem);
 
@@ -82,9 +80,6 @@ const AddUpdateForms = ({
             if (response.status === 1) {
                 success('Classifier' + ' created!');
                 loadAllFilterItem({
-                    // type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
-                    // type: classifier.length > 0 && selectedCategory ? classifier.type : undefined,
-
                     parent: selectedCategory || undefined,
                 });
 
