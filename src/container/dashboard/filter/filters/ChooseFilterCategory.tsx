@@ -1,5 +1,5 @@
 import { UndoOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Select, Space } from 'antd';
+import { Button, Card, Form, Select, Space, Modal } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { errorShow } from '../../../../components/ALert';
@@ -10,6 +10,7 @@ import { IFilter } from '../../../../server/filter/filter/filter.interface';
 import { getProductCatelogue } from '../../../../server/catalogue/catalogue.api';
 import { getClassifier, getFilterWithValue } from '../../../../server/filter/filter/fitler.api';
 import AddAndUpdateFilter from './AddAndUpdateFilter';
+import FilterModal from '../filterModal/FilterModal';
 
 const ChooseFilterCategory = () => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
@@ -21,6 +22,20 @@ const ChooseFilterCategory = () => {
     const [update, setUpdate] = React.useState(null);
     const [classifier, setClassifier] = React.useState([]);
     const [showForm, setShowForm] = React.useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
     const loadCatalogueFromServer = async () => {
         try {
             const response = await getProductCatelogue();
@@ -135,18 +150,19 @@ const ChooseFilterCategory = () => {
                             type={'primary'}
                             htmlType="submit"
                             style={{ marginTop: '20px' }}
-                            onClick={() => {
-                                form1.validateFields().then((value) => {
-                                    console.log('VALUE', value);
-                                    setSelectedCategory(value.parent);
-                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-                                    loadAllFilter(value);
-                                    loadClassifiersFromServer();
-                                    // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
-                                });
-                            }}
+                            // onClick={() => {
+                            //     form1.validateFields().then((value) => {
+                            //         console.log('VALUE', value);
+                            //         setSelectedCategory(value.parent);
+                            //         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
+                            //         loadAllFilter(value);
+                            //         loadClassifiersFromServer();
+                            //         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
+                            //     });
+                            // }}
+                            onClick={showModal}
                         >
-                            {'Apply Filter'}
+                            {'Create'}
                         </Button>
                         <Button
                             type={'default'}
@@ -182,6 +198,22 @@ const ChooseFilterCategory = () => {
                         setShowForm={setShowForm}
                     />
                 ) : null}
+            </div>
+            <div>
+                <Modal title="Category" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                    <FilterModal
+                        form={form}
+                        filterList={filterList}
+                        setLoader={setLoader}
+                        loadAllFilter={loadAllFilter}
+                        selectedCategory={selectedCategory}
+                        setFilterList={setFilterList}
+                        loadAllFilterChild={loadAllFilterChild}
+                        showForm={showForm}
+                        setShowForm={setShowForm}
+                        setModal={setIsModalVisible}
+                    />
+                </Modal>
             </div>
         </>
     );
