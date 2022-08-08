@@ -69,6 +69,8 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
 
     const updateFilterInServer = async ({ value, selectedCategory }) => {
         setLoader(true);
+        console.log('UPT', value);
+
         try {
             const response = await updateFilter({ ...update, ...value });
             setLoader(false);
@@ -190,14 +192,13 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                             <Radio value={2}>{'2 is for category under higher filter like size in color.'}</Radio>
                         </Radio.Group>
                     </Form.Item>
-                    <Form.Item name="showSearch" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
+                    <Form.Item name="showSearch" valuePropName="showSearch" wrapperCol={{ offset: 4 }}>
                         <Checkbox
                             checked={showSearch}
                             onChange={(showSearch) => {
                                 setShowSearch(showSearch.target.checked);
                                 console.log(showSearch.target.checked);
                             }}
-                            value={showSearch}
                         >
                             Show Search
                         </Checkbox>
