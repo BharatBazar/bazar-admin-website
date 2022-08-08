@@ -47,11 +47,16 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
     const createFilterInServer = async (data) => {
         console.log('DDAATTAA', data);
         setLoader(true);
+        const dataToSend = {
+            ...data.value,
+            parent: data.selectedCategory,
+            defaultSelectAll,
+            showSearch,
+        };
+
+        console.log('data', dataToSend);
         try {
-            const response = await createFilter({
-                ...data.value,
-                parent: data.selectedCategory,
-            });
+            const response = await createFilter(dataToSend);
 
             setLoader(false);
             if (response.status === 1) {
@@ -70,7 +75,13 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
     const updateFilterInServer = async ({ value, selectedCategory }) => {
         setLoader(true);
         try {
-            const response = await updateFilter({ ...update, ...value });
+            const data = {
+                ...value,
+                // parent: data.selectedCategory,
+                defaultSelectAll,
+                showSearch,
+            };
+            const response = await updateFilter({ ...update, ...data });
             setLoader(false);
 
             if (response.status === 1) {
@@ -129,6 +140,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                     onFinish={() => {
                         form.validateFields().then(() => {
                             form.validateFields().then((value) => {
+                                console.log('values', value);
                                 if (!update) {
                                     createFilterInServer({ value, selectedCategory });
                                 } else {
@@ -163,7 +175,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                         </Form.Item>
                     ) : (
                         <Form.Item label={'Filter Type (unique)'} name={'key'} rules={formRequiredRule}>
-                            <Input disabled={true} />
+                            <Input disabled />
                         </Form.Item>
                     )}
 
@@ -190,7 +202,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                             <Radio value={2}>{'2 is for category under higher filter like size in color.'}</Radio>
                         </Radio.Group>
                     </Form.Item>
-                    <Form.Item name="showSearch" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
+                    <Form.Item name="showSearch" wrapperCol={{ offset: 4 }}>
                         <Checkbox
                             checked={showSearch}
                             onChange={(showSearch) => {
@@ -203,7 +215,7 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
                         </Checkbox>
                     </Form.Item>
 
-                    <Form.Item name="defaultSelectAll" valuePropName="defaultSelectAll" wrapperCol={{ offset: 4 }}>
+                    <Form.Item name="defaultSelectAll" wrapperCol={{ offset: 4 }}>
                         <Checkbox
                             checked={defaultSelectAll}
                             onChange={(defaultSelectAll) => {
