@@ -110,7 +110,7 @@ const ChooseFilterCategory = () => {
                     layout="horizontal"
                     initialValues={{ remember: true }}
                 >
-                    <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
+                    <Form.Item style={{ flex: 1 }} label="Parent :" name="parent">
                         <Select allowClear showSearch optionFilterProp="children">
                             {category.map((category) => (
                                 <Option value={category._id}>{category.type}</Option>

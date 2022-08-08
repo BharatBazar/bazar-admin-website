@@ -62,7 +62,8 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
             if (response.status === 1) {
                 success('Filter' + ' created!');
                 loadAllFilter({ parent: data.selectedCategory });
-
+                setDefaultSelectAll(undefined);
+                setShowSearch(undefined);
                 form.resetFields();
                 setDefaultSelectAll(false);
             }
@@ -87,6 +88,8 @@ const AddAndUpdateForm = ({ form, filterList, loadAllFilter, selectedCategory, s
             if (response.status === 1) {
                 success('Filter updated');
                 loadAllFilter({ parent: selectedCategory });
+                setDefaultSelectAll(undefined);
+                setShowSearch(undefined);
                 form.resetFields();
                 setUpdate(null);
             }
