@@ -10,6 +10,8 @@ const AddAndUpdateFilter = ({
     selectedCategory,
     setFilterList,
     loadAllFilterChild,
+    setShowForm,
+    showForm,
 }) => {
     return (
         <AddAndUpdateForm
@@ -20,6 +22,8 @@ const AddAndUpdateFilter = ({
             selectedCategory={selectedCategory}
             setFilterList={setFilterList}
             loadAllFilterChild={loadAllFilterChild}
+            showForm={showForm}
+            setShowForm={setShowForm}
         />
     );
 };

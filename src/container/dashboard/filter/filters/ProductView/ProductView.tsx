@@ -160,6 +160,7 @@ const ProductView = ({
             columns={columns(deleteCategoryListInServer, onClickUpdateInRow, activateFilterInServer)}
             dataSource={filterList}
             scroll={{ x: 1300 }}
+            style={{ marginTop: 30 }}
         />
     );
 };

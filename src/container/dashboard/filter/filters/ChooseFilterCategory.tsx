@@ -20,7 +20,7 @@ const ChooseFilterCategory = () => {
     const [filterList, setFilterList] = React.useState([]);
     const [update, setUpdate] = React.useState(null);
     const [classifier, setClassifier] = React.useState([]);
-
+    const [showForm, setShowForm] = React.useState(false);
     const loadCatalogueFromServer = async () => {
         try {
             const response = await getProductCatelogue();
@@ -44,6 +44,9 @@ const ChooseFilterCategory = () => {
             console.log('category', categories);
             const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
             console.log('GSF', getSingleFilterValue);
+            if (getSingleFilterValue.length > 0) {
+                setShowForm(true);
+            }
             setLoader(false);
 
             // setFilterList([...category.payload.filter, ...category.payload.distribution]);
@@ -51,6 +54,7 @@ const ChooseFilterCategory = () => {
             setFilterList([...getSingleFilterValue]);
             // setFilterList();
         } catch (error) {
+            setShowForm(false);
             errorShow(error.message);
             setLoader(false);
         }
@@ -111,7 +115,16 @@ const ChooseFilterCategory = () => {
                     initialValues={{ remember: true }}
                 >
                     <Form.Item style={{ flex: 1 }} label="Parent :" name="parent">
-                        <Select allowClear showSearch optionFilterProp="children">
+                        <Select
+                            allowClear
+                            showSearch
+                            onChange={(value) => {
+                                axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
+                                setSelectedCategory(value);
+                                loadAllFilter({ parent: value });
+                            }}
+                            optionFilterProp="children"
+                        >
                             {category.map((category) => (
                                 <Option value={category._id}>{category.type}</Option>
                             ))}
@@ -141,6 +154,7 @@ const ChooseFilterCategory = () => {
                             htmlType="submit"
                             style={{ marginTop: '20px' }}
                             onClick={() => {
+                                setShowForm(false);
                                 form1.resetFields();
                                 form.resetFields();
                                 setSelectedCategory(null);
@@ -155,7 +169,7 @@ const ChooseFilterCategory = () => {
                 </Form>
             </Card>
             <div>
-                {selectedCategory ? (
+                {showForm === true ? (
                     <AddAndUpdateFilter
                         form={form}
                         filterList={filterList}
@@ -164,6 +178,8 @@ const ChooseFilterCategory = () => {
                         selectedCategory={selectedCategory}
                         setFilterList={setFilterList}
                         loadAllFilterChild={loadAllFilterChild}
+                        showForm={showForm}
+                        setShowForm={setShowForm}
                     />
                 ) : null}
             </div>
