@@ -16,8 +16,6 @@ const ProductView = ({
     loadAllFilter,
     deleteCategoryListInServer,
 }) => {
-    console.log('FL', filterList);
-
     const columns = (onDelete, onUpdate, activate) => [
         {
             title: 'Filter' + ' name',

@@ -145,61 +145,62 @@ const ChooseFilterCategory = () => {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Space>
-                        <Button
-                            type={'primary'}
-                            htmlType="submit"
-                            style={{ marginTop: '20px' }}
-                            // onClick={() => {
-                            //     form1.validateFields().then((value) => {
-                            //         console.log('VALUE', value);
-                            //         setSelectedCategory(value.parent);
-                            //         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-                            //         loadAllFilter(value);
-                            //         loadClassifiersFromServer();
-                            //         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
-                            //     });
-                            // }}
-                            onClick={showModal}
-                        >
-                            {'Create'}
-                        </Button>
-                        <Button
-                            type={'default'}
-                            icon={<UndoOutlined />}
-                            htmlType="submit"
-                            style={{ marginTop: '20px' }}
-                            onClick={() => {
-                                setShowForm(false);
-                                form1.resetFields();
-                                form.resetFields();
-                                setSelectedCategory(null);
-                                setUpdate(null);
-                                setFilterList([]);
-                                setClassifier([]);
-                            }}
-                        >
-                            {'Reset Filter'}
-                        </Button>
-                    </Space>
+                    {showForm === true ? (
+                        <Space>
+                            <Button
+                                type={'primary'}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                // onClick={() => {
+                                //     form1.validateFields().then((value) => {
+                                //         console.log('VALUE', value);
+                                //         setSelectedCategory(value.parent);
+                                //         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
+                                //         loadAllFilter(value);
+                                //         loadClassifiersFromServer();
+                                //         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
+                                //     });
+                                // }}
+                                // onClick={showModal}
+                            >
+                                {'Create'}
+                            </Button>
+                            <Button
+                                type={'default'}
+                                icon={<UndoOutlined />}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                onClick={() => {
+                                    setShowForm(false);
+                                    form1.resetFields();
+                                    form.resetFields();
+                                    setSelectedCategory(null);
+                                    setUpdate(null);
+                                    setFilterList([]);
+                                    setClassifier([]);
+                                }}
+                            >
+                                {'Reset Filter'}
+                            </Button>
+                        </Space>
+                    ) : null}
                 </Form>
             </Card>
             <div>
-                {showForm === true ? (
-                    <AddAndUpdateFilter
-                        form={form}
-                        filterList={filterList}
-                        setLoader={setLoader}
-                        loadAllFilter={loadAllFilter}
-                        selectedCategory={selectedCategory}
-                        setFilterList={setFilterList}
-                        loadAllFilterChild={loadAllFilterChild}
-                        showForm={showForm}
-                        setShowForm={setShowForm}
-                    />
-                ) : null}
+                <AddAndUpdateFilter
+                    form={form}
+                    filterList={filterList}
+                    setLoader={setLoader}
+                    loadAllFilter={loadAllFilter}
+                    selectedCategory={selectedCategory}
+                    setFilterList={setFilterList}
+                    loadAllFilterChild={loadAllFilterChild}
+                    showForm={showForm}
+                    setShowForm={setShowForm}
+                    showModal={showModal}
+                />
             </div>
-            <div>
+            {/* <div>
                 <Modal title="Category" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                     <FilterModal
                         form={form}
@@ -214,7 +215,7 @@ const ChooseFilterCategory = () => {
                         setModal={setIsModalVisible}
                     />
                 </Modal>
-            </div>
+            </div> */}
         </>
     );
 };
