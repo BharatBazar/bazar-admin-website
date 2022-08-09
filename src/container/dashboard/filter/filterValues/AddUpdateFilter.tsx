@@ -16,6 +16,8 @@ const AddUpdateFilter = ({
     loadAllFilter,
     classifier,
     loadAllFilterSubItem,
+    showFilterForm,
+    setShowFilterForm,
 }) => {
     return (
         <AddUpdateForms
@@ -30,6 +32,8 @@ const AddUpdateFilter = ({
             classifier={classifier}
             loadAllFilter={loadAllFilter}
             loadAllFilterSubItem={loadAllFilterSubItem}
+            showFilterForm={showFilterForm}
+            setShowFilterForm={setShowFilterForm}
         />
     );
 };

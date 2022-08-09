@@ -28,6 +28,8 @@ const AddUpdateForms = ({
     loadAllFilter,
     loadAllFilterSubItem,
     loadClassifiersFromServer,
+    showFilterForm,
+    setShowFilterForm,
 }) => {
     const [update, setUpdate] = React.useState(false);
     const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
@@ -52,6 +54,7 @@ const AddUpdateForms = ({
     };
 
     const onClickUpdateInRow = (data: IFilter) => {
+        setShowFilterForm(!showFilterForm);
         const formValue: Partial<IFilter> = {};
         formValue.name = data.name;
         formValue.description = data.description;
@@ -139,67 +142,75 @@ const AddUpdateForms = ({
 
     return (
         <>
-            <Card title="Add/Update Filter Item" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>
-                <Form
-                    form={form}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 14 }}
-                    name="basic"
-                    layout="horizontal"
-                    initialValues={{ remember: true }}
-                    onFinish={() => {
-                        form1.validateFields().then(() => {
-                            form.validateFields().then((value) => {
-                                if (!update) {
-                                    createFilterInServer({ value, selectedCategory });
-                                } else {
-                                    updateFilterInServer({ value, selectedCategory });
-                                }
-                            });
-                        });
-                    }}
-                    // onFinishFailed={onFinishFailed}
-                >
-                    <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
-                        <Input.TextArea showCount maxLength={100} />
-                    </Form.Item>
-                    <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label={'CustomerName'} name={'customerName'} rules={formRequiredRule}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label={'CustomerDescription'} name={'customerDescription'} rules={formRequiredRule}>
-                        <Input.TextArea showCount maxLength={100} />
-                    </Form.Item>
-                    <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
-                        <Input />
-                    </Form.Item>
-
-                    <Space size="middle">
-                        {update && (
-                            <Button
-                                type={'default'}
-                                icon={<UndoOutlined />}
-                                htmlType="submit"
-                                style={{ marginTop: '20px' }}
-                                onClick={() => {
-                                    setUpdate(null);
-                                    form.resetFields();
-                                }}
+            {showFilterForm === true ? (
+                <>
+                    <Card title="Add/Update Filter Item" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>
+                        <Form
+                            form={form}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 14 }}
+                            name="basic"
+                            layout="horizontal"
+                            initialValues={{ remember: true }}
+                            onFinish={() => {
+                                form1.validateFields().then(() => {
+                                    form.validateFields().then((value) => {
+                                        if (!update) {
+                                            createFilterInServer({ value, selectedCategory });
+                                        } else {
+                                            updateFilterInServer({ value, selectedCategory });
+                                        }
+                                    });
+                                });
+                            }}
+                            // onFinishFailed={onFinishFailed}
+                        >
+                            <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
+                                <Input.TextArea showCount maxLength={100} />
+                            </Form.Item>
+                            <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label={'CustomerName'} name={'customerName'} rules={formRequiredRule}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                label={'CustomerDescription'}
+                                name={'customerDescription'}
+                                rules={formRequiredRule}
                             >
-                                {'Reset'}
-                            </Button>
-                        )}
-                        <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
-                            {update ? 'Save' : 'Create'}
-                        </Button>
-                    </Space>
-                </Form>
-            </Card>
+                                <Input.TextArea showCount maxLength={100} />
+                            </Form.Item>
+                            <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
+                                <Input />
+                            </Form.Item>
+
+                            <Space size="middle">
+                                {update && (
+                                    <Button
+                                        type={'default'}
+                                        icon={<UndoOutlined />}
+                                        htmlType="submit"
+                                        style={{ marginTop: '20px' }}
+                                        onClick={() => {
+                                            setUpdate(null);
+                                            form.resetFields();
+                                        }}
+                                    >
+                                        {'Reset'}
+                                    </Button>
+                                )}
+                                <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
+                                    {update ? 'Save' : 'Create'}
+                                </Button>
+                            </Space>
+                        </Form>
+                    </Card>
+                </>
+            ) : null}
             <div>
                 <ProductCardView
                     setFilterList={setFilterList}

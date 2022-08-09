@@ -1,7 +1,7 @@
 import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Select, Space } from 'antd';
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
 import { errorShow } from '../../../../components/ALert';
 import { formRequiredRule } from '../../../../constants';
 import { apiEndPoint } from '../../../../server';
@@ -20,6 +20,7 @@ const ChooseCategoryFilter = () => {
     const [filterList, setFilterList] = React.useState([]);
     const [loader, setLoader] = React.useState(false);
     const [showForm, setShowForm] = React.useState(false);
+    const [showFilterForm, setShowFilterForm] = React.useState(false);
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
@@ -27,6 +28,7 @@ const ChooseCategoryFilter = () => {
             setLoader(true);
             const categories = await getCategory(data);
             setLoader(false);
+            setShowForm(true);
             console.log('LOAD FILTER ITEM => ', categories.payload);
             const getSingleFilterValue = categories.payload.filter((e) => e.parent === data.parent);
 
@@ -161,47 +163,52 @@ const ChooseCategoryFilter = () => {
                         </Select>
                     </Form.Item>
                 </Form>
-                <Space>
-                    <Button
-                        type={'primary'}
-                        htmlType="submit"
-                        style={{ marginTop: '20px' }}
-                        onClick={() => {
-                            if (form1.getFieldValue('category')) {
-                                setShowForm(true);
-                                console.log(classifier[selectedCategory], 'LL', selectedCategory);
-                                // loadAllFilterItem({
-                                //     parent: classifier[selectedCategory]
-                                //         ? classifier._id
-                                //         : undefined,
-                                // });
-                                loadAllFilterItem({
-                                    parent: selectedCategory || undefined,
-                                });
-                                loadClassifiersFromServer();
-                            } else {
-                                errorShow('Please select product category.');
-                            }
-                        }}
-                    >
-                        {'Apply Filter'}
-                    </Button>
-                    <Button
-                        type={'default'}
-                        icon={<UndoOutlined />}
-                        htmlType="submit"
-                        style={{ marginTop: '20px' }}
-                        onClick={() => {
-                            setShowForm(false);
-                            form1.resetFields();
-                            form.resetFields();
-                            setFilterList([]);
-                            setClassifier([]);
-                        }}
-                    >
-                        {'Reset Filter'}
-                    </Button>
-                </Space>
+                {showForm === true ? (
+                    <>
+                        <Space>
+                            <Button
+                                type={'primary'}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                onClick={() => {
+                                    if (form1.getFieldValue('category')) {
+                                        console.log(classifier[selectedCategory], 'LL', selectedCategory);
+                                        // loadAllFilterItem({
+                                        //     parent: classifier[selectedCategory]
+                                        //         ? classifier._id
+                                        //         : undefined,
+                                        // // });
+                                        // loadAllFilterItem({
+                                        //     parent: selectedCategory || undefined,
+                                        // });
+                                        // loadClassifiersFromServer();
+                                        setShowFilterForm(!showFilterForm);
+                                    } else {
+                                        errorShow('Please select product category.');
+                                    }
+                                }}
+                            >
+                                {/* {'Apply Filter'} */}
+                                {'Create'}
+                            </Button>
+                            <Button
+                                type={'default'}
+                                icon={<UndoOutlined />}
+                                htmlType="submit"
+                                style={{ marginTop: '20px' }}
+                                onClick={() => {
+                                    setShowForm(false);
+                                    form1.resetFields();
+                                    form.resetFields();
+                                    setFilterList([]);
+                                    setClassifier([]);
+                                }}
+                            >
+                                {'Reset Filter'}
+                            </Button>
+                        </Space>
+                    </>
+                ) : null}
             </Card>
             <div>
                 {showForm ? (
@@ -217,6 +224,8 @@ const ChooseCategoryFilter = () => {
                         loadAllFilter={loadAllFilter}
                         classifier={classifier}
                         loadAllFilterSubItem={loadAllFilterSubItem}
+                        setShowFilterForm={setShowFilterForm}
+                        showFilterForm={showFilterForm}
                     />
                 ) : null}
             </div>
