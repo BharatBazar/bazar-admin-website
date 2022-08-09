@@ -60,6 +60,10 @@ const ChooseFilterCategory = () => {
             console.log('category', categories);
             const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
             console.log('GSF', getSingleFilterValue);
+            const getSingleDistributionValue = categories.payload.distribution.filter(
+                (e) => e.parent === data.parent || data._id,
+            );
+            console.log('GSD', getSingleDistributionValue);
             if (getSingleFilterValue.length > 0) {
                 setShowForm(true);
             }
@@ -67,7 +71,7 @@ const ChooseFilterCategory = () => {
 
             // setFilterList([...category.payload.filter, ...category.payload.distribution]);
             // setFilterList([...getSingleFilterValue, ...category.distribution]);
-            setFilterList([...getSingleFilterValue]);
+            setFilterList([...getSingleFilterValue].concat(getSingleDistributionValue));
             // setFilterList();
         } catch (error) {
             setShowForm(false);

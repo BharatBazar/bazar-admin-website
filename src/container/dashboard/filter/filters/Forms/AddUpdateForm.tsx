@@ -34,7 +34,7 @@ const AddAndUpdateForm = ({
     };
 
     const onClickUpdateInRow = (data: IFilter) => {
-        // setOpenForm(!openForm);
+        setOpenForm(true);
         const formValue: Partial<IFilter> = {};
         formValue.name = data.name;
         formValue.description = data.description;
