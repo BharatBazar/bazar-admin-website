@@ -23,6 +23,7 @@ const ChooseFilterCategory = () => {
     const [classifier, setClassifier] = React.useState([]);
     const [showForm, setShowForm] = React.useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [openForm, setOpenForm] = React.useState(false);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -118,6 +119,10 @@ const ChooseFilterCategory = () => {
         };
     }, []);
 
+    const openAllForm = () => {
+        setOpenForm(!openForm);
+    };
+
     return (
         <>
             <Card title={'Choose filter category'} loading={loader}>
@@ -162,6 +167,7 @@ const ChooseFilterCategory = () => {
                                 //     });
                                 // }}
                                 // onClick={showModal}
+                                onClick={openAllForm}
                             >
                                 {'Create'}
                             </Button>
@@ -198,6 +204,8 @@ const ChooseFilterCategory = () => {
                     showForm={showForm}
                     setShowForm={setShowForm}
                     showModal={showModal}
+                    openForm={openForm}
+                    setOpenForm={setOpenForm}
                 />
             </div>
             {/* <div>

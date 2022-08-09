@@ -12,6 +12,8 @@ const AddAndUpdateFilter = ({
     loadAllFilterChild,
     setShowForm,
     showForm,
+    openForm,
+    setOpenForm,
 }) => {
     return (
         <AddAndUpdateForm
@@ -24,6 +26,8 @@ const AddAndUpdateFilter = ({
             loadAllFilterChild={loadAllFilterChild}
             showForm={showForm}
             setShowForm={setShowForm}
+            openForm={openForm}
+            setOpenForm={setOpenForm}
         />
     );
 };
