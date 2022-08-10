@@ -22,6 +22,7 @@ const ChooseCategoryFilter = () => {
     const [showForm, setShowForm] = React.useState(false);
     const [showFilterForm, setShowFilterForm] = React.useState(false);
     const [showFilterList, setShowFilterList] = React.useState(false);
+    const [showChooseFilter, setShowChooseFilter] = React.useState(2);
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
@@ -84,8 +85,11 @@ const ChooseCategoryFilter = () => {
             // setClassifier(response.payload);
             if (getSingleFilterValue.length === 0) {
                 errorShow('No filter to show');
+                setShowFilterList(true);
+                setShowChooseFilter(2);
                 setClassifier([]);
             } else {
+                setShowChooseFilter(0);
                 setClassifier(getSingleFilterValue);
             }
 
@@ -154,20 +158,24 @@ const ChooseCategoryFilter = () => {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item style={{ flex: 1 }} label="Choose filter :" name="type" rules={formRequiredRule}>
-                        <Select
-                            allowClear
-                            onChange={(value) => {
-                                setSelectedCategory(value);
-                                loadAllFilterItem({ parent: value });
-                            }}
-                            optionFilterProp="children"
-                        >
-                            {classifier.map((classifier) => (
-                                <Option value={classifier._id}>{classifier.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                    {showChooseFilter !== 2 ? (
+                        <>
+                            <Form.Item style={{ flex: 1 }} label="Choose filter :" name="type" rules={formRequiredRule}>
+                                <Select
+                                    allowClear
+                                    onChange={(value) => {
+                                        setSelectedCategory(value);
+                                        loadAllFilterItem({ parent: value });
+                                    }}
+                                    optionFilterProp="children"
+                                >
+                                    {classifier.map((classifier) => (
+                                        <Option value={classifier._id}>{classifier.name}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </>
+                    ) : null}
                 </Form>
                 {showForm === true ? (
                     <>
