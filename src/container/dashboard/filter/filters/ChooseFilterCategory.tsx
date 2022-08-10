@@ -24,6 +24,7 @@ const ChooseFilterCategory = () => {
     const [showForm, setShowForm] = React.useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [openForm, setOpenForm] = React.useState(false);
+    const [showFilterList, setShowFilterList] = React.useState(false);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -65,7 +66,11 @@ const ChooseFilterCategory = () => {
             );
             console.log('GSD', getSingleDistributionValue);
             if (getSingleFilterValue.length > 0) {
+                setShowFilterList(false);
                 setShowForm(true);
+            } else if (getSingleFilterValue.length === 0) {
+                setShowFilterList(true);
+                errorShow('No Filter To Show');
             }
             setLoader(false);
 
@@ -210,6 +215,7 @@ const ChooseFilterCategory = () => {
                     showModal={showModal}
                     openForm={openForm}
                     setOpenForm={setOpenForm}
+                    showFilterList={showFilterList}
                 />
             </div>
             {/* <div>

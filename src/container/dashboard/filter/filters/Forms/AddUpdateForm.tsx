@@ -23,6 +23,7 @@ const AddAndUpdateForm = ({
     showForm,
     openForm,
     setOpenForm,
+    showFilterList,
 }) => {
     const [loader, setLoader] = React.useState(false);
     const [update, setUpdate] = React.useState(null);
@@ -274,7 +275,7 @@ const AddAndUpdateForm = ({
             </>
 
             <div>
-                {showForm === true ? (
+                {showForm === true && showFilterList === false ? (
                     <ProductView
                         filterList={filterList}
                         form={form}
