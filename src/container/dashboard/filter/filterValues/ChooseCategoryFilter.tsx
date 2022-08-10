@@ -21,6 +21,7 @@ const ChooseCategoryFilter = () => {
     const [loader, setLoader] = React.useState(false);
     const [showForm, setShowForm] = React.useState(false);
     const [showFilterForm, setShowFilterForm] = React.useState(false);
+    const [showFilterList, setShowFilterList] = React.useState(false);
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
@@ -33,8 +34,13 @@ const ChooseCategoryFilter = () => {
             const getSingleFilterValue = categories.payload.filter((e) => e.parent === data.parent);
 
             console.log('GSF', getSingleFilterValue);
+            if (getSingleFilterValue.length === 0) {
+                setShowFilterList(true);
+                errorShow(' No Filter Values Create Filter Values !! ');
+            } else if (getSingleFilterValue.length > 0) {
+                setShowFilterList(false);
+            }
 
-            // setFilterList(category.payload);
             setFilterList([...getSingleFilterValue]);
         } catch (error) {
             errorShow(error.message);
@@ -226,6 +232,7 @@ const ChooseCategoryFilter = () => {
                         loadAllFilterSubItem={loadAllFilterSubItem}
                         setShowFilterForm={setShowFilterForm}
                         showFilterForm={showFilterForm}
+                        showFilterList={showFilterList}
                     />
                 ) : null}
             </div>

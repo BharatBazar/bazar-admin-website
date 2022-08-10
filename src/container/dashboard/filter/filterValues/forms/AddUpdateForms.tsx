@@ -30,6 +30,7 @@ const AddUpdateForms = ({
     loadClassifiersFromServer,
     showFilterForm,
     setShowFilterForm,
+    showFilterList,
 }) => {
     const [update, setUpdate] = React.useState(false);
     const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
@@ -212,14 +213,18 @@ const AddUpdateForms = ({
                 </>
             ) : null}
             <div>
-                <ProductCardView
-                    setFilterList={setFilterList}
-                    filterList={filterList}
-                    deleteCategoryListInServer={deleteCategoryListInServer}
-                    onClickUpdateInRow={onClickUpdateInRow}
-                    updateFilterInServer={updateFilterInServer}
-                    activateClassfierInServer={activateClassfierInServer}
-                />
+                {showFilterList === false ? (
+                    <>
+                        <ProductCardView
+                            setFilterList={setFilterList}
+                            filterList={filterList}
+                            deleteCategoryListInServer={deleteCategoryListInServer}
+                            onClickUpdateInRow={onClickUpdateInRow}
+                            updateFilterInServer={updateFilterInServer}
+                            activateClassfierInServer={activateClassfierInServer}
+                        />
+                    </>
+                ) : null}
             </div>
         </>
     );

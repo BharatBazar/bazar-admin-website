@@ -18,6 +18,7 @@ const AddUpdateFilter = ({
     loadAllFilterSubItem,
     showFilterForm,
     setShowFilterForm,
+    showFilterList,
 }) => {
     return (
         <AddUpdateForms
@@ -34,6 +35,7 @@ const AddUpdateFilter = ({
             loadAllFilterSubItem={loadAllFilterSubItem}
             showFilterForm={showFilterForm}
             setShowFilterForm={setShowFilterForm}
+            showFilterList={showFilterList}
         />
     );
 };
