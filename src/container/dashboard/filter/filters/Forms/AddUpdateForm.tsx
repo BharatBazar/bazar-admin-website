@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { UndoOutlined } from '@ant-design/icons';
+import { UndoOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Card, Checkbox, Form, Input, Radio, Select, Space } from 'antd';
 import React from 'react';
+
 import { errorShow, success } from '../../../../../components/ALert';
 import { formRequiredRule } from '../../../../../constants';
 import {
@@ -146,7 +147,22 @@ const AddAndUpdateForm = ({
             <>
                 {showForm === true && openForm === true ? (
                     <>
-                        <Card title="Add/Update Filter" loading={loader} bordered={false} style={{ marginTop: '2vh' }}>
+                        <Card
+                            title={
+                                <div style={{ flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
+                                    <div>
+                                        <span>Add/Update Filter</span>
+                                    </div>
+                                    <CloseOutlined
+                                        style={{ width: 25, height: 25 }}
+                                        onClick={() => setOpenForm(false)}
+                                    />
+                                </div>
+                            }
+                            loading={loader}
+                            bordered={false}
+                            style={{ marginTop: '2vh' }}
+                        >
                             <Form
                                 form={form}
                                 labelCol={{ span: 4 }}
