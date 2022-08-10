@@ -55,7 +55,7 @@ const AddUpdateForms = ({
     };
 
     const onClickUpdateInRow = (data: IFilter) => {
-        setShowFilterForm(!showFilterForm);
+        setShowFilterForm(true);
         const formValue: Partial<IFilter> = {};
         formValue.name = data.name;
         formValue.description = data.description;

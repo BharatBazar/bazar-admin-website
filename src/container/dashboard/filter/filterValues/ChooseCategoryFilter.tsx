@@ -212,6 +212,7 @@ const ChooseCategoryFilter = () => {
                                 style={{ marginTop: '20px' }}
                                 onClick={() => {
                                     setShowForm(false);
+                                    setShowChooseFilter(2);
                                     form1.resetFields();
                                     form.resetFields();
                                     setFilterList([]);
