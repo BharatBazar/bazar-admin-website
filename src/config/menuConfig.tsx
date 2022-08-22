@@ -21,20 +21,20 @@ export const menuList: menuItem[] = [
         icon: () => <Icon component={EditIcon} />,
         roles: ['admin', 'editor', 'guest'],
         children: [
+            // {
+            //     title: 'Category',
+            //     path: '/catalogue/category',
+            //     icon: () => <Icon component={EditIcon} />,
+            //     roles: ['admin'],
+            // },
+            // {
+            //     title: 'SubCategory',
+            //     path: '/catalogue/subCategory',
+            //     icon: () => <Icon component={EditIcon} />,
+            //     roles: ['admin'],
+            // },
             {
-                title: 'Category',
-                path: '/catalogue/category',
-                icon: () => <Icon component={EditIcon} />,
-                roles: ['admin'],
-            },
-            {
-                title: 'SubCategory',
-                path: '/catalogue/subCategory',
-                icon: () => <Icon component={EditIcon} />,
-                roles: ['admin'],
-            },
-            {
-                title: 'SubCategory1',
+                title: 'Catalogue',
                 path: '/catalogue/subCategory1',
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
@@ -53,9 +53,10 @@ export const menuList: menuItem[] = [
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },
+
             {
-                title: 'Classifier',
-                path: '/filter/classifier',
+                title: 'Filter Values',
+                path: '/filter/values',
                 icon: () => <Icon component={EditIcon} />,
                 roles: ['admin'],
             },

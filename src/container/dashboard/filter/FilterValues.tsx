@@ -26,29 +26,24 @@ const { Option } = Select;
 
 const columns = (onDelete, onUpdate, activate) => [
     {
-        title: 'Classifier' + ' name',
+        title: 'Filter Value' + ' name',
         dataIndex: 'name',
         key: '_id' + 'City',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Classifier ' + ' description',
+        title: 'Filter Value ' + ' description',
         dataIndex: 'description',
         key: '_id',
         render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Classifier ' + ' image',
+        title: 'Filter Value ' + ' image',
         dataIndex: 'image',
         key: '_id',
         render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
     },
-    {
-        title: 'Classifier ' + ' type',
-        dataIndex: 'type',
-        key: '_id',
-        render: (text) => <a>{text}</a>,
-    },
+
     {
         title: 'Active',
         dataIndex: 'active',
@@ -118,7 +113,7 @@ const columns = (onDelete, onUpdate, activate) => [
 
 export interface CategoryProps extends RouteComponentProps {}
 
-const Classifier: React.FC<CategoryProps> = () => {
+const FilterValues: React.FC<CategoryProps> = () => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
     const [form1] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
@@ -128,6 +123,7 @@ const Classifier: React.FC<CategoryProps> = () => {
     const [category, setCategory] = React.useState([]);
     const [selectedCategory, setSelectedCategory] = React.useState(null);
     const [classifier, setClassifier] = React.useState([]);
+    const [active, setActive] = React.useState(false);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
@@ -135,11 +131,17 @@ const Classifier: React.FC<CategoryProps> = () => {
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
+            console.log('DATA => ', data);
             setLoader(true);
             const category = await getCategory(data);
             setLoader(false);
+            console.log('LOAD FILTER ITEM => ', category.payload);
+            const getSingleFilterValue = category.payload.filter((e) => e.parent === data.parent);
 
-            setFilterList(category.payload);
+            console.log('GSF', getSingleFilterValue);
+
+            // setFilterList(category.payload);
+            setFilterList([...getSingleFilterValue]);
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -149,9 +151,10 @@ const Classifier: React.FC<CategoryProps> = () => {
         setLoader(true);
         try {
             const filterItem = {
-                ...data,
-                type: classifier[selectedCategory].type,
-                parent: classifier[selectedCategory]._id,
+                ...data.value,
+                parent: data.selectedCategory,
+                // type: classifier[selectedCategory].type,
+                // parent: classifier[selectedCategory]._id,
             };
             const response = await createCategory(filterItem);
 
@@ -159,10 +162,15 @@ const Classifier: React.FC<CategoryProps> = () => {
             if (response.status === 1) {
                 success('Classifier' + ' created!');
                 loadAllFilterItem({
-                    type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
+                    // type: classifier.length > 0 && selectedCategory ? classifier[selectedCategory].type : undefined,
+                    // type: classifier.length > 0 && selectedCategory ? classifier.type : undefined,
+
+                    parent: selectedCategory || undefined,
                 });
 
                 form.resetFields();
+                form1.resetFields();
+                setActive(false);
             }
         } catch (error) {
             setLoader(false);
@@ -188,10 +196,23 @@ const Classifier: React.FC<CategoryProps> = () => {
     // To load all categories from backend which are avaialable in the market
     const loadCategoriesFromServer = async () => {
         try {
-            const response = await getProductCatelogue({ subCategoryExist: false });
+            const response = await getProductCatelogue();
 
             if (response.status === 1) {
-                setCategory(response.payload);
+                const getRealProduct = response.payload.filter((elem) => elem.child.length === 0);
+                setCategory(getRealProduct);
+            }
+        } catch (error) {
+            errorShow(error.message);
+        }
+    };
+
+    const loadClassifiersFromServer = async () => {
+        try {
+            const response = await getClassifier();
+
+            if (response.status === 1) {
+                setClassifier(response.payload);
             }
         } catch (error) {
             errorShow(error.message);
@@ -218,13 +239,18 @@ const Classifier: React.FC<CategoryProps> = () => {
         }
     };
 
-    const loadAllFilter = async () => {
+    const loadAllFilter = async (parentValue) => {
+        console.log('PARENTVALUE', parentValue);
         try {
             setLoader(true);
             const response = await getFilter({});
             setLoader(false);
-
-            setClassifier(response.payload);
+            console.log('CLASSIFIER => ', response.payload);
+            const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
+            console.log('GSF', getSingleFilterValue);
+            // setClassifier(response.payload);
+            setFilterList([...getSingleFilterValue]);
+            setClassifier(getSingleFilterValue);
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -273,13 +299,13 @@ const Classifier: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
-                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue/${value.toLowerCase()}`;
+                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
 
-                                    loadAllFilter();
+                                    loadAllFilter(value);
                                 }}
                             >
                                 {category.map((category) => (
-                                    <Option value={category.name}>{category.name}</Option>
+                                    <Option value={category._id}>{category.name}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
@@ -287,11 +313,13 @@ const Classifier: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
+                                    console.log('VALUE => ', value);
                                     setSelectedCategory(value);
                                 }}
+                                optionFilterProp="children"
                             >
                                 {classifier.map((classifier, index) => (
-                                    <Option value={index}>{classifier.name}</Option>
+                                    <Option value={classifier._id}>{classifier.name}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
@@ -303,11 +331,16 @@ const Classifier: React.FC<CategoryProps> = () => {
                             style={{ marginTop: '20px' }}
                             onClick={() => {
                                 if (form1.getFieldValue('category')) {
+                                    console.log(classifier[selectedCategory], 'LL', selectedCategory);
+                                    // loadAllFilterItem({
+                                    //     parent: classifier[selectedCategory]
+                                    //         ? classifier._id
+                                    //         : undefined,
+                                    // });
                                     loadAllFilterItem({
-                                        parent: classifier[selectedCategory]
-                                            ? classifier[selectedCategory]._id
-                                            : undefined,
+                                        parent: selectedCategory || undefined,
                                     });
+                                    loadClassifiersFromServer();
                                 } else {
                                     errorShow('Please select product category.');
                                 }
@@ -344,7 +377,7 @@ const Classifier: React.FC<CategoryProps> = () => {
                             form1.validateFields().then(() => {
                                 form.validateFields().then((value) => {
                                     if (!update) {
-                                        createFilterInServer(value);
+                                        createFilterInServer({ value, selectedCategory });
                                     } else {
                                         updateFilterInServer(value);
                                     }
@@ -359,11 +392,36 @@ const Classifier: React.FC<CategoryProps> = () => {
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
                             <Input.TextArea showCount maxLength={100} />
                         </Form.Item>
-
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item>
+                        <Form.Item label={'CustomerName'} name={'customerName'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label={'CustomerDescription'} name={'customerDescription'} rules={formRequiredRule}>
+                            <Input.TextArea showCount maxLength={100} />
+                        </Form.Item>
+                        <Form.Item label={'Customer Image'} name={'customerImage'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item>
+                        {/* <Form.Item style={{ flex: 1 }} label="Filter Value Type :" name="type" rules={formRequiredRule}>
+                            <Select allowClear disabled={update}>
+                                {classifier.map((classifier) => (
+                                    <Option value={classifier}>{classifier}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item> */}
 
+                        <Form.Item name="active" valuePropName="active" wrapperCol={{ offset: 4 }}>
+                            <Checkbox
+                                checked={active}
+                                onChange={(active) => {
+                                    setActive(active.target.checked);
+                                }}
+                            >
+                                Active
+                            </Checkbox>
+                        </Form.Item>
                         <Space size="middle">
                             {update && (
                                 <Button
@@ -395,4 +453,4 @@ const Classifier: React.FC<CategoryProps> = () => {
     );
 };
 
-export default Classifier;
+export default FilterValues;

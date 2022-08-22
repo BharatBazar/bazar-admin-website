@@ -29,4 +29,5 @@ export function getClassifier(): Promise<{ payload: string[] }> {
 
 export function deleteFilter(data: Partial<IFilter>): Promise<CommonApiResponse> {
     return axios.delete(`/filter/delete?_id=${data._id}`);
+    // return axios.delete(`/filter/delete`,data);
 }
