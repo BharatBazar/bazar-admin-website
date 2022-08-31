@@ -125,10 +125,6 @@ const ChooseCategoryFilter = () => {
 
     React.useEffect(() => {
         loadCategoriesFromServer();
-
-        return () => {
-            axios.defaults.baseURL = apiEndPoint;
-        };
     }, []);
 
     return (
@@ -147,8 +143,6 @@ const ChooseCategoryFilter = () => {
                         <Select
                             allowClear
                             onChange={(value) => {
-                                axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-
                                 loadAllFilter(value, 2);
                             }}
                             onClick={() => form1.setFieldsValue({ type: '' })}

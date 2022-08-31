@@ -2,7 +2,7 @@ import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Select, Space, Modal } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { errorShow } from '../../../../components/ALert';
+import { errorShow, success } from '../../../../components/ALert';
 import { formRequiredRule } from '../../../../constants';
 import { apiEndPoint } from '../../../../server';
 import { IProductCatalogue } from '../../../../server/catalogue/catalogue.interface';
@@ -58,19 +58,19 @@ const ChooseFilterCategory = () => {
 
             // const categories = await getFilterWithValue();
             const categories = await getFilterWithValue();
-            console.log('category', categories);
+
             const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
-            console.log('GSF', getSingleFilterValue);
+
             const getSingleDistributionValue = categories.payload.distribution.filter(
                 (e) => e.parent === data.parent || data._id,
             );
-            console.log('GSD', getSingleDistributionValue);
+
+            setShowForm(true);
             if (getSingleFilterValue.length > 0) {
                 setShowFilterList(false);
-                setShowForm(true);
             } else if (getSingleFilterValue.length === 0) {
                 setShowFilterList(true);
-                errorShow('No Filter To Show Create Filter !!');
+                success('No Filter To Show Create Filter !!');
             }
             setLoader(false);
 
@@ -122,10 +122,6 @@ const ChooseFilterCategory = () => {
 
     React.useEffect(() => {
         loadCatalogueFromServer();
-
-        return () => {
-            axios.defaults.baseURL = apiEndPoint;
-        };
     }, []);
 
     const openAllForm = () => {
@@ -148,7 +144,6 @@ const ChooseFilterCategory = () => {
                             allowClear
                             showSearch
                             onChange={(value) => {
-                                axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
                                 setSelectedCategory(value);
                                 loadAllFilter({ parent: value });
                             }}
@@ -165,17 +160,6 @@ const ChooseFilterCategory = () => {
                                 type={'primary'}
                                 htmlType="submit"
                                 style={{ marginTop: '20px' }}
-                                // onClick={() => {
-                                //     form1.validateFields().then((value) => {
-                                //         console.log('VALUE', value);
-                                //         setSelectedCategory(value.parent);
-                                //         axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-                                //         loadAllFilter(value);
-                                //         loadClassifiersFromServer();
-                                //         // loadAllCategory({ categoryType: categoryType.SubCategory, parent: value.parent });
-                                //     });
-                                // }}
-                                // onClick={showModal}
                                 onClick={openAllForm}
                             >
                                 {'Create'}

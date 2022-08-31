@@ -272,10 +272,6 @@ const FilterValues: React.FC<CategoryProps> = () => {
 
     React.useEffect(() => {
         loadCategoriesFromServer();
-
-        return () => {
-            axios.defaults.baseURL = apiEndPoint;
-        };
     }, []);
     return (
         <div style={{ alignItems: 'center' }}>
@@ -299,8 +295,6 @@ const FilterValues: React.FC<CategoryProps> = () => {
                             <Select
                                 allowClear
                                 onChange={(value) => {
-                                    axios.defaults.baseURL = `${apiEndPoint}/catalogue`;
-
                                     loadAllFilter(value);
                                 }}
                             >
