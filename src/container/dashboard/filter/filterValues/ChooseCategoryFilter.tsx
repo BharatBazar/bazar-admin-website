@@ -2,7 +2,7 @@ import { UndoOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Select, Space } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { errorShow } from '../../../../components/ALert';
+import { errorShow, success } from '../../../../components/ALert';
 import { formRequiredRule } from '../../../../constants';
 import { apiEndPoint } from '../../../../server';
 import { getProductCatelogue } from '../../../../server/catalogue/catalogue.api';
@@ -26,18 +26,16 @@ const ChooseCategoryFilter = () => {
 
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
-            console.log('DATA => ', data);
             setLoader(true);
             const categories = await getCategory(data);
             setLoader(false);
             setShowForm(true);
-            console.log('LOAD FILTER ITEM => ', categories.payload);
+
             const getSingleFilterValue = categories.payload.filter((e) => e.parent === data.parent);
 
-            console.log('GSF', getSingleFilterValue);
             if (getSingleFilterValue.length === 0) {
                 setShowFilterList(true);
-                errorShow(' No Filter Values Create Filter Values !! ');
+                success(' No Filter Values Create Filter Values !! ');
             } else if (getSingleFilterValue.length > 0) {
                 setShowFilterList(false);
             }
@@ -105,15 +103,13 @@ const ChooseCategoryFilter = () => {
     };
 
     const loadAllFilterSubItem = async (parentValue) => {
-        console.log('PARENTVALUE', parentValue);
         try {
             setLoader(true);
             const response = await getFilter({});
             setLoader(false);
-            console.log('CLASSIFIER => ', response.payload);
+
             const getSingleFilterValue = response.payload.filter((e) => e._id === parentValue);
-            console.log('GSF', getSingleFilterValue);
-            // setClassifier(response.payload);
+
             setClassifier(getSingleFilterValue);
 
             setFilterList([...getSingleFilterValue]);
@@ -180,24 +176,13 @@ const ChooseCategoryFilter = () => {
                                 style={{ marginTop: '20px' }}
                                 onClick={() => {
                                     if (form1.getFieldValue('category')) {
-                                        console.log(classifier[selectedCategory], 'LL', selectedCategory);
-                                        // loadAllFilterItem({
-                                        //     parent: classifier[selectedCategory]
-                                        //         ? classifier._id
-                                        //         : undefined,
-                                        // // });
-                                        // loadAllFilterItem({
-                                        //     parent: selectedCategory || undefined,
-                                        // });
-                                        // loadClassifiersFromServer();
                                         setShowFilterForm(!showFilterForm);
                                     } else {
                                         errorShow('Please select product category.');
                                     }
                                 }}
                             >
-                                {/* {'Apply Filter'} */}
-                                {'Create'}
+                                {!showFilterForm ? 'Create Filter Value' : 'Hide Form'}
                             </Button>
                             <Button
                                 type={'default'}
@@ -229,8 +214,10 @@ const ChooseCategoryFilter = () => {
                         selectedCategory={selectedCategory}
                         setFilterList={setFilterList}
                         filterList={filterList}
-                        loadAllFilterItem={loadAllFilterItem}
-                        loadAllFilter={loadAllFilter}
+                        loadAllFilterItem={(a) => {
+                            // setShowFilterForm(false);
+                            loadAllFilter(a);
+                        }}
                         classifier={classifier}
                         loadAllFilterSubItem={loadAllFilterSubItem}
                         setShowFilterForm={setShowFilterForm}

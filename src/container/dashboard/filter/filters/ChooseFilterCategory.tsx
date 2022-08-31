@@ -51,13 +51,11 @@ const ChooseFilterCategory = () => {
     };
 
     const loadAllFilter = async (data) => {
-        console.log('_ID', data);
         try {
             setLoader(true);
             setFilterList([]);
 
-            // const categories = await getFilterWithValue();
-            const categories = await getFilterWithValue();
+            const categories = await getFilterWithValue({});
 
             const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
 
@@ -65,10 +63,11 @@ const ChooseFilterCategory = () => {
                 (e) => e.parent === data.parent || data._id,
             );
 
+            const mergingAllFilter = [...getSingleFilterValue, ...getSingleDistributionValue];
             setShowForm(true);
-            if (getSingleFilterValue.length > 0) {
+            if (mergingAllFilter.length > 0) {
                 setShowFilterList(false);
-            } else if (getSingleFilterValue.length === 0) {
+            } else if (mergingAllFilter.length === 0) {
                 setShowFilterList(true);
                 success('No Filter To Show Create Filter !!');
             }
@@ -76,7 +75,7 @@ const ChooseFilterCategory = () => {
 
             // setFilterList([...category.payload.filter, ...category.payload.distribution]);
             // setFilterList([...getSingleFilterValue, ...category.distribution]);
-            setFilterList([...getSingleFilterValue].concat(getSingleDistributionValue));
+            setFilterList(mergingAllFilter);
             // setFilterList();
         } catch (error) {
             setShowForm(false);
@@ -162,7 +161,7 @@ const ChooseFilterCategory = () => {
                                 style={{ marginTop: '20px' }}
                                 onClick={openAllForm}
                             >
-                                {'Create'}
+                                {openForm ? 'Hide Filter Form' : 'Create Filter'}
                             </Button>
                             <Button
                                 type={'default'}
@@ -173,6 +172,7 @@ const ChooseFilterCategory = () => {
                                     setShowForm(false);
                                     form1.resetFields();
                                     form.resetFields();
+                                    setOpenForm(false);
                                     setSelectedCategory(null);
                                     setUpdate(null);
                                     setFilterList([]);

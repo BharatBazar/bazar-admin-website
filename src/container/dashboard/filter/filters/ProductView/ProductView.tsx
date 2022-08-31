@@ -136,7 +136,7 @@ const ProductView = ({
                             activate({ _id: record._id, active: !text.active });
                         }}
                     >
-                        {text.active ? 'Deactive' : 'Active'}
+                        {text.active ? 'Deactivate' : 'Activate'}
                     </Button>
                     <Button
                         type={'primary'}

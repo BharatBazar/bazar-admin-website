@@ -21,7 +21,10 @@ const AddAndUpdateFilter = ({
             form={form}
             filterList={filterList}
             setLoader={setLoader}
-            loadAllFilter={loadAllFilter}
+            loadAllFilter={(a) => {
+                loadAllFilter(a);
+                setOpenForm(false);
+            }}
             selectedCategory={selectedCategory}
             setFilterList={setFilterList}
             loadAllFilterChild={loadAllFilterChild}
