@@ -30,8 +30,8 @@ const AddUpdateForms = ({
     showFilterList,
 }) => {
     const [update, setUpdate] = React.useState(false);
-    const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
-    const [showSearch, setShowSearch] = React.useState(false);
+    // const [defaultSelectAll, setDefaultSelectAll] = React.useState(false);
+    // const [showSearch, setShowSearch] = React.useState(false);
     // const [active, setActive] = React.useState(false);
 
     const deleteCategoryListInServer = async (data) => {

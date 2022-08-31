@@ -55,7 +55,7 @@ const ChooseFilterCategory = () => {
             setLoader(true);
             setFilterList([]);
 
-            const categories = await getFilterWithValue({});
+            const categories = await getFilterWithValue({ parent: data.parent });
 
             const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
 

@@ -63,10 +63,10 @@ const ChooseCategoryFilter = () => {
     const loadAllFilter = async (parentValue, number) => {
         try {
             setLoader(true);
-            const response = await getFilter({});
+            const response = await getFilter({ parent: parentValue });
             setLoader(false);
 
-            const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
+            const getSingleFilterValue = response.payload;
 
             if (getSingleFilterValue.length === 0) {
                 errorShow('No filter to show');
@@ -92,14 +92,14 @@ const ChooseCategoryFilter = () => {
     const loadAllFilterSubItem = async (parentValue) => {
         try {
             setLoader(true);
-            const response = await getFilter({});
+            const response = await getFilter({ _id: parentValue });
             setLoader(false);
 
-            const getSingleFilterValue = response.payload.filter((e) => e._id === parentValue);
+            //  const getSingleFilterValue = response.payload.filter((e) => e._id === parentValue);
 
-            setClassifier(getSingleFilterValue);
+            setClassifier(response.payload);
 
-            setFilterList([...getSingleFilterValue]);
+            // setFilterList([...getSingleFilterValue]);
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -192,26 +192,24 @@ const ChooseCategoryFilter = () => {
                 ) : null}
             </Card>
             <div>
-                {showForm ? (
-                    <AddUpdateFilter
-                        form={form}
-                        form1={form1}
-                        setLoader={setLoader}
-                        loader={loader}
-                        selectedCategory={selectedCategory}
-                        setFilterList={setFilterList}
-                        filterList={filterList}
-                        loadAllFilterItem={(a) => {
-                            setShowFilterForm(false);
-                            loadAllFilter(a);
-                        }}
-                        classifier={classifier}
-                        loadAllFilterSubItem={loadAllFilterSubItem}
-                        setShowFilterForm={setShowFilterForm}
-                        showFilterForm={showFilterForm}
-                        showFilterList={showFilterList}
-                    />
-                ) : null}
+                <AddUpdateFilter
+                    form={form}
+                    form1={form1}
+                    setLoader={setLoader}
+                    loader={loader}
+                    selectedCategory={selectedCategory}
+                    setFilterList={setFilterList}
+                    filterList={filterList}
+                    loadAllFilterItem={(a) => {
+                        setShowFilterForm(false);
+                        loadAllFilterItem(a);
+                    }}
+                    classifier={classifier}
+                    loadAllFilterSubItem={loadAllFilterSubItem}
+                    setShowFilterForm={setShowFilterForm}
+                    showFilterForm={showFilterForm}
+                    showFilterList={showFilterList}
+                />
             </div>
         </>
     );
