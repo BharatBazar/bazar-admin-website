@@ -24,10 +24,7 @@ const AddUpdateForms = ({
     setFilterList,
     filterList,
     loadAllFilterItem,
-    classifier,
-    loadAllFilter,
-    loadAllFilterSubItem,
-    loadClassifiersFromServer,
+
     showFilterForm,
     setShowFilterForm,
     showFilterList,

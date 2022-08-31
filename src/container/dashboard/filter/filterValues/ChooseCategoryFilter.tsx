@@ -27,15 +27,15 @@ const ChooseCategoryFilter = () => {
     const loadAllFilterItem = async (data?: Partial<IClassfier>) => {
         try {
             setLoader(true);
-            const categories = await getCategory(data);
+            const categories = await getCategory({ parent: data.parent });
             setLoader(false);
             setShowForm(true);
 
-            const getSingleFilterValue = categories.payload.filter((e) => e.parent === data.parent);
+            const getSingleFilterValue = categories.payload;
 
             if (getSingleFilterValue.length === 0) {
                 setShowFilterList(true);
-                success(' No Filter Values Create Filter Values !! ');
+                success('No Filter Values Create Filter Values !! ');
             } else if (getSingleFilterValue.length > 0) {
                 setShowFilterList(false);
             }
@@ -60,27 +60,14 @@ const ChooseCategoryFilter = () => {
         }
     };
 
-    const loadClassifiersFromServer = async () => {
-        try {
-            const response = await getClassifier();
-
-            if (response.status === 1) {
-                // setClassifier(response.payload);
-            }
-        } catch (error) {
-            errorShow(error.message);
-        }
-    };
     const loadAllFilter = async (parentValue, number) => {
-        console.log('PARENTVALUE', parentValue);
         try {
             setLoader(true);
             const response = await getFilter({});
             setLoader(false);
-            console.log('CLASSIFIER => ', response.payload);
+
             const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
-            console.log('GSF', getSingleFilterValue);
-            // setClassifier(response.payload);
+
             if (getSingleFilterValue.length === 0) {
                 errorShow('No filter to show');
                 setShowFilterList(true);
@@ -215,7 +202,7 @@ const ChooseCategoryFilter = () => {
                         setFilterList={setFilterList}
                         filterList={filterList}
                         loadAllFilterItem={(a) => {
-                            // setShowFilterForm(false);
+                            setShowFilterForm(false);
                             loadAllFilter(a);
                         }}
                         classifier={classifier}
