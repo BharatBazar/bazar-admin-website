@@ -207,6 +207,10 @@ const App = () => {
                         visible={isModalVisible}
                         okButtonProps={{ hidden: true }}
                         cancelButtonProps={{ hidden: true }}
+                        destroyOnClose
+                        onCancel={() => {
+                            setIsModalVisible(false);
+                        }}
                     >
                         <ModalForm
                             setModal={setIsModalVisible}
