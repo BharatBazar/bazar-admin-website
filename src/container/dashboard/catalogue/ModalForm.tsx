@@ -334,7 +334,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                             <Input />
                         </Form.Item>
                         <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
-                            <Input.TextArea showCount maxLength={100} />
+                            <Input.TextArea showCount maxLength={150} />
                         </Form.Item>
                         <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
                             <Input />

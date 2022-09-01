@@ -190,7 +190,7 @@ const App = () => {
         <>
             <CategoryContext.Provider value={{ newCategory, setNewCategory }}>
                 <Button onClick={showModal} type="primary" size="small">
-                    Create Product
+                    Create Catalogue
                 </Button>
                 <div style={{ marginTop: '2vh' }}>
                     <Tree
@@ -202,7 +202,7 @@ const App = () => {
                     />
                 </div>
                 <>
-                    <Modal title="Category" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                    <Modal width={'60%'} visible={isModalVisible} onCancel={handleCancel}>
                         <ModalForm
                             setModal={setIsModalVisible}
                             productKey={productKey}
