@@ -202,7 +202,12 @@ const App = () => {
                     />
                 </div>
                 <>
-                    <Modal width={'60%'} visible={isModalVisible} onCancel={handleCancel}>
+                    <Modal
+                        width={'60%'}
+                        visible={isModalVisible}
+                        okButtonProps={{ hidden: true }}
+                        cancelButtonProps={{ hidden: true }}
+                    >
                         <ModalForm
                             setModal={setIsModalVisible}
                             productKey={productKey}
