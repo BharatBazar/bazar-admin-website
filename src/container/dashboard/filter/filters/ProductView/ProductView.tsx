@@ -1,19 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Space, Table } from 'antd';
-import React from 'react';
-import { errorShow, success } from '../../../../../components/ALert';
-import { IFilter } from '../../../../../server/filter/filter/filter.interface';
-import { activateFilter, deleteFilter } from '../../../../../server/filter/filter/fitler.api';
 
 const ProductView = ({
     filterList,
-    form,
-    setUpdate,
-    setLoader,
+
     onClickUpdateInRow,
     activateFilterInServer,
-    loadAllFilter,
+
     deleteCategoryListInServer,
 }) => {
     const columns = (onDelete, onUpdate, activate) => [

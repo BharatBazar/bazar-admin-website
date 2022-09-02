@@ -5,6 +5,7 @@ import React from 'react';
 
 import { errorShow, success } from '../../../../../components/ALert';
 import { formRequiredRule } from '../../../../../constants';
+import { IFilter } from '../../../../../server/filter/filter/filter.interface';
 import {
     activateFilter,
     createFilter,
@@ -36,7 +37,6 @@ const AddAndUpdateForm = ({
     };
 
     const onClickUpdateInRow = (data: IFilter) => {
-        setOpenForm(true);
         const formValue: Partial<IFilter> = {};
         formValue.name = data.name;
         formValue.description = data.description;
@@ -51,9 +51,16 @@ const AddAndUpdateForm = ({
         formValue.showSearch = data.showSearch;
         formValue.defaultSelectAll = data.defaultSelectAll;
         formValue.key = data.key;
+        formValue.defaultSelectAll = data.defaultSelectAll;
+        formValue.showSearch = data.showSearch;
+
+        setShowSearch(data.showSearch);
+        setDefaultSelectAll(data.defaultSelectAll);
+
         form.setFieldsValue(formValue);
         delete data.activate;
         setUpdate(data);
+        setOpenForm(true);
     };
 
     const createFilterInServer = async (data) => {
