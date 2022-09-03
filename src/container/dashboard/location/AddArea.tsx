@@ -51,14 +51,6 @@ const columns = (onDelete, onUpdate) => [
     },
 ];
 
-const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-};
-const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
-};
-
 const AddArea = () => {
     const [form] = Form.useForm();
     const [loader, setLoader] = React.useState(0);
@@ -73,7 +65,7 @@ const AddArea = () => {
     async function loadAddress(data) {
         try {
             const address = await getAddress(data);
-            console.log(address);
+            console.log(address, 'address');
             if (address && address.payload) {
                 if (data.addressType === 'Area') {
                     const city = address.payload.map((item) => {
@@ -107,7 +99,7 @@ const AddArea = () => {
             if (response.payload) {
                 success(`${data[addressType]} city` + ` created!!`);
                 form.resetFields();
-                loadAddress({ addressType: 'City' });
+                loadAddress({ addressType: 'Area' });
             }
         } catch (error) {
             setLoader(0);
@@ -130,7 +122,7 @@ const AddArea = () => {
     };
 
     const updateAddressInServer = async (data) => {
-        console.log({ ...update, name: data[addressType], parent: data.state });
+        // console.log({ ...update, name: data[addressType], parent: data.state });
         setLoader(1);
         try {
             const response = await updateAddress({
