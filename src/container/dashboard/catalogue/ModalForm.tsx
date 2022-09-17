@@ -1,5 +1,5 @@
 import { Table, Space, Button, Input, Form, Card, Tag, Select } from 'antd';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -129,9 +129,12 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
     const [subCategoryExist, setSubCategoryExist] = React.useState(true);
     const [parentExist, setParentExist] = React.useState(false);
     const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
+    const [showForm, setShowForm] = React.useState(false);
     const [categoryList, setCategoryList] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
+        // console.log('PPPO', form.setFieldsValue({ type: form.getFieldValue('name').replace(' ', '_').toLowerCase() }));
+
         console.log('Failed:', errorInfo);
     };
 
@@ -143,6 +146,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         try {
             const response = await addProductCatelogue({
                 ...data,
+
                 // subCategoryExist,
             });
             console.log(2);
@@ -157,7 +161,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
             }
         } catch (error) {
             setLoader(false);
-            errorShow(error.message);
+            parentExist === false ? errorShow('Please select parent ') : errorShow(error.message);
         }
     };
 
@@ -165,10 +169,11 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         setLoader(true);
 
         try {
-            console.log('DATA', data);
             const response = await addProductCatelogue({
                 ...data,
+                type: form.getFieldValue('name').split(' ').join('_').toLowerCase(),
                 parent: form.getFieldValue('parent'),
+
                 // categoryType: categoryType.SubCategory,
                 // subCategoryExist,
             });
@@ -316,6 +321,8 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         layout="horizontal"
                         initialValues={{ remember: true }}
                         onFinish={() => {
+                            // form.setFieldsValue({ type: form.getFieldValue('name').replace(' ', '_').toLowerCase() });
+
                             form.validateFields().then((value) => {
                                 if (!update) {
                                     if (parentExist === true) {
@@ -330,44 +337,9 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         }}
                         onFinishFailed={onFinishFailed}
                     >
-                        <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
-                            <Input.TextArea showCount maxLength={150} />
-                        </Form.Item>
-                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label={'Customer_description'}
-                            name={'customer_description'}
-                            rules={formRequiredRule}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-
-                        {/* <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
-                            <Checkbox
-                                checked={subCategoryExist}
-                                onChange={(subCategoryExist) => {
-                                    setSubCategoryExist(subCategoryExist.target.checked);
-                                }}
-                            >
-                                Sub Category Exist
-                            </Checkbox>
-                        </Form.Item> */}
                         {removeParent ? null : (
-                            <Form.Item name="parentExist" valuePropName="parentExist" wrapperCol={{ offset: 4 }}>
+                            // <Form.Item name="parentExist" valuePropName="parentExist" wrapperCol={{ offset: 4 }}>
+                            <Form.Item name="parentExist" valuePropName="parentExist">
                                 <Checkbox
                                     checked={parentExist}
                                     onChange={(parentExist) => {
@@ -380,7 +352,12 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         )}
                         {parentExist === true && removeParent === false ? (
                             <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
-                                <Select allowClear showSearch optionFilterProp="children">
+                                <Select
+                                    allowClear
+                                    showSearch
+                                    onSelect={() => setShowForm(true)}
+                                    optionFilterProp="children"
+                                >
                                     {category.map((category) => (
                                         <>
                                             <Option value={category._id}>{category.name}</Option>;
@@ -392,6 +369,48 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                                 </Select>
                             </Form.Item>
                         ) : null}
+
+                        {showForm === true && parentExist === true ? (
+                            <>
+                                <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
+                                    <Input.TextArea showCount maxLength={150} />
+                                </Form.Item>
+                                <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item
+                                    label={'Customer_description'}
+                                    name={'customer_description'}
+                                    rules={formRequiredRule}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </>
+                        ) : null}
+                        {/* <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item> */}
+
+                        {/* <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
+                            <Checkbox
+                                checked={subCategoryExist}
+                                onChange={(subCategoryExist) => {
+                                    setSubCategoryExist(subCategoryExist.target.checked);
+                                }}
+                            >
+                                Sub Category Exist
+                            </Checkbox>
+                        </Form.Item> */}
+
                         <Space size="middle">
                             {update && (
                                 <Button
