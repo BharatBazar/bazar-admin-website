@@ -370,7 +370,33 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                             </Form.Item>
                         ) : null}
 
+                        {/* {showForm === true && parentExist === true ? ( */}
                         {showForm === true && parentExist === true ? (
+                            <>
+                                <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
+                                    <Input.TextArea showCount maxLength={150} />
+                                </Form.Item>
+                                <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item
+                                    label={'Customer_description'}
+                                    name={'customer_description'}
+                                    rules={formRequiredRule}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </>
+                        ) : parentExist === false && removeParent === true ? (
                             <>
                                 <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
                                     <Input />
