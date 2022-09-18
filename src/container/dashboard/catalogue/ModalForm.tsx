@@ -420,7 +420,6 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                                 >
                                     <Input />
                                 </Form.Item>
-                            </>
                         ) : null}
                         {/* <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
                             <Input />
