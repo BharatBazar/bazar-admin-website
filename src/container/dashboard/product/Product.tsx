@@ -20,7 +20,6 @@ interface ProductProps extends RouteComponentProps {
 }
 
 const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
-    const [rows, setRows] = React.useState(1);
     const [productDetails, setProductDetails] = React.useState<IProduct>('');
     const [loader, setLoader] = React.useState(false);
     const [points, setPoints] = React.useState(['']);
@@ -36,9 +35,9 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
             setLoader(false);
             if (a.status === 1) {
                 form.setFieldsValue({
-                    title: a.payload.title,
-                    subTitle: a.payload.subTitle,
-                    descriptionCustomer: a.payload.descriptionCustomer,
+                    titleGenerated: a.payload.title,
+
+                    descriptionShownToCustomer: a.payload.descriptionCustomer,
 
                     status: a.payload.status,
                 });
@@ -183,20 +182,20 @@ const ProductDetails: React.FunctionComponent<ProductProps> = (props) => {
             >
                 <Form.Item
                     label={'Provide description that customer going to see'}
-                    name={'descriptionCustomer'}
+                    name={'descriptionShownToCustomer'}
                     rules={formRequiredRule}
                 >
                     <Input.TextArea rows={10} />
                 </Form.Item>
-                <Form.Item label={'Product Title'} name={'title'} rules={formRequiredRule}>
+                <Form.Item label={'Product Title'} name={'titleGenerated'} rules={formRequiredRule}>
                     <Input.TextArea />
                 </Form.Item>
-                <Form.Item label={'Product Subtitle'} name={'subTitle'} rules={formRequiredRule}>
+                {/* <Form.Item label={'Product Subtitle'} name={'subTitle'} rules={formRequiredRule}>
                     <Input.TextArea />
-                </Form.Item>
-                {renderFilter(productDetails?.brand, 'Brand')}
+                </Form.Item> */}
+                {/* {renderFilter(productDetails?.brand, 'Brand')}
                 {renderFilter(productDetails?.fit, 'Fit')}
-                {renderFilter(productDetails?.pattern, 'Pattern')}
+                {renderFilter(productDetails?.pattern, 'Pattern')} */}
                 {LeftDivider('Colors')}
                 {renderColor(productDetails?.colors)}
                 <Form.Item

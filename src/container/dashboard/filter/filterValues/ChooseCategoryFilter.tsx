@@ -31,6 +31,7 @@ const ChooseCategoryFilter = () => {
             setLoader(false);
             setShowForm(true);
 
+            success('Filter item loaded');
             const getSingleFilterValue = categories.payload;
 
             if (getSingleFilterValue.length === 0) {
