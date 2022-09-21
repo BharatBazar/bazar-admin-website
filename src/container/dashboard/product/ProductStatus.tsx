@@ -95,7 +95,7 @@ const ProductStatus: React.FunctionComponent<ProductStatusProps> = (props) => {
     const loadCatalogueFromServer = async () => {
         try {
             setLoading(true);
-            const response = await getProductCatelogueWithAncestors();
+            const response = await getProductCatelogueWithAncestors({ active: false });
             setLoading(false);
             if (response.status === 1) {
                 console.log(response);

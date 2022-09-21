@@ -26,31 +26,64 @@ export interface IClassfier {
     active: boolean;
 }
 
-export interface IProduct {
-    _id: string;
-    brand: IClassfier;
-    pattern: IClassfier[];
-    fit: IClassfier;
-    colors: IColor[];
-    shopId: string;
-    // Above field will have predifined information about the size, unit etc.
-    title: string; // It can be possible that a shop sells particular brand items on their shop.
-    subTitle: string;
+export interface ProductInterface {
+    // General Properties //
 
-    showPrice: boolean; // Whether dukandar wants to show price to customer or not
+    _id: string;
+    /*
+    Parent means which catalogue this product belongs like
+    mens jeans, women shoes etc. it refer to productCatalgoue
+    schema.
+    */
+    parentId: string;
+
+    /*
+    In which stage this product is.
+    */
     status: productStatus;
-    rating: number;
-    new: boolean; // Sometimes customer comes to shop asking what is new in the shop so this will show all the new available s
+
+    /*
+    Which shop product belongs to.
+    */
+    shopId: string;
+
+    /*
+    What are the color available in the product.
+    */
+    colors: string[];
+
+    /*
+    Photo for identification of product by seller
+    */
+    sellerIdentificationPhoto: string;
+
+    /*
+    Best Photo will be selected out of all the photo
+    provided by seller for customer identification
+    */
+    customerIdentificationPhoto: string;
+
+    /*
+    Future plan is to let customer provide any kind of description
+    like text, image, audio, video etc.
+    and then we will parse that description and provide description
+    which will be shown to customer and also title accordingly.
+    since its a tough task and require lot of setup it is currently
+    on hold Sunday 7 August 2022
+    */
+    descriptionGivenByCustomer: string;
+    descriptionShownToCustomer: string[];
+    titleGenerated: string;
+
+    // Product Settings //
+
+    showPrice: boolean;
+    new: boolean;
     newDeadline: Date;
-    description: string; // Will be a audio as audio is better to understand in common language
-    descriptionCustomer: string; // description that customer will see
-    discount: [number]; // If a dukandar has decided that he wants to give special discount on particular  so discount will for each color
-    discountDeadline: [Date];
-    bazarAssured: boolean; // It is the flag if we have personally verified the product and it is really a good product
-    createdAt: string;
-    releaseDate: string;
-    note: string;
-    alreadyRejected: boolean;
+    discount: [number];
+    discountDeadline: Date;
+    createdAt: Date;
+    note: [string];
 }
 
 export interface IProductMetaData {
