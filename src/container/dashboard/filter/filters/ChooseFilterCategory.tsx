@@ -50,7 +50,7 @@ const ChooseFilterCategory = () => {
         }
     };
 
-    const loadAllFilter = async (data) => {
+    const loadAllFilter = async (data: any) => {
         try {
             setLoader(true);
             setFilterList([]);
@@ -84,8 +84,8 @@ const ChooseFilterCategory = () => {
         }
     };
 
-    const loadAllFilterChild = async (data) => {
-        console.log('_ID', data._id);
+    const loadAllFilterChild = async (data: any) => {
+        console.log('_ID', data._id, data.parent);
         try {
             setLoader(true);
             setFilterList([]);
@@ -93,13 +93,19 @@ const ChooseFilterCategory = () => {
             // const categories = await getFilterWithValue();
             const categories = await getFilterWithValue();
             console.log('category', categories);
-            const getSingleFilterValue = categories.payload.filter.filter((e) => e._id === data._id);
-            console.log('GSF', getSingleFilterValue);
+            console.log('data', data);
+            // const getSingleFilterValue = categories.payload.filter.filter((e) => e._id === data._id);
+            const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent);
+            const getSingleDistributionValue = categories.payload.distribution.filter(
+                (e) => e.parent === data.parent || data._id,
+            );
+
+            console.log('GSF', getSingleFilterValue, getSingleDistributionValue);
             setLoader(false);
 
             // setFilterList([...category.payload.filter, ...category.payload.distribution]);
             // setFilterList([...getSingleFilterValue, ...category.distribution]);
-            setFilterList([...getSingleFilterValue]);
+            setFilterList([...getSingleFilterValue, ...getSingleDistributionValue]);
             // setFilterList();
         } catch (error) {
             errorShow(error.message);

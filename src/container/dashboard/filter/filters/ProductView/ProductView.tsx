@@ -127,7 +127,7 @@ const ProductView = ({
                         type={'primary'}
                         title={'Active'}
                         onClick={() => {
-                            activate({ _id: record._id, active: !text.active });
+                            activate({ _id: record._id, active: !text.active, parentId: record.parent });
                         }}
                     >
                         {text.active ? 'Deactivate' : 'Activate'}
