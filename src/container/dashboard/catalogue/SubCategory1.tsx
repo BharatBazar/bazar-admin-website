@@ -52,7 +52,7 @@ const App = () => {
 
     React.useEffect(() => {
         loadAllCategory({ parent: { $exists: false } });
-    }, [newCategory]);
+    }, []);
 
     const onSelect = (selectedKeys, info) => {
         setRemoveParent(true);
@@ -145,6 +145,7 @@ const App = () => {
         },
     ];
 
+    console.log('vall', removeParent, isModalVisible);
     return (
         <>
             <CategoryContext.Provider value={{ newCategory, setNewCategory }}>
@@ -172,7 +173,11 @@ const App = () => {
                         }}
                     >
                         <ModalForm
-                            setModal={setIsModalVisible}
+                            isVisible={isModalVisible}
+                            setModal={() => {
+                                setIsModalVisible(false);
+                                loadAllCategory({ parent: { $exists: false } });
+                            }}
                             productKey={productKey}
                             onSelect={onSelect}
                             productInfo={productInfo}
