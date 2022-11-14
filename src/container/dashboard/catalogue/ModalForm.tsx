@@ -1,9 +1,9 @@
-import { Table, Space, Button, Input, Form, Card, Tag, Select } from 'antd';
+import { Table, Space, Button, Input, Form, Card, Tag, Select, Radio, RadioChangeEvent } from 'antd';
 import React, { useContext, useState } from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 import {
     addProductCatelogue,
@@ -120,9 +120,14 @@ type LayoutType = Parameters<typeof Form>[0]['layout'];
 //     wrapperCol: { offset: 8, span: 16 },
 // };
 
-export interface CategoryProps extends RouteComponentProps {}
+export interface CategoryProps extends RouteComponentProps {
+    setModal: (value: boolean) => void;
+    updateFlow: (value: boolean) => void;
+    onSelect: (value: any) => void;
+    productInfo: Partial<IProductCatalogue>;
+}
 
-const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect, setModal, removeParent }) => {
+const ModalForm: React.FC<CategoryProps> = ({ productInfo, onSelect, setModal, updateFlow }) => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
     const [update, setUpdate] = React.useState(null);
@@ -130,7 +135,6 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
     const [parentExist, setParentExist] = React.useState(false);
     const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
     const [showForm, setShowForm] = React.useState(false);
-    const [categoryList, setCategoryList] = React.useState([]);
 
     const onFinishFailed = (errorInfo: any) => {
         // console.log('PPPO', form.setFieldsValue({ type: form.getFieldValue('name').replace(' ', '_').toLowerCase() }));
@@ -161,7 +165,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
             }
         } catch (error) {
             setLoader(false);
-            parentExist === false ? errorShow('Please select parent ') : errorShow(error.message);
+            !parentExist ? errorShow('Please select parent ') : errorShow(error.message);
         }
     };
 
@@ -193,66 +197,19 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         }
     };
 
-    // const loadAllCategory = async () => {
-    //     try {
-    //         setLoader(true);
-    //         const category = await getProductCatelogue({ categoryType: categoryType.Category });
-    //         setLoader(false);
-
-    //         setCategoryList(category.payload);
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //         setLoader(false);
-    //     }
-    // };
-
-    // const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
-    const loadAllCategory = async () => {
+    const loadAllCategory = async (data) => {
         try {
             setLoader(true);
-            const category = await getProductCatelogue();
+            const category = await getProductCatelogue(data);
 
             setLoader(false);
             // setCategory(category.payload);
             setCategory(category.payload.filter((e) => e.path.length === 0));
-
-            // if (data.categoryType === categoryType.Category) {
-            //     setCategory(category.payload);
-            // } else {
-            //     category.payload.forEach((item) => (item.parent = item.parent.name));
-            //     setCategoryList(category.payload);
-            // }
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
         }
     };
-
-    // const deleteCategoryListInServer = async (data) => {
-    //     try {
-    //         const response = await deleteProductCatelogue({ ...data });
-
-    //         if (response.payload) {
-    //             success('CategoryList deleted!!');
-    //             loadAllCategory();
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
-
-    // const activateCatalogueItemInServer = async (data: IProductCatalogue, activate: boolean) => {
-    //     try {
-    //         const response = await activateCatelogueItem({ _id: data._id, activate });
-
-    //         if (response.status == 1) {
-    //             success('Catalogue item activated!!');
-    //             loadAllCategory();
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
 
     const updateCategoryListInServer = async (data) => {
         setLoader(true);
@@ -264,7 +221,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
             if (response.payload) {
                 setNewCategory(!newCategory);
                 success('Category Updated');
-                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form.getFieldValue('parent') });
+                loadAllCategory({ parent: form.getFieldValue('parent') });
 
                 form.resetFields();
                 setUpdate(null);
@@ -278,7 +235,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
 
     const onClickUpdateInRow = (data: any) => {
         console.log(data);
-        const formValue = {};
+        const formValue: Partial<IProductCatalogue> = {};
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.image = data.image;
@@ -286,26 +243,26 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         formValue.customer_image = data.customer_image;
         formValue.customer_description = data.customer_description;
         formValue.type = data.type;
-        form.setFieldsValue(!removeParent ? '' : formValue);
+        form.setFieldsValue(!updateFlow ? '' : formValue);
         // delete data.activate;
         // setSubCategoryExist(data.subCategoryExist);
 
-        removeParent === false ? setUpdate(null) : setUpdate(data);
+        !updateFlow ? setUpdate(null) : setUpdate(data);
     };
 
     React.useEffect(() => {
         // loadAllCategory({ categoryType: categoryType.Category });
         loadAllCategory();
         onClickUpdateInRow(productInfo);
-        removeParent === false ? form.resetFields() : null;
-    }, [onSelect]);
+        !updateFlow ? form.resetFields() : null;
+    }, []);
 
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
                 <Card
                     title={
-                        removeParent === true && productInfo.path.length > 0
+                        updateFlow && productInfo.path.length > 0
                             ? `Update in ${productInfo.parent.name} category`
                             : 'Add/Update Category'
                     }
@@ -325,7 +282,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
 
                             form.validateFields().then((value) => {
                                 if (!update) {
-                                    if (parentExist === true) {
+                                    if (parentExist) {
                                         createSubCategoryListInServer(value);
                                     } else {
                                         createCategoryListInServer(value);
@@ -337,20 +294,34 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         }}
                         onFinishFailed={onFinishFailed}
                     >
-                        {removeParent ? null : (
+                        {updateFlow ? null : (
                             // <Form.Item name="parentExist" valuePropName="parentExist" wrapperCol={{ offset: 4 }}>
-                            <Form.Item name="parentExist" valuePropName="parentExist">
-                                <Checkbox
+                            <Form.Item label="Parent Exist" name="parentExist" valuePropName="parentExist">
+                                {/* <Checkbox
                                     checked={parentExist}
-                                    onChange={(parentExist) => {
+                                    onChange={(parentExist: CheckboxChangeEvent) => {
                                         setParentExist(parentExist.target.checked);
                                     }}
                                 >
                                     Parent Exist
-                                </Checkbox>
+                                </Checkbox> */}
+
+                                <Radio.Group
+                                    onChange={(e: RadioChangeEvent) => {
+                                        setParentExist(e.target.value);
+                                        if (e.target.value) {
+                                            setShowForm(false);
+                                        } else {
+                                            setShowForm(true);
+                                        }
+                                    }}
+                                >
+                                    <Radio value>{'Yes'}</Radio>
+                                    <Radio value={false}>{'NO'}</Radio>
+                                </Radio.Group>
                             </Form.Item>
                         )}
-                        {parentExist === true && removeParent === false ? (
+                        {parentExist && !updateFlow ? (
                             <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
                                 <Select
                                     allowClear
@@ -371,7 +342,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         ) : null}
 
                         {/* {showForm === true && parentExist === true ? ( */}
-                        {showForm === true && parentExist === true ? (
+                        {showForm && (
                             <>
                                 <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
                                     <Input />
@@ -396,32 +367,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                                     <Input />
                                 </Form.Item>
                             </>
-                        ) : parentExist === false && removeParent === true ? (
-                            <>
-                                <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
-                                    <Input.TextArea showCount maxLength={150} />
-                                </Form.Item>
-                                <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item
-                                    label={'Customer_description'}
-                                    name={'customer_description'}
-                                    rules={formRequiredRule}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </>
-                        ) : null}
+                        )}
                         {/* <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
                             <Input />
                         </Form.Item> */}

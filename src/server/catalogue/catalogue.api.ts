@@ -10,7 +10,6 @@ export function getProductCatelogueWithAncestors(): Promise<IRProductCatalogue> 
 }
 
 export function addProductCatelogue(data: Partial<IProductCatalogue>): Promise<CommonApiResponse> {
-    console.log("ALLLL",data)
     return axios.post('/catalogue/add', data);
 }
 
