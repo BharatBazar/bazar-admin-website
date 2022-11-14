@@ -213,7 +213,7 @@ const Category: React.FC<CategoryProps> = ({}) => {
     };
 
     const onClickUpdateInRow = (data: IProductCatalogue) => {
-        const formValue = {};
+        const formValue: Partial<IProductCatalogue> = {};
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.subCategoryExist = data.subCategoryExist;

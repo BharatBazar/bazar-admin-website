@@ -1,6 +1,5 @@
-import { message } from 'antd';
-import { success } from './../components/ALert/index';
 import axios from 'axios';
+import { success } from '../components/ALert/index';
 
 export const apiEndPoint = 'http://localhost:2112';
 
@@ -31,9 +30,8 @@ export function setUpAxios() {
                 if (isNetworkError(error)) {
                     const message = 'Network Error';
                     return Promise.reject({ message });
-                } else {
-                    return handleError(error);
                 }
+                return handleError(error);
             },
         );
     }
