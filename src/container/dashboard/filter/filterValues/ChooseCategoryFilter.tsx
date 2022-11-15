@@ -67,7 +67,8 @@ const ChooseCategoryFilter = () => {
             const response = await getFilter({ parent: parentValue });
             setLoader(false);
 
-            const getSingleFilterValue = response.payload;
+            const getSingleFilterValue = response.payload.filter((e) => e.parent === parentValue);
+            console.log('RESPOMSE', getSingleFilterValue);
 
             if (getSingleFilterValue.length === 0) {
                 errorShow('No filter to show');

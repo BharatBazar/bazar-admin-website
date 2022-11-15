@@ -1,9 +1,8 @@
-import { Card, Form, Typography, Slider, Divider, Select, Input, Row, Avatar, Col, Space, Button, Alert } from 'antd';
+import { Card, Form, Typography, Select, Input, Row, Avatar, Col, Space, Button, Alert } from 'antd';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import queryString from 'query-string';
 import { AntDesignOutlined, UserAddOutlined } from '@ant-design/icons';
-import { render } from 'react-dom';
 import { getProduct, updateProduct } from '../../../server/checkProduct/product.api';
 import { errorShow, success } from '../../../components/ALert';
 import { IColor, IProduct, productStatus } from '../../../server/checkProduct/product.interface';

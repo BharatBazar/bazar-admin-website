@@ -1,9 +1,9 @@
-import { Table, Space, Button, Input, Form, Card, Tag, Select } from 'antd';
-import React, { useContext } from 'react';
+import { Table, Space, Button, Input, Form, Card, Select, Radio, RadioChangeEvent, Row, Col } from 'antd';
+import React, { useContext, useState } from 'react';
 import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 import {
     addProductCatelogue,
@@ -16,144 +16,43 @@ import { categoryType, IProductCatalogue } from '../../../server/catalogue/catal
 import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
 import { CategoryContext, createCategoryContext } from './SubCategory1';
+import { statusValue } from '../../../server/common.interface';
 
 type LayoutType = Parameters<typeof Form>[0]['layout'];
 
-// const columns = (onDelete, onUpdate, activate) => [
-//     {
-//         title: 'Category' + ' name',
-//         dataIndex: 'name',
-//         key: '_id' + 'City',
-//         render: (text) => <a>{text}</a>,
-//     },
-//     {
-//         title: 'Category ' + ' description',
-//         dataIndex: 'description',
-//         key: '_id',
-//         render: (text) => <a>{text}</a>,
-//     },
-//     {
-//         title: 'Category ' + ' image',
-//         dataIndex: 'image',
-//         key: '_id',
-//         render: (text) => <img src={text || 'https://source.unsplash.com/user/c_v_r'} height={100} width={100} />,
-//     },
-//     {
-//         title: 'Subcategory exist ',
-//         dataIndex: 'subCategoryExist',
-//         key: '_id',
+export interface CategoryProps extends RouteComponentProps {
+    setModal: (value: boolean) => void;
+    updateFlow: boolean;
+    onSelect: (value: any) => void;
+    productInfo: Partial<IProductCatalogue>;
+    isVisible: boolean;
+}
 
-//         render: (text) => (text ? <CheckCircleOutlined /> : <CloseCircleOutlined />),
-//     },
-//     {
-//         title: 'Active',
-//         dataIndex: 'active',
-//         width: 150,
-//         key: '_id',
-//         render: (value) => (
-//             <div style={{ alignItems: 'center', justifyContent: 'center' }}>
-//                 <Checkbox value={value} checked={value} style={{ alignSelf: 'center' }} />
-//             </div>
-//         ),
-//     },
-//     {
-//         title: 'Child',
-//         key: 'child',
-//         dataIndex: 'child',
-//         render: (child) => (
-//             <span>
-//                 {child.map(({ name }) => {
-//                     // let color = name.length <= 5 ? 'geekblue' : name.length <= 7 ? 'volcano' : 'green';
-
-//                     return (
-//                         <Tag color={'blue'} key={name}>
-//                             {name.toUpperCase()}
-//                         </Tag>
-//                     );
-//                 })}
-//             </span>
-//         ),
-//     },
-//     {
-//         title: 'Action',
-//         key: 'action',
-//         render: (text, record) => (
-//             <Space size="middle">
-//                 <Button
-//                     type={'primary'}
-//                     title={'Edit'}
-//                     onClick={() => {
-//                         onUpdate(record);
-//                     }}
-//                 >
-//                     {'Edit'}
-//                 </Button>
-//                 <Button
-//                     type={'primary'}
-//                     title={'Active'}
-//                     onClick={() => {
-//                         activate(record, !text.active);
-//                     }}
-//                 >
-//                     {text.active ? 'Deactive' : 'Active'}
-//                 </Button>
-//                 <Button
-//                     type={'primary'}
-//                     title={'Delete'}
-//                     onClick={() => {
-//                         onDelete(record);
-//                     }}
-//                     danger
-//                 >
-//                     {'Delete'}
-//                 </Button>
-//             </Space>
-//         ),
-//     },
-// ];
-
-// const layout = {
-//     labelCol: { span: 8 },
-//     wrapperCol: { span: 16 },
-// };
-// const tailLayout = {
-//     wrapperCol: { offset: 8, span: 16 },
-// };
-
-export interface CategoryProps extends RouteComponentProps {}
-
-const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect, setModal, removeParent }) => {
+const ModalForm: React.FC<CategoryProps> = ({ productInfo, setModal, updateFlow, isVisible }) => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
-    const [update, setUpdate] = React.useState(null);
-    const [subCategoryExist, setSubCategoryExist] = React.useState(true);
+
     const [parentExist, setParentExist] = React.useState(false);
     const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
-    const [categoryList, setCategoryList] = React.useState([]);
+    const [showForm, setShowForm] = React.useState(false);
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
-    const { newCategory, setNewCategory } = React.useContext(CategoryContext);
-
     const createCategoryListInServer = async (data) => {
         setLoader(true);
-        console.log(1);
+
         try {
             const response = await addProductCatelogue({
                 ...data,
-                // subCategoryExist,
             });
-            console.log(2);
-            setLoader(false);
-            if (response.payload) {
-                setNewCategory(!newCategory);
-                success('Category' + ' created!');
-                loadAllCategory({ categoryType: categoryType.Category, parent: form.getFieldValue('parent') });
 
-                form.resetFields();
-                setModal(false);
+            setLoader(false);
+            if (response.status == statusValue.success) {
+                setModal(true);
+            } else {
+                throw new Error(response.message);
             }
         } catch (error) {
             setLoader(false);
@@ -161,109 +60,32 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         }
     };
 
-    const createSubCategoryListInServer = async (data) => {
-        setLoader(true);
-
-        try {
-            console.log('DATA', data);
-            const response = await addProductCatelogue({
-                ...data,
-                parent: form.getFieldValue('parent'),
-                // categoryType: categoryType.SubCategory,
-                // subCategoryExist,
-            });
-
-            setLoader(false);
-            if (response.payload) {
-                setNewCategory(!newCategory);
-                success('Category' + ' created!');
-                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form.getFieldValue('parent') });
-
-                form.resetFields();
-                setModal(false);
-            }
-        } catch (error) {
-            setLoader(false);
-            errorShow(error.message);
-        }
-    };
-
-    // const loadAllCategory = async () => {
-    //     try {
-    //         setLoader(true);
-    //         const category = await getProductCatelogue({ categoryType: categoryType.Category });
-    //         setLoader(false);
-
-    //         setCategoryList(category.payload);
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //         setLoader(false);
-    //     }
-    // };
-
-    // const loadAllCategory = async (data: { categoryType: categoryType; parent?: string }) => {
-    const loadAllCategory = async () => {
+    const loadAllCategory = async (data) => {
         try {
             setLoader(true);
-            const category = await getProductCatelogue();
+            const category = await getProductCatelogue(data);
 
             setLoader(false);
-            // setCategory(category.payload);
-            setCategory(category.payload.filter((e) => e.path.length === 0));
 
-            // if (data.categoryType === categoryType.Category) {
-            //     setCategory(category.payload);
-            // } else {
-            //     category.payload.forEach((item) => (item.parent = item.parent.name));
-            //     setCategoryList(category.payload);
-            // }
+            setCategory(category.payload.filter((e) => e.path.length === 0));
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
         }
     };
-
-    // const deleteCategoryListInServer = async (data) => {
-    //     try {
-    //         const response = await deleteProductCatelogue({ ...data });
-
-    //         if (response.payload) {
-    //             success('CategoryList deleted!!');
-    //             loadAllCategory();
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
-
-    // const activateCatalogueItemInServer = async (data: IProductCatalogue, activate: boolean) => {
-    //     try {
-    //         const response = await activateCatelogueItem({ _id: data._id, activate });
-
-    //         if (response.status == 1) {
-    //             success('Catalogue item activated!!');
-    //             loadAllCategory();
-    //         }
-    //     } catch (error) {
-    //         errorShow(error.message);
-    //     }
-    // };
 
     const updateCategoryListInServer = async (data) => {
         setLoader(true);
 
         try {
-            const response = await updateProductCatelogue({ ...update, ...data, subCategoryExist });
+            const response = await updateProductCatelogue({ ...data, _id: productInfo._id });
             setLoader(false);
 
             if (response.payload) {
-                setNewCategory(!newCategory);
                 success('Category Updated');
-                loadAllCategory({ categoryType: categoryType.SubCategory, parent: form.getFieldValue('parent') });
+                loadAllCategory({ parent: form.getFieldValue('parent') });
 
-                form.resetFields();
-                setUpdate(null);
-                setModal(false);
+                setModal(true);
             }
         } catch (error) {
             setLoader(false);
@@ -273,7 +95,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
 
     const onClickUpdateInRow = (data: any) => {
         console.log(data);
-        const formValue = {};
+        const formValue: Partial<IProductCatalogue> = {};
         formValue.name = data.name;
         formValue.description = data.description;
         formValue.image = data.image;
@@ -281,48 +103,69 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
         formValue.customer_image = data.customer_image;
         formValue.customer_description = data.customer_description;
         formValue.type = data.type;
-        form.setFieldsValue(!removeParent ? '' : formValue);
-        // delete data.activate;
-        // setSubCategoryExist(data.subCategoryExist);
 
-        removeParent === false ? setUpdate(null) : setUpdate(data);
+        form.setFieldsValue(formValue);
     };
 
     React.useEffect(() => {
         // loadAllCategory({ categoryType: categoryType.Category });
-        loadAllCategory();
-        onClickUpdateInRow(productInfo);
-        removeParent === false ? form.resetFields() : null;
-    }, [onSelect]);
+        // loadAllCategory();
+        if (isVisible) {
+            if (updateFlow) {
+                setShowForm(true);
+                onClickUpdateInRow(productInfo);
+            }
+        } else {
+            form.resetFields();
+            setShowForm(false);
+        }
+    }, [isVisible]);
 
     return (
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
                 <Card
-                    title={
-                        removeParent === true && productInfo.path.length > 0
-                            ? `Update in ${productInfo.parent.name} category`
-                            : 'Add/Update Category'
-                    }
+                    title={updateFlow ? 'Update Catalogue' : 'Add Catalogue'}
                     loading={loader}
                     bordered={false}
                     style={{}}
                 >
+                    {updateFlow ? null : (
+                        <Row style={{ marginBottom: 20 }}>
+                            <Col span={9} style={{ justifyContent: 'flex-end' }}>
+                                <h4>{'Parent Exist:'}</h4>
+                            </Col>
+                            <Col span={13}>
+                                <Radio.Group
+                                    value={parentExist}
+                                    onChange={(e: RadioChangeEvent) => {
+                                        setParentExist(e.target.value);
+                                        if (e.target.value) {
+                                            setShowForm(false);
+                                            loadAllCategory({});
+                                        } else {
+                                            setShowForm(true);
+                                        }
+                                    }}
+                                >
+                                    <Radio value>{'Yes'}</Radio>
+                                    <Radio value={false}>{'NO'}</Radio>
+                                </Radio.Group>
+                            </Col>
+                        </Row>
+                    )}
                     <Form
                         form={form}
                         labelCol={{ span: 9 }}
                         wrapperCol={{ span: 18 }}
-                        name="basic"
                         layout="horizontal"
                         initialValues={{ remember: true }}
                         onFinish={() => {
+                            // form.setFieldsValue({ type: form.getFieldValue('name').replace(' ', '_').toLowerCase() });
+
                             form.validateFields().then((value) => {
-                                if (!update) {
-                                    if (parentExist === true) {
-                                        createSubCategoryListInServer(value);
-                                    } else {
-                                        createCategoryListInServer(value);
-                                    }
+                                if (!updateFlow) {
+                                    createCategoryListInServer(value);
                                 } else {
                                     updateCategoryListInServer(value);
                                 }
@@ -330,87 +173,100 @@ const ModalForm: React.FC<CategoryProps> = ({ productKey, productInfo, onSelect,
                         }}
                         onFinishFailed={onFinishFailed}
                     >
-                        <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
-                            <Input.TextArea showCount maxLength={150} />
-                        </Form.Item>
-                        <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label={'Customer_description'}
-                            name={'customer_description'}
-                            rules={formRequiredRule}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
-                            <Input />
-                        </Form.Item>
-
-                        {/* <Form.Item name="subCategoryExist" valuePropName="subCategoryExist" wrapperCol={{ offset: 4 }}>
-                            <Checkbox
-                                checked={subCategoryExist}
-                                onChange={(subCategoryExist) => {
-                                    setSubCategoryExist(subCategoryExist.target.checked);
-                                }}
-                            >
-                                Sub Category Exist
-                            </Checkbox>
-                        </Form.Item> */}
-                        {removeParent ? null : (
-                            <Form.Item name="parentExist" valuePropName="parentExist" wrapperCol={{ offset: 4 }}>
-                                <Checkbox
-                                    checked={parentExist}
-                                    onChange={(parentExist) => {
-                                        setParentExist(parentExist.target.checked);
-                                    }}
-                                >
-                                    Parent Exist
-                                </Checkbox>
-                            </Form.Item>
-                        )}
-                        {parentExist === true && removeParent === false ? (
+                        {parentExist ? (
                             <Form.Item style={{ flex: 1 }} label="Parent :" name="parent" rules={formRequiredRule}>
-                                <Select allowClear showSearch optionFilterProp="children">
+                                <Select
+                                    allowClear
+                                    showSearch
+                                    onSelect={() => setShowForm(true)}
+                                    optionFilterProp="children"
+                                >
                                     {category.map((category) => (
                                         <>
                                             <Option value={category._id}>{category.name}</Option>;
                                             {category.child.map((subCategory) => {
-                                                return <Option value={subCategory._id}>{subCategory.name}</Option>;
+                                                return (
+                                                    <Option value={subCategory._id}>
+                                                        {subCategory.type.split(' ').join(' ')}
+                                                    </Option>
+                                                );
                                             })}
                                         </>
                                     ))}
                                 </Select>
                             </Form.Item>
                         ) : null}
-                        <Space size="middle">
-                            {update && (
-                                <Button
-                                    type={'default'}
-                                    icon={<UndoOutlined />}
-                                    htmlType="submit"
-                                    style={{ marginTop: '20px' }}
-                                    onClick={() => {
-                                        setUpdate(null);
-                                        form.resetFields();
-                                    }}
+                        {/* {productInfo.child && productInfo.child.length > 0 && (
+                            <Row>
+                                <Col span={9}>
+                                    <h3>{'Parent'}</h3>
+                                </Col>
+                                <Col span={13}>
+                                    <h5>{productInfo.parent && productInfo.parent}</h5>
+                                </Col>
+                            </Row>
+                        )} */}
+
+                        {showForm && (
+                            <>
+                                <Form.Item label={'Name'} name={'name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Description'} name={'description'} rules={formRequiredRule}>
+                                    <Input.TextArea showCount maxLength={150} />
+                                </Form.Item>
+                                <Form.Item label={'Image'} name={'image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_name'} name={'customer_name'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Customer_image'} name={'customer_image'} rules={formRequiredRule}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item
+                                    label={'Customer_description'}
+                                    name={'customer_description'}
+                                    rules={formRequiredRule}
                                 >
-                                    {'Reset'}
-                                </Button>
-                            )}
-                            <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
-                                {update ? 'Save' : 'Create'}
-                            </Button>
-                        </Space>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
+                                    <Input disabled={updateFlow} />
+                                </Form.Item>
+                                <Row>
+                                    <Col span={9} />
+                                    <Col span={13}>
+                                        <h5>
+                                            {
+                                                'This has to be unique for all catalogue also use\nthis format a_b_c so in front end name will show as --> a b c'
+                                            }
+                                        </h5>
+                                    </Col>
+                                </Row>
+                                <Space size="middle">
+                                    {updateFlow && (
+                                        <Button
+                                            type={'default'}
+                                            icon={<UndoOutlined />}
+                                            htmlType="submit"
+                                            style={{ marginTop: '20px' }}
+                                            onClick={() => {
+                                                form.resetFields();
+                                            }}
+                                        >
+                                            {'Reset'}
+                                        </Button>
+                                    )}
+                                    <Button type={'primary'} htmlType="submit" style={{ marginTop: '20px' }}>
+                                        {updateFlow ? 'Save' : 'Create'}
+                                    </Button>
+                                </Space>
+                            </>
+                        )}
+                        {/* <Form.Item label={'Type'} name={'type'} rules={formRequiredRule}>
+                            <Input />
+                        </Form.Item> */}
                     </Form>
                 </Card>
             </div>

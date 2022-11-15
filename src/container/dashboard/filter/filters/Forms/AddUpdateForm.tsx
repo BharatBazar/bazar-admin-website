@@ -118,7 +118,7 @@ const AddAndUpdateForm = ({
         }
     };
 
-    const activateFilterInServer = async (data: { _id: string; active: boolean }) => {
+    const activateFilterInServer = async (data: { _id: string; active: boolean; parentId: string }) => {
         console.log('ACTIVE', data);
         setLoader(true);
         try {
@@ -128,7 +128,7 @@ const AddAndUpdateForm = ({
             if (response.status === 1) {
                 console.log('RESPONSE', response);
                 success(response.payload);
-                loadAllFilterChild({ _id: data._id });
+                loadAllFilterChild({ _id: data._id, parent: data.parentId });
             }
         } catch (error) {
             setLoader(false);
@@ -152,6 +152,7 @@ const AddAndUpdateForm = ({
     return (
         <>
             <>
+                {/* {showForm === true && openForm === true ? ( */}
                 {showForm === true && openForm === true ? (
                     <>
                         <Card

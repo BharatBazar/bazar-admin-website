@@ -18,11 +18,9 @@ const divStyle = {
 export const CategoryContext = createContext<any>(() => {});
 
 const App = () => {
-    const [open, setOpen] = React.useState(false);
     const [loader, setLoader] = React.useState<boolean>(false);
-    const [category, setCategory] = React.useState<IProductCatalogue[]>([]);
-    const [categoryList, setCategoryList] = React.useState([]);
-    const [SubCategory, setSubCategory] = React.useState([]);
+
+    const [catalogue, setCatalogue] = React.useState([]);
     const [newCategory, setNewCategory] = React.useState(false);
     const [productKey, setProductKey] = React.useState([]);
     const [productInfo, setProductInfo] = useState([]);
@@ -36,51 +34,16 @@ const App = () => {
         setRemoveParent(false);
     };
 
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
     // const loadAllCategory = async (data: { type: categoryType; parent?: string }) => {
     const loadAllCategory = async (data) => {
         try {
             setLoader(true);
 
-            const category = await getProductCatelogue();
-            console.log(
-                'CP',
-                category.payload.filter((e) => e.path.length === 0),
-            );
-            //        const pathWithName = category.payload.filter((elem) => elem.path.length === 0);
-            // console.log(
-            //     'LLL',
-            //     pathWithName.map((e) => {
-            //         return console.log(object);
-            //     }),
-            // );
-            setSubCategoryProductInfo(category.payload);
-            setSubCategory(category.payload.filter((e) => e.path.length === 0));
-            setLoader(false);
-            // category.payload.map((e) => {
-            //     e.path.length === 0
-            // });
-            // if (data.type === 'WoMens Clothes') {
-            //     setSubCategory(category.payload);
-            // }
-            //     setCategory(category.payload);
-            //     console.log(category.payload);
-            // } else if (data.categoryType === categoryType.SubCategory1) {
-            //     category.payload.forEach((item) => (item.parent = item.parent.name));
-            //     console.log(category.payload);
+            const category = await getProductCatelogue(data);
 
-            //     setCategoryList(category.payload);
-            // } else if (data.categoryType === categoryType.Category) {
-            //     setSubCategory(category.payload);
-            //     console.log(category.payload);
-            // }
+            setSubCategoryProductInfo(category.payload);
+            setCatalogue(category.payload.filter((e) => e.path.length === 0));
+            setLoader(false);
         } catch (error) {
             errorShow(error.message);
             setLoader(false);
@@ -88,9 +51,8 @@ const App = () => {
     };
 
     React.useEffect(() => {
-        loadAllCategory({ type: 'WoMens Clothes' });
-        loadAllCategory();
-    }, [newCategory]);
+        loadAllCategory({ parent: { $exists: false } });
+    }, []);
 
     const onSelect = (selectedKeys, info) => {
         setRemoveParent(true);
@@ -111,12 +73,9 @@ const App = () => {
         setIsModalVisible(true);
     };
 
-    const op = [{ title: '1', key: 1, childres: [{ title: '2', key: 2, children: [{ title: '3', key: 3 }] }] }];
-    // const SubCategoryy = SubCategory.filter((elem) => elem.path.length > 0);
-
     const treeData: DataNode[] =
-        SubCategory &&
-        SubCategory.map((a) => {
+        catalogue &&
+        catalogue.map((a) => {
             return {
                 title: (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -186,6 +145,7 @@ const App = () => {
         },
     ];
 
+    console.log('vall', removeParent, isModalVisible);
     return (
         <>
             <CategoryContext.Provider value={{ newCategory, setNewCategory }}>
@@ -198,7 +158,7 @@ const App = () => {
                         switcherIcon={<DownOutlined />}
                         defaultExpandedKeys={['0-0-0']}
                         onSelect={onSelect}
-                        treeData={SubCategory.length > 0 ? treeData : treeDataLoading}
+                        treeData={catalogue.length > 0 ? treeData : treeDataLoading}
                     />
                 </div>
                 <>
@@ -213,11 +173,15 @@ const App = () => {
                         }}
                     >
                         <ModalForm
-                            setModal={setIsModalVisible}
+                            isVisible={isModalVisible}
+                            setModal={() => {
+                                setIsModalVisible(false);
+                                loadAllCategory({ parent: { $exists: false } });
+                            }}
                             productKey={productKey}
                             onSelect={onSelect}
                             productInfo={productInfo}
-                            removeParent={removeParent}
+                            updateFlow={removeParent}
                         />
                     </Modal>
                 </>
