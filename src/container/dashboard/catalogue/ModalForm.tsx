@@ -28,7 +28,7 @@ export interface CategoryProps extends RouteComponentProps {
     isVisible: boolean;
 }
 
-const ModalForm: React.FC<CategoryProps> = ({ productInfo, onSelect, setModal, updateFlow, isVisible }) => {
+const ModalForm: React.FC<CategoryProps> = ({ productInfo, setModal, updateFlow, isVisible }) => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
     const [loader, setLoader] = React.useState<boolean>(false);
 
@@ -125,11 +125,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productInfo, onSelect, setModal, u
         <div style={{ alignItems: 'center' }}>
             <div className="site-card-border-less-wrapper">
                 <Card
-                    title={
-                        updateFlow
-                            ? `Update in ${productInfo.parent && productInfo.parent.name} category`
-                            : 'Add/Update Category'
-                    }
+                    title={updateFlow ? 'Update Catalogue' : 'Add Catalogue'}
                     loading={loader}
                     bordered={false}
                     style={{}}
