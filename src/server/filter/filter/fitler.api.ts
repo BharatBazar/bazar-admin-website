@@ -23,6 +23,10 @@ export function getFilterWithValue(data: Partial<IFilter>): Promise<IRGetFilter>
     return axios.post('/filter/getAllWithValue', data);
 }
 
+export function getFilterWithValueAPI(data: Partial<IFilter>): Promise<IRGetFilter> {
+    return axios.post('/filter/dashboard/getAll', data);
+}
+
 export function getClassifier(): Promise<{ payload: string[] }> {
     return axios.get('/filter/classifier');
 }

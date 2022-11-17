@@ -1,16 +1,15 @@
 import { UndoOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Select, Space, Modal } from 'antd';
-import axios from 'axios';
+import { Button, Card, Form, Select, Space } from 'antd';
+
 import React, { useState } from 'react';
 import { errorShow, success } from '../../../../components/ALert';
-import { formRequiredRule } from '../../../../constants';
-import { apiEndPoint } from '../../../../server';
+
 import { IProductCatalogue } from '../../../../server/catalogue/catalogue.interface';
-import { IFilter } from '../../../../server/filter/filter/filter.interface';
+
 import { getProductCatelogue } from '../../../../server/catalogue/catalogue.api';
-import { getClassifier, getFilterWithValue } from '../../../../server/filter/filter/fitler.api';
-import AddAndUpdateFilter from './AddAndUpdateFilter';
-import FilterModal from '../filterModal/FilterModal';
+import { getFilterWithValue, getFilterWithValueAPI } from '../../../../server/filter/filter/fitler.api';
+
+import AddAndUpdateForm from './Forms/AddUpdateForm';
 
 const ChooseFilterCategory = () => {
     const [form] = Form.useForm<Partial<IProductCatalogue>>();
@@ -30,20 +29,12 @@ const ChooseFilterCategory = () => {
         setIsModalVisible(true);
     };
 
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const loadCatalogueFromServer = async () => {
+    const loadCatalogueFromServer = async (data) => {
         try {
-            const response = await getProductCatelogue();
-            const getRealProduct = response.payload.filter((elem) => elem.child.length === 0);
-            if (response.status === 1) {
-                setCategory(getRealProduct);
+            const response = await getProductCatelogue(data);
+            // const getRealProduct = response.payload.filter((elem) => elem.child.length === 0);
+            if (response.status == 1) {
+                setCategory(response.payload);
             }
         } catch (error) {
             errorShow(error.message);
@@ -55,15 +46,9 @@ const ChooseFilterCategory = () => {
             setLoader(true);
             setFilterList([]);
 
-            const categories = await getFilterWithValue({ parent: data.parent });
-
-            const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent || data._id);
-
-            const getSingleDistributionValue = categories.payload.distribution.filter(
-                (e) => e.parent === data.parent || data._id,
-            );
-
-            const mergingAllFilter = [...getSingleFilterValue, ...getSingleDistributionValue];
+            const response = await getFilterWithValueAPI({ parent: data.parent });
+            console.log('parent', data, response);
+            const mergingAllFilter = [...response.payload];
             setShowForm(true);
             if (mergingAllFilter.length > 0) {
                 setShowFilterList(false);
@@ -73,10 +58,7 @@ const ChooseFilterCategory = () => {
             }
             setLoader(false);
 
-            // setFilterList([...category.payload.filter, ...category.payload.distribution]);
-            // setFilterList([...getSingleFilterValue, ...category.distribution]);
             setFilterList(mergingAllFilter);
-            // setFilterList();
         } catch (error) {
             setShowForm(false);
             errorShow(error.message);
@@ -84,55 +66,15 @@ const ChooseFilterCategory = () => {
         }
     };
 
-    const loadAllFilterChild = async (data: any) => {
-        console.log('_ID', data._id, data.parent);
-        try {
-            setLoader(true);
-            setFilterList([]);
-
-            // const categories = await getFilterWithValue();
-            const categories = await getFilterWithValue();
-            console.log('category', categories);
-            console.log('data', data);
-            // const getSingleFilterValue = categories.payload.filter.filter((e) => e._id === data._id);
-            const getSingleFilterValue = categories.payload.filter.filter((e) => e.parent === data.parent);
-            const getSingleDistributionValue = categories.payload.distribution.filter(
-                (e) => e.parent === data.parent || data._id,
-            );
-
-            console.log('GSF', getSingleFilterValue, getSingleDistributionValue);
-            setLoader(false);
-
-            // setFilterList([...category.payload.filter, ...category.payload.distribution]);
-            // setFilterList([...getSingleFilterValue, ...category.distribution]);
-            setFilterList([...getSingleFilterValue, ...getSingleDistributionValue]);
-            // setFilterList();
-        } catch (error) {
-            errorShow(error.message);
-            setLoader(false);
-        }
-    };
-
-    const loadClassifiersFromServer = async () => {
-        try {
-            const response = await getClassifier();
-
-            if (response.status === 1) {
-                setClassifier(response.payload);
-            }
-        } catch (error) {
-            errorShow(error.message);
-        }
-    };
-
     React.useEffect(() => {
-        loadCatalogueFromServer();
+        loadCatalogueFromServer({ child: [] });
     }, []);
 
     const openAllForm = () => {
         setOpenForm(!openForm);
     };
 
+    console.log('selected category', selectedCategory);
     return (
         <>
             <Card title={'Choose filter category'} loading={loader}>
@@ -150,12 +92,12 @@ const ChooseFilterCategory = () => {
                             showSearch
                             onChange={(value) => {
                                 setSelectedCategory(value);
-                                loadAllFilter({ parent: value });
+                                loadAllFilter({ parent: value as string });
                             }}
                             optionFilterProp="children"
                         >
                             {category.map((category) => (
-                                <Option value={category._id}>{category.type}</Option>
+                                <Option value={category._id}>{category.type.split('_').join(' ')}</Option>
                             ))}
                         </Select>
                     </Form.Item>
@@ -192,14 +134,18 @@ const ChooseFilterCategory = () => {
                 </Form>
             </Card>
             <div>
-                <AddAndUpdateFilter
+                <AddAndUpdateForm
                     form={form}
                     filterList={filterList}
                     setLoader={setLoader}
-                    loadAllFilter={loadAllFilter}
+                    loadAllFilter={() => {
+                        loadAllFilter({ parent: selectedCategory });
+                    }}
                     selectedCategory={selectedCategory}
                     setFilterList={setFilterList}
-                    loadAllFilterChild={loadAllFilterChild}
+                    loadAllFilterChild={() => {
+                        loadAllFilter({ parent: selectedCategory });
+                    }}
                     showForm={showForm}
                     setShowForm={setShowForm}
                     showModal={showModal}

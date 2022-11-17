@@ -1,21 +1,17 @@
-import { Table, Space, Button, Input, Form, Card, Select, Radio, RadioChangeEvent, Row, Col } from 'antd';
-import React, { useContext, useState } from 'react';
-import { UndoOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Space, Button, Input, Form, Card, Select, Radio, RadioChangeEvent, Row, Col } from 'antd';
+import React from 'react';
+import { UndoOutlined } from '@ant-design/icons';
 import { RouteComponentProps } from 'react-router-dom';
-
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 import {
     addProductCatelogue,
-    deleteProductCatelogue,
     updateProductCatelogue,
     getProductCatelogue,
-    activateCatelogueItem,
 } from '../../../server/catalogue/catalogue.api';
-import { categoryType, IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
+import { IProductCatalogue } from '../../../server/catalogue/catalogue.interface';
 import { errorShow, success } from '../../../components/ALert';
 import { formRequiredRule } from '../../../constants';
-import { CategoryContext, createCategoryContext } from './SubCategory1';
+
 import { statusValue } from '../../../server/common.interface';
 
 type LayoutType = Parameters<typeof Form>[0]['layout'];
@@ -187,7 +183,7 @@ const ModalForm: React.FC<CategoryProps> = ({ productInfo, setModal, updateFlow,
                                             {category.child.map((subCategory) => {
                                                 return (
                                                     <Option value={subCategory._id}>
-                                                        {subCategory.type.split(' ').join(' ')}
+                                                        {subCategory.type.split('_').join(' ').toUpperCase()}
                                                     </Option>
                                                 );
                                             })}
